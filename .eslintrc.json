@@ -1,0 +1,32 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint", "react", "prettier"
+  ],
+  "rules": {
+    // eslint rules
+    "no-multi-spaces": [
+      "error",
+      { "ignoreEOLComments": true }
+    ],
+
+    // react rules
+    "react/jsx-pascal-case": [
+      1,
+      { "allowAllCaps": false, "allowNamespace": false, "allowLeadingUnderscore": false}
+    ],
+    "react/jsx-curly-spacing": ["error", []],
+    "react/jsx-curly-brace-presence": ["error", "always", { "props": "never" }],
+    "jsx-closing-bracket-location": [1, "line-aligned"],
+    "jsx-closing-tag-location": [1, {"location": "tag-aligned"}],
+    "jsx-quotes": ["error", "prefer-double"],
+
+    // typescript rules
+    "@typescript-eslint/no-require-imports": "error",
+  }
+}

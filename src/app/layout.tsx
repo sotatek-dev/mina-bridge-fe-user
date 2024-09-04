@@ -3,6 +3,12 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import WrapperLayout from '@/components/layouts/wrapper-layout';
+import userInitPersistData from "@/hooks/useInitPersistData";
+import useDeviceCheck from "@/hooks/useDeviceCheck";
+import useWalletEvents from "@/hooks/useWalletEvents";
+import useChakraTheme from "@/hooks/useChakraTheme";
+import useLoadWalletInstances from "@/hooks/useLoadWalletInstances";
+import useWeb3Injected from "@/hooks/useWeb3Injected";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,6 +22,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useWeb3Injected();
+  useLoadWalletInstances();
+  userInitPersistData();
+  useChakraTheme();
+  useWalletEvents();
+  useDeviceCheck();
+
   return (
     <html lang={'en'}>
       <body className={inter.className}>

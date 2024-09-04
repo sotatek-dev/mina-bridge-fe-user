@@ -93,7 +93,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
       iconSpacing: 0,
       py: '10px',
       px: '12px',
-      leftIcon: <Image src="/assets/icons/icon.burger-menu.right.svg" />,
+      leftIcon: <Image src={"/assets/icons/icon.burger-menu.right.svg"} />,
       onClick: openDrawer,
       border: 'none',
       bg: 'rgba(244, 111, 78, 0.15)',
@@ -105,7 +105,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
     const nw = NETWORKS[lastNetworkName];
     return {
       leftIcon: (
-        <AspectRatio w="24px" h="24px" ratio={1}>
+        <AspectRatio w={"24px"} h={"24px"} ratio={1}>
           <Image src={nw.metadata.logo.header} />
         </AspectRatio>
       ),
@@ -117,16 +117,16 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
       children: (
         <>
           <Text
-            as="span"
-            textTransform="capitalize"
-            display="inline-block"
-            textOverflow="ellipsis"
-            whiteSpace="nowrap"
-            overflow="hidden"
+            as={"span"}
+            textTransform={"capitalize"}
+            display={"inline-block"}
+            textOverflow={"ellipsis"}
+            whiteSpace={"nowrap"}
+            overflow={"hidden"}
           >
             {nw.name} Network
           </Text>
-          <Image src="/assets/icons/icon.arrow.down.svg" w="16px" h="16px" />
+          <Image src={"/assets/icons/icon.arrow.down.svg"} w={"16px"} h={"16px"} />
         </>
       ),
     };
@@ -150,7 +150,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
     return {
       variant: 'primary.orange',
       leftIcon: (
-        <AspectRatio w="24px" h="24px" ratio={1}>
+        <AspectRatio w={"24px"} h={"24px"} ratio={1}>
           <Image src={walletInstance?.metadata.logo.base} />
         </AspectRatio>
       ),

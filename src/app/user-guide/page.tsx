@@ -11,14 +11,14 @@ export type SectionType = {
 
 export default function UserGuide() {
   return (
-    <VStack alignItems="flex-start" mb="40px">
+    <VStack alignItems={"flex-start"} mb={"40px"}>
       <Box>
         <Heading
-          as="h2"
-          variant="h1"
+          as={"h2"}
+          variant={"h1"}
           fontSize={{ base: '32px', md: '40px' }}
-          mb="30px"
-          mt="40px"
+          mb={"30px"}
+          mt={"40px"}
         >
           Introduction
         </Heading>
@@ -26,11 +26,11 @@ export default function UserGuide() {
       </Box>
       <Box>
         <Heading
-          as="h2"
-          variant="h1"
+          as={"h2"}
+          variant={"h1"}
           fontSize={{ base: '32px', md: '40px' }}
-          mb="30px"
-          mt="40px"
+          mb={"30px"}
+          mt={"40px"}
         >
           Guideline For Users
         </Heading>

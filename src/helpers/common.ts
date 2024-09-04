@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
 
-export const isDevelopment = () => import.meta.env.MODE === 'development';
+export const isDevelopment = () => process.env.NEXT_PUBLIC_ENV === 'development';
 export const isFnc = <F>(maybeFnc: F | unknown): maybeFnc is F =>
   typeof maybeFnc === 'function';
 

@@ -1,12 +1,11 @@
-import ROUTES from '@/configs/routes';
-import { Stack } from '@chakra-ui/react';
-import { Link } from "@chakra-ui/next-js";
+import React from "react";
+import Link from "next/link";
+import ROUTES from "@/configs/routes";
+import { Stack } from "@chakra-ui/layout";
 
 export default function Home() {
   return (
-    <main
-      className={'flex min-h-screen flex-col items-center justify-between p-24'}
-    >
+    <main className={''}>
       <Stack>
         <Link href={ROUTES.USER_GUIDE}>User Guild</Link>
       </Stack>

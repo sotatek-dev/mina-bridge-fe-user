@@ -1,11 +1,10 @@
-import NETWORKS, { Network, NETWORK_NAME } from '@/models/network';
-import WALLETS, { Wallet, WALLET_NAME } from '@/models/wallet';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { walletInstanceSliceActions } from './walletInstanceSlice';
-import { createAppThunk } from '..';
-import { persistSliceActions, TokenType } from './persistSlice';
-import { WALLET_EVENT_NAME } from '@/models/wallet/wallet.abstract';
-import { handleRequest } from '@/helpers/asyncHandlers';
+import NETWORKS, { Network, NETWORK_NAME } from "@/models/network";
+import WALLETS, { Wallet, WALLET_NAME } from "@/models/wallet";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { walletInstanceSliceActions } from "./walletInstanceSlice";
+import { createAppThunk } from "..";
+import { persistSliceActions, TokenType } from "./persistSlice";
+import { WALLET_EVENT_NAME } from "@/models/wallet/wallet.abstract";
 
 export enum NETWORK_KEY {
   SRC = 'src',
@@ -248,7 +247,7 @@ const reconnectWallet = createAppThunk()(
     const { walletKey, networkName, asset } = getState().wallet;
     const { listAsset } = getState().persist;
 
-    if (!walletKey)
+    if (!walletKey || !WALLETS[walletKey])
       throw new Error(
         "You haven't connected to any wallet or network just yet"
       );

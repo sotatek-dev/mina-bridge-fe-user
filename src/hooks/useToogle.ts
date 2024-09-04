@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+"use client";
+import { useCallback, useState } from "react";
 
 export type ToggleAction = (newState?: boolean) => void;
 

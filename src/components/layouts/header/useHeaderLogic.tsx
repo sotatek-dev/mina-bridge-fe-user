@@ -1,24 +1,19 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  AspectRatio,
-  ButtonProps,
-  Image,
-  Text,
-  useToken,
-} from '@chakra-ui/react';
+"use client";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AspectRatio, ButtonProps, Image, Text, useToken } from "@chakra-ui/react";
 import {
   getPersistSlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
-  useAppSelector,
-} from '@/store';
-import { uiSliceActions } from '@/store/slices/uiSlice';
-import { MODAL_NAME } from '@/configs/modal';
-import { truncateMid } from '@/helpers/common';
-import { NETWORK_KEY, walletSliceActions } from '@/store/slices/walletSlice';
-import NETWORKS from '@/models/network';
-import useWindowSize from '@/hooks/useWindowSize';
+  useAppSelector
+} from "@/store";
+import { uiSliceActions } from "@/store/slices/uiSlice";
+import { MODAL_NAME } from "@/configs/modal";
+import { truncateMid } from "@/helpers/common";
+import { NETWORK_KEY, walletSliceActions } from "@/store/slices/walletSlice";
+import NETWORKS from "@/models/network";
+import useWindowSize from "@/hooks/useWindowSize";
 
 export default function useHeaderLogic(extractFnc: boolean = false) {
   const dispatch = useAppDispatch();

@@ -18,8 +18,8 @@ import useNotifier from '@/hooks/useNotifier';
 import Loading from '@/components/elements/loading/spinner';
 import { useMemo } from 'react';
 import ROUTES from '@/configs/routes';
-import { useRouter } from "next/router";
-import { Link } from "@chakra-ui/next-js";
+import { Link } from '@chakra-ui/next-js';
+import { useRouter } from 'next/navigation';
 
 export default function ModalConfirmBridge() {
   const {
@@ -54,61 +54,61 @@ export default function ModalConfirmBridge() {
     switch (true) {
       case isLoading:
         return (
-          <VStack w={"full"} alignItems={"center"} py={"50px"} gap={"0"}>
+          <VStack w={'full'} alignItems={'center'} py={'50px'} gap={'0'}>
             <Loading
-              id={"modal-confirm-bridge"}
-              w={"100px"}
-              h={"100px"}
+              id={'modal-confirm-bridge'}
+              w={'100px'}
+              h={'100px'}
               spinnerSize={100}
               bgOpacity={0}
             />
-            <Heading as={"h3"} variant={"h3"} color={"black"} mt={"20px"}>
+            <Heading as={'h3'} variant={'h3'} color={'black'} mt={'20px'}>
               Waiting for confirmation
             </Heading>
-            <Text variant={"md"} color={"text.500"} mt={"5px"}>
+            <Text variant={'md'} color={'text.500'} mt={'5px'}>
               Confirm this transaction in your wallet
             </Text>
           </VStack>
         );
       case hasError:
         return (
-          <VStack gap={"0"} pt={"35px"}>
+          <VStack gap={'0'} pt={'35px'}>
             <Image
-              src={"/assets/icons/icon.error.circle.svg"}
+              src={'/assets/icons/icon.error.circle.svg'}
               alt={'icon.error.circle'}
-              w={"80px"}
-              h={"80px"}
+              w={'80px'}
+              h={'80px'}
             />
-            <Heading as={"h3"} variant={"h3"} color={"black"} mt={"20px"}>
+            <Heading as={'h3'} variant={'h3'} color={'black'} mt={'20px'}>
               Error
             </Heading>
-            <Text variant={"md"} color={"text.500"} mt={"5px"}>
+            <Text variant={'md'} color={'text.500'} mt={'5px'}>
               Transaction rejected
             </Text>
           </VStack>
         );
       case isSuccess:
         return (
-          <VStack gap={"0"} pt={"35px"}>
+          <VStack gap={'0'} pt={'35px'}>
             <Image
-              src={"/assets/icons/icon.success.circle.svg"}
+              src={'/assets/icons/icon.success.circle.svg'}
               alt={'icon.success.circle'}
-              w={"80px"}
-              h={"80px"}
+              w={'80px'}
+              h={'80px'}
             />
-            <Heading as={"h3"} variant={"h3"} color={"black"} mt={"20px"}>
+            <Heading as={'h3'} variant={'h3'} color={'black'} mt={'20px'}>
               Transaction Submitted
             </Heading>
             <Text
-              variant={"md"}
-              color={"text.500"}
-              mt={"5px"}
+              variant={'md'}
+              color={'text.500'}
+              mt={'5px'}
               onClick={() => {
                 onDismiss();
                 handleCloseModal();
                 router.push(ROUTES.HISTORY);
               }}
-              cursor={"pointer"}
+              cursor={'pointer'}
             >
               View on History
             </Text>
@@ -121,43 +121,47 @@ export default function ModalConfirmBridge() {
         return (
           <>
             <Heading
-              as={"h2"}
-              variant={"h2"}
-              mb={"15px"}
-              color={"text.900"}
-              textAlign={"center"}
+              as={'h2'}
+              variant={'h2'}
+              mb={'15px'}
+              color={'text.900'}
+              textAlign={'center'}
             >
               {modalPayload
                 ? `${dpAmount} ${modalPayload.asset.symbol.toUpperCase()}`
                 : 0}
             </Heading>
             <Grid
-              templateColumns={"repeat(2,1fr)"}
-              gap={"60px"}
-              position={"relative"}
-              p={"20px"}
-              bg={"rgba(130, 113, 240, 0.10)"}
-              borderRadius={"10px"}
+              templateColumns={'repeat(2,1fr)'}
+              gap={'60px'}
+              position={'relative'}
+              p={'20px'}
+              bg={'rgba(130, 113, 240, 0.10)'}
+              borderRadius={'10px'}
             >
               <GridItem>
-                <VStack h={"full"} w={"full"} gap={"0"}>
-                  <Text variant={"lg_medium"} color={"text.700"} textAlign={"center"}>
+                <VStack h={'full'} w={'full'} gap={'0'}>
+                  <Text
+                    variant={'lg_medium'}
+                    color={'text.700'}
+                    textAlign={'center'}
+                  >
                     From
                   </Text>
                   <Box
-                    display={"flex"}
-                    h={"full"}
-                    w={"full"}
-                    bg={"linear-gradient(270deg, #DE622E 0%, #8271F0 100%)"}
-                    borderRadius={"10px"}
-                    p={"1px"}
+                    display={'flex'}
+                    h={'full'}
+                    w={'full'}
+                    bg={'linear-gradient(270deg, #DE622E 0%, #8271F0 100%)'}
+                    borderRadius={'10px'}
+                    p={'1px'}
                   >
                     <VStack
-                      w={"full"}
-                      bg={"white"}
-                      borderRadius={"9px"}
-                      py={"25"}
-                      px={"10px"}
+                      w={'full'}
+                      bg={'white'}
+                      borderRadius={'9px'}
+                      py={'25'}
+                      px={'10px'}
                     >
                       <Image
                         src={
@@ -166,15 +170,15 @@ export default function ModalConfirmBridge() {
                             : ''
                         }
                         alt={'logo'}
-                        w={"40px"}
-                        h={"40px"}
+                        w={'40px'}
+                        h={'40px'}
                       />
                       <Text
-                        variant={"md_medium"}
-                        color={"text.900"}
-                        opacity={"0.5"}
-                        textTransform={"capitalize"}
-                        textAlign={"center"}
+                        variant={'md_medium'}
+                        color={'text.900'}
+                        opacity={'0.5'}
+                        textTransform={'capitalize'}
+                        textAlign={'center'}
                       >
                         {networkInstance.src ? networkInstance.src.name : ''}{' '}
                         network
@@ -184,24 +188,28 @@ export default function ModalConfirmBridge() {
                 </VStack>
               </GridItem>
               <GridItem>
-                <VStack h={"full"} w={"full"} gap={"0"}>
-                  <Text variant={"lg_medium"} color={"text.700"} textAlign={"center"}>
+                <VStack h={'full'} w={'full'} gap={'0'}>
+                  <Text
+                    variant={'lg_medium'}
+                    color={'text.700'}
+                    textAlign={'center'}
+                  >
                     To
                   </Text>
                   <Box
-                    display={"flex"}
-                    h={"full"}
-                    w={"full"}
-                    bg={"linear-gradient(270deg, #DE622E 0%, #8271F0 100%)"}
-                    borderRadius={"10px"}
-                    p={"1px"}
+                    display={'flex'}
+                    h={'full'}
+                    w={'full'}
+                    bg={'linear-gradient(270deg, #DE622E 0%, #8271F0 100%)'}
+                    borderRadius={'10px'}
+                    p={'1px'}
                   >
                     <VStack
-                      w={"full"}
-                      bg={"white"}
-                      borderRadius={"9px"}
-                      py={"25"}
-                      px={"10px"}
+                      w={'full'}
+                      bg={'white'}
+                      borderRadius={'9px'}
+                      py={'25'}
+                      px={'10px'}
                     >
                       <Image
                         src={
@@ -210,15 +218,15 @@ export default function ModalConfirmBridge() {
                             : ''
                         }
                         alt={'log'}
-                        w={"40px"}
-                        h={"40px"}
+                        w={'40px'}
+                        h={'40px'}
                       />
                       <Text
-                        variant={"md_medium"}
-                        color={"text.900"}
-                        opacity={"0.5"}
-                        textTransform={"capitalize"}
-                        textAlign={"center"}
+                        variant={'md_medium'}
+                        color={'text.900'}
+                        opacity={'0.5'}
+                        textTransform={'capitalize'}
+                        textAlign={'center'}
                       >
                         {networkInstance.tar ? networkInstance.tar.name : ''}{' '}
                         network
@@ -228,61 +236,65 @@ export default function ModalConfirmBridge() {
                 </VStack>
               </GridItem>
               <Box
-                position={"absolute"}
-                top={"50%"}
-                left={"50%"}
-                transform={"translate(-50%,-50%)"}
+                position={'absolute'}
+                top={'50%'}
+                left={'50%'}
+                transform={'translate(-50%,-50%)'}
               >
                 <Image
-                  src={"/assets/icons/icon.bridge.next.svg"}
+                  src={'/assets/icons/icon.bridge.next.svg'}
                   alt={'icon.bridge.next'}
-                  w={"40px"}
-                  h={"40px"}
+                  w={'40px'}
+                  h={'40px'}
                 />
               </Box>
             </Grid>
-            <VStack w={"full"} gap={"20px"} mt={"15px"}>
+            <VStack w={'full'} gap={'20px'} mt={'15px'}>
               {displayValues.map((item, index) => (
                 <HStack
                   key={`${item.label}_${item.value}_${index}`}
-                  w={"full"}
-                  justifyContent={"space-between"}
+                  w={'full'}
+                  justifyContent={'space-between'}
                 >
-                  <Text variant={"lg"} color={"text.500"}>
+                  <Text variant={'lg'} color={'text.500'}>
                     {item.label}
                   </Text>
-                  <HStack gap={"8px"}>
-                    <Text variant={"lg_medium"} color={"text.900"}>
+                  <HStack gap={'8px'}>
+                    <Text variant={'lg_medium'} color={'text.900'}>
                       {item.value}
                     </Text>
-                    <Image src={item.affixIcon} alt={'affix-icon'} h={"24px"} />
+                    <Image src={item.affixIcon} alt={'affix-icon'} h={'24px'} />
                   </HStack>
                 </HStack>
               ))}
             </VStack>
             <Box
-              w={"full"}
-              mt={"15px"}
-              p={"10px 15px"}
-              gap={"10px"}
-              borderRadius={"8px"}
-              bg={"rgba(222, 98, 46, 0.10)"}
+              w={'full'}
+              mt={'15px'}
+              p={'10px 15px'}
+              gap={'10px'}
+              borderRadius={'8px'}
+              bg={'rgba(222, 98, 46, 0.10)'}
             >
-              <Text variant={"md"} color={"primary.orange"}>
+              <Text variant={'md'} color={'primary.orange'}>
                 Please initiate a single transfer, we will only monitor the
                 first transfer
               </Text>
             </Box>
-            <Box w={"full"} mt={"15px"} gap={"12px"}>
+            <Box w={'full'} mt={'15px'} gap={'12px'}>
               <Checkbox
-                fontSize={"14px"}
+                fontSize={'14px'}
                 isChecked={isAgreeTerm}
                 onChange={toggleAgreeTerm}
-                alignItems={"flex-start"}
+                alignItems={'flex-start'}
               >
                 <Text>
                   I have read and agree to the{' '}
-                  <Link href={ROUTES.HOME} target={"_blank"} color={"primary.purple"}>
+                  <Link
+                    href={ROUTES.HOME}
+                    target={'_blank'}
+                    color={'primary.purple'}
+                  >
                     Terms of Use
                   </Link>
                 </Text>
@@ -340,12 +352,12 @@ export default function ModalConfirmBridge() {
         if (isSuccess || hasError)
           return (
             <Button
-              variant={"primary.orange.solid"}
-              w={"full"}
-              h={"46px"}
-              mt={"25px"}
-              mx={"40px"}
-              mb={"40px"}
+              variant={'primary.orange.solid'}
+              w={'full'}
+              h={'46px'}
+              mt={'25px'}
+              mx={'40px'}
+              mb={'40px'}
               onClick={() => {
                 onDismiss();
                 handleCloseModal();
@@ -357,17 +369,17 @@ export default function ModalConfirmBridge() {
         return (
           <Button
             variant={isAgreeTerm ? 'primary.orange.solid' : 'ghost'}
-            w={"full"}
-            h={"46px"}
-            mt={"30px"}
-            mb={"5px"}
+            w={'full'}
+            h={'46px'}
+            mt={'30px'}
+            mb={'5px'}
             onClick={handleOnClick}
           >
             {isFreezeScreen ? (
               <Loading
-                id={"modal-cf-bridge-cf-btn-loading"}
-                w={"24px"}
-                h={"24px"}
+                id={'modal-cf-bridge-cf-btn-loading'}
+                w={'24px'}
+                h={'24px'}
                 bgOpacity={0}
                 spinnerSize={24}
                 spinnerThickness={8}

@@ -39,15 +39,15 @@ export default function Loading({
     <Flex
       w={w}
       h={h}
-      alignItems="center"
-      justifyContent="center"
+      alignItems={"center"}
+      justifyContent={"center"}
       bg={`rgba(0,0,0,${bgOpacity})`}
     >
       <Box
         w={`${spinnerSize}px`}
         h={`${spinnerSize}px`}
         clipPath={`url(#${id})`}
-        position="relative"
+        position={"relative"}
         _after={{
           content: "''",
           position: 'absolute',
@@ -58,8 +58,9 @@ export default function Loading({
           bg: 'linear-gradient(115deg, #5833EB 0%, transparent 100%),linear-gradient(115deg, #5833EB 0%, transparent 80%),linear-gradient(115deg, #5833EB 0%, transparent 65%)',
           animation,
         }}
-      ></Box>
-      <Box position="absolute">
+      >
+      </Box>
+      <Box position={"absolute"}>
         <LoadingClip
           id={id}
           w={spinnerSize}

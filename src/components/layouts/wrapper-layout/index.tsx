@@ -7,11 +7,13 @@ import UnmatchedChain from '../banners/unmatchedChain';
 import Modals from '@/components/modules/modals';
 import NotiReporter from '@/components/modules/notiReporter';
 import ROUTES from '@/configs/routes';
+import { useZKContractState } from "@/providers/zkBridgeInitalize";
+import { usePathname } from "next/navigation";
 
 type Props = PropsWithChildren<{}>;
 
 function WrapperLayout({ children }: Props) {
-  const { pathname } = useLocation();
+  const pathname = usePathname();
   const { isInitializing } = useZKContractState().state;
   const isNotPOAScreen = pathname !== ROUTES.PROOF_OF_ASSETS;
   const isNotHistoryScreen = pathname !== ROUTES.HISTORY;
@@ -19,30 +21,30 @@ function WrapperLayout({ children }: Props) {
   const isNotHomeScreen = pathname !== ROUTES.HOME;
 
   return (
-    <div id="wrapper-layout">
+    <div id={"wrapper-layout"}>
       {isInitializing ? (
         <LoadingWithText
-          id="zk_contract_initialize_loading"
-          label="Waiting for initialize instances"
+          id={"zk_contract_initialize_loading"}
+          label={"Waiting for initialize instances"}
         />
       ) : (
         <>
           <Header />
           <Box
-            as="section"
-            w="full"
-            h="full"
-            bgColor="text.100"
+            as={"section"}
+            w={"full"}
+            h={"full"}
+            bgColor={"text.100"}
             bgImage={
               isNotPOAScreen && isNotHistoryScreen && isNotUserGuide
                 ? 'url("/assets/images/image.main-bg.jpg")'
                 : ''
             }
-            bgSize="cover"
-            bgPosition="left top"
-            bgRepeat="no-repeat"
-            bgAttachment="fixed"
-            overflow="auto"
+            bgSize={"cover"}
+            bgPosition={"left top"}
+            bgRepeat={"no-repeat"}
+            bgAttachment={"fixed"}
+            overflow={"auto"}
           >
             {!isNotHomeScreen && <UnmatchedChain />}
             <Container
@@ -53,7 +55,7 @@ function WrapperLayout({ children }: Props) {
                 xl: 'container.xl',
               }}
             >
-              <Center w="full">{children}</Center>
+              <Center w={"full"}>{children}</Center>
             </Container>
           </Box>
         </>

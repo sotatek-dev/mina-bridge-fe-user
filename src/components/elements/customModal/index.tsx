@@ -39,7 +39,7 @@ export type CustomModalTitleProps = React.PropsWithChildren<HeadingProps>;
 
 export function ModalTitle({ children, ...props }: CustomModalTitleProps) {
   return (
-    <Heading as="h3" variant="h3" pt="4px" {...props}>
+    <Heading as={"h3"} variant={"h3"} pt={"4px"} {...props}>
       {children}
     </Heading>
   );
@@ -78,8 +78,8 @@ export default function CustomModal({
       isOpen={curModal.isOpen}
       onClose={handleCloseModal}
     >
-      <ModalOverlay bg="rgba(0, 0, 0, 0.40)" />
-      <ModalContent bg="text.25">
+      <ModalOverlay bg={"rgba(0, 0, 0, 0.40)"} />
+      <ModalContent bg={"text.25"}>
         {props.title && <ModalHeader>{props.title}</ModalHeader>}
         {props.closeButton ? (
           props.closeButton

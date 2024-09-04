@@ -2,12 +2,14 @@
   "extends": [
     "next/core-web-vitals",
     "plugin:react/recommended"
-//    "plugin:prettier/recommended",
-//    "prettier"
+    // "plugin:prettier/recommended",
   ],
   "plugins": [
     "react",
     "prettier"
+  ],
+  "ignorePatterns": [
+    "src/configs/ABIs/**/*.js"
   ],
   "rules": {
     // eslint rules
@@ -19,6 +21,9 @@
         "ignoreEOLComments": true
       }
     ],
+    // jsx-a11y
+    "jsx-a11y/alt-text": "off",
+
     // react rules
     "react/react-in-jsx-scope": "off",
     "react/jsx-pascal-case": [

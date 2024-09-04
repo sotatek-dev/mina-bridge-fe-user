@@ -46,7 +46,7 @@ next-env.d.ts
 *.sw?
 
 # env files
-.env
+.env.example
 .env.development
 .env.production
 docker-compose.yml

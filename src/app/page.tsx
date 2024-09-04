@@ -1,6 +1,6 @@
 import ROUTES from '@/configs/routes';
 import { Stack } from '@chakra-ui/react';
-import Link from 'next/link';
+import { Link } from "@chakra-ui/next-js";
 
 export default function Home() {
   return (

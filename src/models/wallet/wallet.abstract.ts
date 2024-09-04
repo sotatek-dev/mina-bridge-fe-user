@@ -1,7 +1,7 @@
-import { CARD_STATUS } from '@/components/modules/modals/components/modalConnectWallet/partials/card';
-import Network, { NETWORK_NAME, NETWORK_TYPE } from '../network/network';
-import { TokenType } from '@/store/slices/persistSlice';
-import { DeviceType } from 'device-detector-js/dist/typings/device';
+// import { CARD_STATUS } from '@/components/modules/modals/components/modalConnectWallet/partials/card';
+import Network, { NETWORK_NAME, NETWORK_TYPE } from "../network/network";
+import { TokenType } from "@/store/slices/persistSlice";
+import { DeviceType } from "device-detector-js/dist/typings/device";
 
 export enum WALLET_EVENT_NAME {
   ACCOUNTS_CHANGED = 'accountsChanged',
@@ -45,7 +45,8 @@ export type DISPLAY_NAME = string;
 
 export type InstallationURL = Record<DEVICES, string>;
 
-export type WALLET_STATUS = CARD_STATUS;
+// export type WALLET_STATUS = CARD_STATUS;
+export type WALLET_STATUS = string;
 
 export type WalletLogo = {
   base: string;

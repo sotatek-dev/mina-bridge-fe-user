@@ -1,9 +1,7 @@
-import { handleRequest } from '@/helpers/asyncHandlers';
-import NETWORKS, { Network, NETWORK_NAME } from '@/models/network';
-import WALLETS, { Wallet, WALLET_NAME } from '@/models/wallet';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { cloneDeep } from 'lodash';
-import { NETWORK_KEY } from './walletSlice';
+import NETWORKS, { Network, NETWORK_NAME } from "@/models/network";
+import WALLETS, { Wallet, WALLET_NAME } from "@/models/wallet";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { NETWORK_KEY } from "./walletSlice";
 
 // state type
 export type WalletState = {
@@ -38,7 +36,7 @@ export const WalletInstanceSlice = createSlice({
         NETWORKS[action.payload.value];
     },
     initializeInstance(state, action: PayloadAction<initInstancePayload>) {
-      state.walletInstance = WALLETS[action.payload.walletKey];
+      state.walletInstance = WALLETS[action.payload.walletKey] || initialState.walletInstance;
       state.networkInstance = {
         src: NETWORKS[action.payload.networkName.src],
         tar: NETWORKS[action.payload.networkName.tar],

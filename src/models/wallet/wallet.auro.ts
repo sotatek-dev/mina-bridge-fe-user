@@ -1,20 +1,19 @@
-import { store } from '@/store';
-import Network, { NETWORK_NAME, NETWORK_TYPE } from '../network/network';
+import Network, { NETWORK_NAME, NETWORK_TYPE } from "../network/network";
 import Wallet, {
   URL_INSTALL_ANDROID,
   URL_INSTALL_EXTENSION,
   URL_INSTALL_IOS,
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
-  WALLET_NAME,
-} from './wallet.abstract';
-import MinaProvider, { ChainInfoArgs } from '@aurowallet/mina-provider';
-import { TokenType } from '@/store/slices/persistSlice';
-import { getAccountInfoQuery } from '@/grapql/queries';
-import { gql } from '@/grapql';
-import { handleException, handleRequest } from '@/helpers/asyncHandlers';
-import { formWei } from '@/helpers/common';
-import ERC20Contract from '../contract/zk/contract.ERC20';
+  WALLET_NAME
+} from "./wallet.abstract";
+import MinaProvider, { ChainInfoArgs } from "@aurowallet/mina-provider";
+import { TokenType } from "@/store/slices/persistSlice";
+import { getAccountInfoQuery } from "@/grapql/queries";
+import { gql } from "@/grapql";
+import { handleRequest } from "@/helpers/asyncHandlers";
+import { formWei } from "@/helpers/common";
+import { IsServer } from "@/constants";
 
 type MinaRequestResType<T> = SplitType<T>[0];
 type MinaRequestErrorType<T> = SplitType<T>[1];
@@ -74,9 +73,17 @@ export default class WalletAuro extends Wallet {
   }
 
   get InjectedObject(): MinaProvider {
-    const auro = store.getState().walletObj.auro;
-    if (!auro.isInjected) throw new Error(this.errorList.WALLET_NOT_INSTALLED);
-    return auro.mina!!;
+    if (IsServer) {
+      throw new Error("Server rendering error");
+    }
+    // const auro = store.getState().walletObj.auro;
+    // if (!auro.isInjected) throw new Error(this.errorList.WALLET_NOT_INSTALLED);
+    // return auro.mina!!;
+
+    if (!window || !window?.mina) {
+      throw new Error(this.errorList.WALLET_NOT_INSTALLED);
+    }
+    return window.mina;
   }
 
   async handleRequestWithError<T>(
@@ -174,16 +181,18 @@ export default class WalletAuro extends Wallet {
         return formWei(data.account.balance.total, asset.decimals);
       }
     }
-    const [ctr, initCtrError] = handleException(
-      asset.tokenAddr,
-      (addr) => new ERC20Contract(addr, network)
-    );
-    if (initCtrError || !ctr) return '0';
+    throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
 
-    const [blnWei, reqError] = await handleRequest(ctr.getBalance(userAddr));
-    if (reqError || !blnWei)
-      throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
-
-    return formWei(blnWei!!.toString(), asset.decimals);
+    // const [ctr, initCtrError] = handleException(
+    //   asset.tokenAddr,
+    //   (addr) => new ERC20Contract(addr, network)
+    // );
+    // if (initCtrError || !ctr) return '0';
+    //
+    // const [blnWei, reqError] = await handleRequest(ctr.getBalance(userAddr));
+    // if (reqError || !blnWei)
+    //   throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
+    //
+    // return formWei(blnWei!!.toString(), asset.decimals);
   }
 }

@@ -1,12 +1,12 @@
-import { Bridge } from '@/configs/ABIs/zk/Bridge';
-import { ZkContractType } from '@/configs/constants';
-import { gql } from '@/grapql';
-import { getAccountInfoTokenQuery } from '@/grapql/queries';
-import { handleRequest } from '@/helpers/asyncHandlers';
-import { fetchFiles, fileSystem } from '@/helpers/common';
-import { Network } from '@/models/network';
-import { FungibleToken } from 'mina-fungible-token';
-import { Mina, PublicKey, TokenId, fetchAccount } from 'o1js';
+import { Bridge } from "@/configs/ABIs/zk/Bridge";
+import { ZkContractType } from "@/configs/constants";
+import { gql } from "@/grapql";
+import { getAccountInfoTokenQuery } from "@/grapql/queries";
+import { handleRequest } from "@/helpers/asyncHandlers";
+import { fetchFiles, fileSystem } from "@/helpers/common";
+import { Network } from "@/models/network";
+import { FungibleToken } from "mina-fungible-token";
+import { fetchAccount, Mina, PublicKey, TokenId } from "o1js";
 
 export default class ERC20Contract {
   tokenAddress: PublicKey;
@@ -18,6 +18,7 @@ export default class ERC20Contract {
   network: Network;
 
   constructor(tokenAddress: string, network: Network) {
+    console.log('test constructor ', window);
     this.network = network;
     if ('proxyUrl' in network.metadata && network.metadata.proxyUrl) {
       Mina.setActiveInstance(

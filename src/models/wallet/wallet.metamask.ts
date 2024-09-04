@@ -1,25 +1,22 @@
-import Network, { NETWORK_NAME, NETWORK_TYPE } from '../network/network';
-import { store } from '@/store';
+import Network, { NETWORK_NAME, NETWORK_TYPE } from "../network/network";
 import Wallet, {
   URL_INSTALL_ANDROID,
   URL_INSTALL_EXTENSION,
   URL_INSTALL_IOS,
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
-  WALLET_NAME,
-} from './wallet.abstract';
-import Web3 from 'web3';
+  WALLET_NAME
+} from "./wallet.abstract";
+import Web3, { ProviderMessage, ProviderRpcError } from "web3";
 import { MetaMaskInpageProvider, RequestArguments } from "@metamask/providers";
-import _ from 'lodash';
-import { getWeb3Instance } from '@/helpers/evmHandlers';
-import { PROVIDER_TYPE, ProviderType } from '../contract/evm/contract';
-import { TokenType } from '@/store/slices/persistSlice';
-import { formWei } from '@/helpers/common';
-import { handleException, handleRequest } from '@/helpers/asyncHandlers';
-import { PublicKey, TokenId } from 'o1js';
-import { ProviderMessage, ProviderRpcError } from 'web3';
-import ERC20Contract from '../contract/zk/contract.ERC20';
-import ITV from '@/configs/time';
+import { getWeb3Instance } from "@/helpers/evmHandlers";
+import { PROVIDER_TYPE, ProviderType } from "../contract/evm/contract";
+import { TokenType } from "@/store/slices/persistSlice";
+import { formWei } from "@/helpers/common";
+import { handleRequest } from "@/helpers/asyncHandlers";
+// import ERC20Contract from "../contract/zk/contract.ERC20";
+import ITV from "@/configs/time";
+import { IsServer } from "@/constants";
 
 export type WalletMetamaskEvents =
   | {
@@ -79,10 +76,17 @@ export default class WalletMetamask extends Wallet {
   }
 
   getInjectedObject(): MetaMaskInpageProvider {
-    const metadata = store.getState().walletObj.metamask;
-    if (!metadata.isInjected)
+    if (IsServer) {
+      throw new Error("Server rendering error");
+    }
+    // const metadata = store.getState().walletObj.metamask;
+    // if (!metadata.isInjected)
+    //   throw new Error(this.errorList.WALLET_NOT_INSTALLED);
+    // return metadata.ethereum!!;
+    if (!window || !window?.ethereum) {
       throw new Error(this.errorList.WALLET_NOT_INSTALLED);
-    return metadata.ethereum!!;
+    }
+    return window.ethereum;
   }
 
   getProvider() {
@@ -285,24 +289,28 @@ export default class WalletMetamask extends Wallet {
         // console.log('🚀 ~ WalletMetamask ~ account:', account);
         // return formWei(account.balance.total, asset.decimals);
 
-        const [ctr, initCtrError] = handleException(
-          asset.tokenAddr,
-          (addr) => new ERC20Contract(addr, network)
-        );
-        if (initCtrError || !ctr) return '0';
+        // TODO: remove this and unblock comment under this
+        throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
+
+        // TODO: Un-comment this
+        // const [ctr, initCtrError] = handleException(
+        //   asset.tokenAddr,
+        //   (addr) => new ERC20Contract(addr, network)
+        // );
+        // if (initCtrError || !ctr) return '0';
         // console.log(
         //   TokenId.toBase58(
         //     TokenId.derive(PublicKey.fromBase58(asset.tokenAddr))
         //   )
         // );
 
-        const [blnWei, reqError] = await handleRequest(
-          ctr.getBalance(userAddr)
-        );
-        if (reqError || !blnWei)
-          throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
-
-        return formWei(blnWei!!.toString(), asset.decimals);
+        // const [blnWei, reqError] = await handleRequest(
+        //   ctr.getBalance(userAddr)
+        // );
+        // if (reqError || !blnWei)
+        //   throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
+        //
+        // return formWei(blnWei!!.toString(), asset.decimals);
 
       default:
         return '';

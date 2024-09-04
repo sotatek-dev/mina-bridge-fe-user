@@ -1,9 +1,7 @@
-import { getUISlice, useAppDispatch, useAppSelector } from '@/store';
-import {
-  SendNotificationPayload,
-  uiSliceActions,
-} from '@/store/slices/uiSlice';
-import { useToast } from '@chakra-ui/react';
+"use client";
+import { getUISlice, useAppDispatch, useAppSelector } from "@/store";
+import { SendNotificationPayload, uiSliceActions } from "@/store/slices/uiSlice";
+import { useToast } from "@chakra-ui/react";
 
 export default function useNotifier() {
   const { toast } = useAppSelector(getUISlice);

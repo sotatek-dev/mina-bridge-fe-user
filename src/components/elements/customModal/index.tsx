@@ -1,23 +1,22 @@
-import { MODAL_NAME } from '@/configs/modal';
-import { isFnc } from '@/helpers/common';
-import { getUISlice, useAppDispatch, useAppSelector } from '@/store';
-import { uiSliceActions } from '@/store/slices/uiSlice';
+"use client";
+import { MODAL_NAME } from "@/configs/modal";
+import { isFnc } from "@/helpers/common";
+import { getUISlice, useAppDispatch, useAppSelector } from "@/store";
+import { uiSliceActions } from "@/store/slices/uiSlice";
 import {
   Heading,
   HeadingProps,
-  ModalBody,
   Modal as ModalChakra,
+  ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalFooterProps,
   ModalHeader,
   ModalOverlay,
-  ModalProps,
-  Text,
-  TextProps,
-} from '@chakra-ui/react';
-import { useEffect, useMemo } from 'react';
+  ModalProps
+} from "@chakra-ui/react";
+import { useEffect, useMemo } from "react";
 
 export type ModalFooterCreateFn = ReactNodeCreateFn<{
   handleCloseModal: () => void;

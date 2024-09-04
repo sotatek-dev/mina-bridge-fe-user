@@ -1,20 +1,28 @@
 'use client';
-import LoadingWithText from '@/components/elements/loading/spinner.text';
-import { PropsWithChildren } from 'react';
-import Header from '../header';
-import { Box, Center, Container } from '@chakra-ui/react';
-import UnmatchedChain from '../banners/unmatchedChain';
-import Modals from '@/components/modules/modals';
-import NotiReporter from '@/components/modules/notiReporter';
-import ROUTES from '@/configs/routes';
-import { useZKContractState } from "@/providers/zkBridgeInitalize";
+import { PropsWithChildren } from "react";
+import ROUTES from "@/configs/routes";
 import { usePathname } from "next/navigation";
+import LoadingWithText from "@/components/elements/loading/spinner.text";
+import { Box, Center, Container } from "@chakra-ui/react";
+import UnmatchedChain from "@/components/layouts/banners/unmatchedChain";
+import useInitPersistData from "@/hooks/useInitPersistData";
+import useChakraTheme from "@/hooks/useChakraTheme";
+import useDeviceCheck from "@/hooks/useDeviceCheck";
+import Header from "@/components/layouts/header";
 
 type Props = PropsWithChildren<{}>;
 
 function WrapperLayout({ children }: Props) {
+  // useWeb3Injected();
+  // useLoadWalletInstances();
+  useInitPersistData();
+  useChakraTheme();
+  // useWalletEvents();
+  useDeviceCheck();
+
   const pathname = usePathname();
-  const { isInitializing } = useZKContractState().state;
+  // const { isInitializing } = useZKContractState().state;
+  const { isInitializing = false } = {};
   const isNotPOAScreen = pathname !== ROUTES.PROOF_OF_ASSETS;
   const isNotHistoryScreen = pathname !== ROUTES.HISTORY;
   const isNotUserGuide = pathname !== ROUTES.USER_GUIDE;

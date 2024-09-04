@@ -1,10 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NETWORK_NAME } from '@/models/network/network';
-import TOKEN_ICONS, { TokenIconType } from '@/configs/tokenIcons';
-import { createAppThunk } from '..';
-import usersService, { SupportedPairResponse } from '@/services/usersService';
-import { handleRequest } from '@/helpers/asyncHandlers';
-import DeviceDetector, { DeviceDetectorResult } from 'device-detector-js';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { NETWORK_NAME } from "@/models/network/network";
+import TOKEN_ICONS, { TokenIconType } from "@/configs/tokenIcons";
+import { createAppThunk } from "..";
+import usersService, { SupportedPairResponse } from "@/services/usersService";
+import { handleRequest } from "@/helpers/asyncHandlers";
+import DeviceDetector, { DeviceDetectorResult } from "device-detector-js";
 
 export type TokenType = {
   pairId: string;

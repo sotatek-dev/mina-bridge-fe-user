@@ -1,19 +1,25 @@
-"use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { AspectRatio, ButtonProps, Image, Text, useToken } from "@chakra-ui/react";
+'use client';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  AspectRatio,
+  ButtonProps,
+  Image,
+  Text,
+  useToken,
+} from '@chakra-ui/react';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
-  useAppSelector
-} from "@/store";
-import { uiSliceActions } from "@/store/slices/uiSlice";
-import { MODAL_NAME } from "@/configs/modal";
-import { truncateMid } from "@/helpers/common";
-import { NETWORK_KEY, walletSliceActions } from "@/store/slices/walletSlice";
-import NETWORKS from "@/models/network";
-import useWindowSize from "@/hooks/useWindowSize";
+  useAppSelector,
+} from '@/store';
+import { uiSliceActions } from '@/store/slices/uiSlice';
+import { MODAL_NAME } from '@/configs/modal';
+import { truncateMid } from '@/helpers/common';
+import { NETWORK_KEY, walletSliceActions } from '@/store/slices/walletSlice';
+import NETWORKS from '@/models/network';
+import useWindowSize from '@/hooks/useWindowSize';
 
 export default function useHeaderLogic(extractFnc: boolean = false) {
   const dispatch = useAppDispatch();
@@ -88,7 +94,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
       iconSpacing: 0,
       py: '10px',
       px: '12px',
-      leftIcon: <Image src={"/assets/icons/icon.burger-menu.right.svg"} />,
+      leftIcon: <Image src={'/assets/icons/icon.burger-menu.right.svg'} />,
       onClick: openDrawer,
       border: 'none',
       bg: 'rgba(244, 111, 78, 0.15)',
@@ -98,9 +104,10 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
   const btnSelectNetworkProps = useMemo<ButtonProps>(() => {
     if (!lastNetworkName) return { variant: '_blank', children: null };
     const nw = NETWORKS[lastNetworkName];
+
     return {
       leftIcon: (
-        <AspectRatio w={"24px"} h={"24px"} ratio={1}>
+        <AspectRatio w={'24px'} h={'24px'} ratio={1}>
           <Image src={nw.metadata.logo.header} />
         </AspectRatio>
       ),
@@ -112,16 +119,20 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
       children: (
         <>
           <Text
-            as={"span"}
-            textTransform={"capitalize"}
-            display={"inline-block"}
-            textOverflow={"ellipsis"}
-            whiteSpace={"nowrap"}
-            overflow={"hidden"}
+            as={'span'}
+            textTransform={'capitalize'}
+            display={'inline-block'}
+            textOverflow={'ellipsis'}
+            whiteSpace={'nowrap'}
+            overflow={'hidden'}
           >
             {nw.name} Network
           </Text>
-          <Image src={"/assets/icons/icon.arrow.down.svg"} w={"16px"} h={"16px"} />
+          <Image
+            src={'/assets/icons/icon.arrow.down.svg'}
+            w={'16px'}
+            h={'16px'}
+          />
         </>
       ),
     };
@@ -145,7 +156,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
     return {
       variant: 'primary.orange',
       leftIcon: (
-        <AspectRatio w={"24px"} h={"24px"} ratio={1}>
+        <AspectRatio w={'24px'} h={'24px'} ratio={1}>
           <Image src={walletInstance?.metadata.logo.base} />
         </AspectRatio>
       ),

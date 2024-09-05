@@ -1,19 +1,19 @@
-import Network, { NETWORK_NAME, NETWORK_TYPE } from "../network/network";
+import Network, { NETWORK_NAME, NETWORK_TYPE } from '../network/network';
 import Wallet, {
   URL_INSTALL_ANDROID,
   URL_INSTALL_EXTENSION,
   URL_INSTALL_IOS,
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
-  WALLET_NAME
-} from "./wallet.abstract";
-import MinaProvider, { ChainInfoArgs } from "@aurowallet/mina-provider";
-import { TokenType } from "@/store/slices/persistSlice";
-import { getAccountInfoQuery } from "@/grapql/queries";
-import { gql } from "@/grapql";
-import { handleRequest } from "@/helpers/asyncHandlers";
-import { formWei } from "@/helpers/common";
-import { IsServer } from "@/constants";
+  WALLET_NAME,
+} from './wallet.abstract';
+import MinaProvider, { ChainInfoArgs } from '@aurowallet/mina-provider';
+import { TokenType } from '@/store/slices/persistSlice';
+import { getAccountInfoQuery } from '@/grapql/queries';
+import { gql } from '@/grapql';
+import { handleRequest } from '@/helpers/asyncHandlers';
+import { formWei } from '@/helpers/common';
+import { IsServer } from '@/constants';
 
 type MinaRequestResType<T> = SplitType<T>[0];
 type MinaRequestErrorType<T> = SplitType<T>[1];
@@ -74,7 +74,7 @@ export default class WalletAuro extends Wallet {
 
   get InjectedObject(): MinaProvider {
     if (IsServer) {
-      throw new Error("Server rendering error");
+      throw new Error('Server rendering error');
     }
     // const auro = store.getState().walletObj.auro;
     // if (!auro.isInjected) throw new Error(this.errorList.WALLET_NOT_INSTALLED);
@@ -144,8 +144,6 @@ export default class WalletAuro extends Wallet {
 
   async getNetwork() {
     const res = await this.InjectedObject.requestNetwork();
-    // TODO: check type of old version
-    // return res.name;
     return res.networkID;
   }
 

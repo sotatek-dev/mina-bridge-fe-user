@@ -168,8 +168,9 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
       h={'44px'}
       {...props}
       onClick={handleClick}
-      children={childrenRendered}
-    />
+    >
+      {childrenRendered}
+    </Button>
   );
 }
 

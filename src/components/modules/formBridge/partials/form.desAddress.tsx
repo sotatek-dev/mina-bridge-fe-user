@@ -1,3 +1,5 @@
+// TODO: fix eslint
+/* eslint-disable react/display-name */
 'use client';
 import { Input, InputGroup, StackProps, Text, useToast, VStack } from "@chakra-ui/react";
 import { PublicKey } from "o1js";
@@ -12,9 +14,6 @@ import { NETWORK_NAME } from "@/models/network";
 import { NETWORK_TYPE } from "@/models/network/network";
 import WALLETS, { Wallet } from "@/models/wallet";
 import { getWalletInstanceSlice, getWalletSlice, useAppSelector } from "@/store";
-
-
-
 
 
 export type DesAddrRef = null | { resetValue: () => void };

@@ -191,7 +191,7 @@ export default function ZKContractProvider({
     //   },
     // };
 
-    handleInitializeScripts(asset, networkIn.src);
+    handleInitializeScripts(asset, networkInstance.src);
   }, [
     networkInstance.src,
     asset,

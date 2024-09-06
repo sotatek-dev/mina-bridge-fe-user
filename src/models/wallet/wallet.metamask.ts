@@ -1,22 +1,21 @@
-import Network, { NETWORK_NAME, NETWORK_TYPE } from "../network/network";
+import Network, { NETWORK_NAME, NETWORK_TYPE } from '../network/network';
 import Wallet, {
   URL_INSTALL_ANDROID,
   URL_INSTALL_EXTENSION,
   URL_INSTALL_IOS,
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
-  WALLET_NAME
-} from "./wallet.abstract";
-import Web3, { ProviderMessage, ProviderRpcError } from "web3";
-import { MetaMaskInpageProvider, RequestArguments } from "@metamask/providers";
-import { getWeb3Instance } from "@/helpers/evmHandlers";
-import { PROVIDER_TYPE, ProviderType } from "../contract/evm/contract";
-import { TokenType } from "@/store/slices/persistSlice";
-import { formWei } from "@/helpers/common";
-import { handleRequest } from "@/helpers/asyncHandlers";
-// import ERC20Contract from "../contract/zk/contract.ERC20";
-import ITV from "@/configs/time";
-import { IsServer } from "@/constants";
+  WALLET_NAME,
+} from './wallet.abstract';
+import Web3, { ProviderMessage, ProviderRpcError } from 'web3';
+import { MetaMaskInpageProvider, RequestArguments } from '@metamask/providers';
+import { getWeb3Instance } from '@/helpers/evmHandlers';
+import { PROVIDER_TYPE, ProviderType } from '../contract/evm/contract';
+import { TokenType } from '@/store/slices/persistSlice';
+import { formWei } from '@/helpers/common';
+import { handleException, handleRequest } from '@/helpers/asyncHandlers';
+import ITV from '@/configs/time';
+import { IsServer } from '@/constants';
 
 export type WalletMetamaskEvents =
   | {
@@ -77,7 +76,7 @@ export default class WalletMetamask extends Wallet {
 
   getInjectedObject(): MetaMaskInpageProvider {
     if (IsServer) {
-      throw new Error("Server rendering error");
+      throw new Error('Server rendering error');
     }
     // const metadata = store.getState().walletObj.metamask;
     // if (!metadata.isInjected)
@@ -151,7 +150,8 @@ export default class WalletMetamask extends Wallet {
         });
         // console.log('🚀 ~ WalletMetamask ~ snap:', snap);
         const snapId: string = process.env.NEXT_PUBLIC_REQUIRED_SNAP_ID || '';
-        const version: string = process.env.NEXT_PUBLIC_REQUIRED_SNAP_VERSION || '';
+        const version: string =
+          process.env.NEXT_PUBLIC_REQUIRED_SNAP_VERSION || '';
 
         if (!snap.hasOwnProperty(snapId) || snap[snapId].version !== version) {
           console.log('run');
@@ -289,28 +289,27 @@ export default class WalletMetamask extends Wallet {
         // console.log('🚀 ~ WalletMetamask ~ account:', account);
         // return formWei(account.balance.total, asset.decimals);
 
-        // TODO: remove this and unblock comment under this
-        throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
+        const ERC20Module = await import('@/models/contract/zk/contract.ERC20');
+        const ERC20Contract = ERC20Module.default;
 
-        // TODO: Un-comment this
-        // const [ctr, initCtrError] = handleException(
-        //   asset.tokenAddr,
-        //   (addr) => new ERC20Contract(addr, network)
-        // );
-        // if (initCtrError || !ctr) return '0';
+        const [ctr, initCtrError] = handleException(
+          asset.tokenAddr,
+          (addr) => new ERC20Contract(addr, network)
+        );
+        if (initCtrError || !ctr) return '0';
         // console.log(
         //   TokenId.toBase58(
         //     TokenId.derive(PublicKey.fromBase58(asset.tokenAddr))
         //   )
         // );
 
-        // const [blnWei, reqError] = await handleRequest(
-        //   ctr.getBalance(userAddr)
-        // );
-        // if (reqError || !blnWei)
-        //   throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
-        //
-        // return formWei(blnWei!!.toString(), asset.decimals);
+        const [blnWei, reqError] = await handleRequest(
+          ctr.getBalance(userAddr)
+        );
+        if (reqError || !blnWei)
+          throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
+
+        return formWei(blnWei!!.toString(), asset.decimals);
 
       default:
         return '';

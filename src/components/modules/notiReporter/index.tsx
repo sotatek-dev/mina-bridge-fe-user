@@ -1,5 +1,9 @@
 'use client';
 
+import { useToast } from '@chakra-ui/react';
+import { isEqual } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
+
 import { getUISlice, useAppDispatch, useAppSelector } from '@/store';
 import {
   DisableNotificationPayload,
@@ -9,9 +13,6 @@ import {
   initialToastState,
   uiSliceActions,
 } from '@/store/slices/uiSlice';
-import { useToast } from '@chakra-ui/react';
-import { isEqual } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
 
 type Props = {};
 

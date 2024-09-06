@@ -1,9 +1,10 @@
 'use client';
+import ModalCWContent from './content';
+import ModalCWProvider from './context';
+import useModalCWLogic from './hooks/useModalCWLogic';
+
 import CustomModal, { ModalTitle } from '@/components/elements/customModal';
 import { MODAL_NAME } from '@/configs/modal';
-import ModalCWProvider from './context';
-import ModalCWContent from './content';
-import useModalCWLogic from './hooks/useModalCWLogic';
 
 export type ModalConnectWalletProps = {};
 

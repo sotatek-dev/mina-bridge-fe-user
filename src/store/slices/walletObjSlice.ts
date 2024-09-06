@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { MetaMaskInpageProvider } from '@metamask/providers';
 import MinaProvider from '@aurowallet/mina-provider';
+import { MetaMaskInpageProvider } from '@metamask/providers';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // state type
 export type WalletObjState = {

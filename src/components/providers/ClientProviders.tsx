@@ -1,10 +1,11 @@
 'use client';
-import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
+import React from 'react';
 import { Provider } from 'react-redux';
-import { store } from '@/store';
+
 import theme from '@/configs/theme';
 import ZKContractProvider from '@/providers/zkBridgeInitalize';
+import { store } from '@/store';
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 //   const cookies = Cookie.get('isConnected', context.req.headers.cookie);

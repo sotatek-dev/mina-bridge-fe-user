@@ -1,11 +1,12 @@
 'use client';
+import { Box, Button, Heading, Image, Text } from '@chakra-ui/react';
+import { useMemo } from 'react';
+
 import CustomModal from '@/components/elements/customModal';
 import { MODAL_NAME } from '@/configs/modal';
 import WALLETS from '@/models/wallet';
 import { getUISlice, useAppSelector } from '@/store';
 import { ModalCWErrorPayload } from '@/store/slices/uiSlice';
-import { Box, Button, Heading, Image, Text } from '@chakra-ui/react';
-import { useMemo } from 'react';
 
 export type ModalConnectWalletProps = {};
 

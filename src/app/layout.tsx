@@ -1,10 +1,10 @@
-import type { Metadata } from 'next';
-import WrapperLayout from '@/components/layouts/wrapper-layout';
-import ClientProviders from '@/components/providers/ClientProviders';
 import Cookie from 'cookiejs';
-
+import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+
+import WrapperLayout from '@/components/layouts/wrapper-layout';
+import ClientProviders from '@/components/providers/ClientProviders';
 import ROUTES from '@/configs/routes';
 
 export const metadata: Metadata = {

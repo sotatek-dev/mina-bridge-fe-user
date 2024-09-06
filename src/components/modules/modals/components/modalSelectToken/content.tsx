@@ -1,9 +1,11 @@
 'use client';
 
 import { useModalSTState } from './context';
-import Loading from '@/components/elements/loading/spinner';
-import SearchInput from './partial/searchInput';
 import ListAssets from './partial/listAssets';
+import SearchInput from './partial/searchInput';
+
+import Loading from '@/components/elements/loading/spinner';
+
 
 type Props = {};
 

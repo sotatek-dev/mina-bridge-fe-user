@@ -1,3 +1,7 @@
+import BigNumber from 'bignumber.js';
+import { AccountUpdate, PublicKey, UInt64 } from 'o1js';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import { MODAL_NAME } from '@/configs/modal';
 import { IsServer } from '@/constants';
 import { handleAsync, handleRequest } from '@/helpers/asyncHandlers';
@@ -28,9 +32,6 @@ import {
   ModalConfirmBridgePayload,
   uiSliceActions,
 } from '@/store/slices/uiSlice';
-import BigNumber from 'bignumber.js';
-import { AccountUpdate, PublicKey, UInt64 } from 'o1js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type BridgePayload = {
   modalPayload: ModalConfirmBridgePayload;

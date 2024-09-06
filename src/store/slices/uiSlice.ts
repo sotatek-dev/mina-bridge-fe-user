@@ -1,9 +1,11 @@
-import { MODAL_NAME } from '@/configs/modal';
-import { WALLET_NAME } from '@/models/wallet';
 import { UseToastOptions } from '@chakra-ui/react';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NETWORK_KEY } from './walletSlice';
+
 import { TokenType } from './persistSlice';
+import { NETWORK_KEY } from './walletSlice';
+
+import { MODAL_NAME } from '@/configs/modal';
+import { WALLET_NAME } from '@/models/wallet';
 
 //  Modal controller
 export enum TITLE {

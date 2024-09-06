@@ -1,10 +1,12 @@
 'use client';
+import { Button, ButtonProps, Spinner } from '@chakra-ui/react';
+import { useEffect, useRef } from 'react';
+
+import { useFormBridgeState } from '../context';
+
+import useNotifier from '@/hooks/useNotifier';
 import { getWalletSlice, useAppDispatch, useAppSelector } from '@/store';
 import { walletSliceActions } from '@/store/slices/walletSlice';
-import { Button, ButtonProps, Spinner } from '@chakra-ui/react';
-import { useFormBridgeState } from '../context';
-import { useEffect, useRef } from 'react';
-import useNotifier from '@/hooks/useNotifier';
 
 type Props = ButtonProps & {};
 

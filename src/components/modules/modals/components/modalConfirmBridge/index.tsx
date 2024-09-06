@@ -1,7 +1,5 @@
 'use client';
-import CustomModal, { ModalTitle } from '@/components/elements/customModal';
-import { MODAL_NAME } from '@/configs/modal';
-import useModalSNLogic, { MODAL_CF_STATUS } from './hooks/useModalConfirmLogic';
+import { Link } from '@chakra-ui/next-js';
 import {
   Box,
   Button,
@@ -14,13 +12,17 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-
-import useNotifier from '@/hooks/useNotifier';
-import Loading from '@/components/elements/loading/spinner';
-import { useMemo } from 'react';
-import ROUTES from '@/configs/routes';
 import { useRouter } from 'next/navigation';
-import { Link } from '@chakra-ui/next-js';
+import { useMemo } from 'react';
+
+import useModalSNLogic, { MODAL_CF_STATUS } from './hooks/useModalConfirmLogic';
+
+import CustomModal, { ModalTitle } from '@/components/elements/customModal';
+import Loading from '@/components/elements/loading/spinner';
+import { MODAL_NAME } from '@/configs/modal';
+import ROUTES from '@/configs/routes';
+import useNotifier from '@/hooks/useNotifier';
+
 
 export default function ModalConfirmBridge() {
   const {

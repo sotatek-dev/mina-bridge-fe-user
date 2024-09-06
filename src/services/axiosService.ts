@@ -4,6 +4,7 @@ import axios, {
   AxiosResponse,
   ResponseType,
 } from 'axios';
+
 import StorageUtils from '@/helpers/handleBrowserStorage';
 
 export class AxiosService {

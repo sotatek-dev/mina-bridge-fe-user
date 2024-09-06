@@ -1,8 +1,10 @@
 'use client';
-import { NETWORK_NAME } from '@/models/network';
 
 import { useMemo } from 'react';
+
 import Card from '../partials/card';
+
+import { NETWORK_NAME } from '@/models/network';
 
 const networkOrder = [NETWORK_NAME.MINA, NETWORK_NAME.ETHEREUM];
 

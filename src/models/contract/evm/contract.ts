@@ -1,7 +1,8 @@
-import { getWeb3Instance } from "@/helpers/evmHandlers";
-import { WALLET_INJECT_OBJ } from "@/models/wallet/wallet.abstract";
 import type { ContractAbi as ContractABIType } from "web3";
 import { type Contract as ContractType } from "web3";
+
+import { getWeb3Instance } from "@/helpers/evmHandlers";
+import { WALLET_INJECT_OBJ } from "@/models/wallet/wallet.abstract";
 
 export enum PROVIDER_TYPE {
   WALLET = 'wallet',

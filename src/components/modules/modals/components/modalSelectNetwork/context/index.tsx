@@ -1,3 +1,5 @@
+import React, { useCallback, useMemo } from 'react';
+
 import { MODAL_NAME } from '@/configs/modal';
 import useNotifier from '@/hooks/useNotifier';
 import { NETWORK_NAME } from '@/models/network';
@@ -10,7 +12,6 @@ import {
 } from '@/store';
 import { ModalController, uiSliceActions } from '@/store/slices/uiSlice';
 import { NETWORK_KEY } from '@/store/slices/walletSlice';
-import React, { useCallback, useMemo } from 'react';
 
 export type ModalSNState = {
   selectedNetwork: NETWORK_NAME | null;

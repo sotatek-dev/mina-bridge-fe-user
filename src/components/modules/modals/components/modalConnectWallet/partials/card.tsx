@@ -1,5 +1,4 @@
 'use client';
-import { WalletLogo } from '@/models/wallet/wallet.abstract';
 import {
   Flex,
   FlexProps,
@@ -8,6 +7,8 @@ import {
   Text,
   TextProps,
 } from '@chakra-ui/react';
+
+import { WalletLogo } from '@/models/wallet/wallet.abstract';
 
 export enum CARD_STATUS {
   SUPPORTED = 'supported',

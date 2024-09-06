@@ -1,6 +1,9 @@
 'use client';
 import { useEffect, useMemo, useRef } from 'react';
 
+import { Network } from '@/models/network';
+import { NETWORK_TYPE } from '@/models/network/network';
+import { Wallet } from '@/models/wallet';
 import {
   WALLET_EVENT_NAME,
   WALLET_NAME,
@@ -12,11 +15,8 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/store';
-import { walletSliceActions } from '@/store/slices/walletSlice';
 import { BANNER_NAME, uiSliceActions } from '@/store/slices/uiSlice';
-import { Wallet } from '@/models/wallet';
-import { Network } from '@/models/network';
-import { NETWORK_TYPE } from '@/models/network/network';
+import { walletSliceActions } from '@/store/slices/walletSlice';
 
 export default function useWalletEvents() {
   const { walletInstance, networkInstance } = useAppSelector(

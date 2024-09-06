@@ -1,7 +1,8 @@
 'use client';
 import { Box, Text } from '@chakra-ui/react';
-import FormBridgeProvider from './context';
+
 import FormBridgeContent from './content';
+import FormBridgeProvider from './context';
 import FormDailyQuota from './partials/form.dailyQuota';
 
 export type FormBridgeProps = {};

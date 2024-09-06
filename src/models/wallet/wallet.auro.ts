@@ -1,4 +1,7 @@
+import MinaProvider, { ChainInfoArgs } from '@aurowallet/mina-provider';
+
 import Network, { NETWORK_NAME, NETWORK_TYPE } from '../network/network';
+
 import Wallet, {
   URL_INSTALL_ANDROID,
   URL_INSTALL_EXTENSION,
@@ -7,13 +10,13 @@ import Wallet, {
   WALLET_INJECT_OBJ,
   WALLET_NAME,
 } from './wallet.abstract';
-import MinaProvider, { ChainInfoArgs } from '@aurowallet/mina-provider';
-import { TokenType } from '@/store/slices/persistSlice';
-import { getAccountInfoQuery } from '@/grapql/queries';
+
+import { IsServer } from '@/constants';
 import { gql } from '@/grapql';
+import { getAccountInfoQuery } from '@/grapql/queries';
 import { handleException, handleRequest } from '@/helpers/asyncHandlers';
 import { formWei } from '@/helpers/common';
-import { IsServer } from '@/constants';
+import { TokenType } from '@/store/slices/persistSlice';
 
 type MinaRequestResType<T> = SplitType<T>[0];
 type MinaRequestErrorType<T> = SplitType<T>[1];

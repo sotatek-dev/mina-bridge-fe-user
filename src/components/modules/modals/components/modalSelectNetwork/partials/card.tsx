@@ -1,4 +1,16 @@
 'use client';
+import {
+  Button,
+  ButtonProps,
+  Flex,
+  FlexProps,
+  Image,
+  Text,
+} from '@chakra-ui/react';
+import { useMemo, useRef } from 'react';
+
+import { useModalSNState } from '../context';
+
 import useNotifier from '@/hooks/useNotifier';
 import NETWORKS, { NETWORK_NAME } from '@/models/network';
 import { WALLET_NAME } from '@/models/wallet';
@@ -9,18 +21,10 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/store';
-import { NETWORK_KEY, walletSliceActions } from '@/store/slices/walletSlice';
-import {
-  Button,
-  ButtonProps,
-  Flex,
-  FlexProps,
-  Image,
-  Text,
-} from '@chakra-ui/react';
-import { useMemo, useRef } from 'react';
-import { useModalSNState } from '../context';
 import { persistSliceActions } from '@/store/slices/persistSlice';
+import { NETWORK_KEY, walletSliceActions } from '@/store/slices/walletSlice';
+
+
 
 type CardProps = { nwKey: NETWORK_NAME };
 

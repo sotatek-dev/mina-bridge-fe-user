@@ -1,3 +1,5 @@
+import { Button, Center, Container, Flex, Text } from '@chakra-ui/react';
+
 import useNotifier from '@/hooks/useNotifier';
 import {
   getUISlice,
@@ -6,7 +8,6 @@ import {
   useAppSelector,
 } from '@/store';
 import { BANNER_NAME, uiSliceActions } from '@/store/slices/uiSlice';
-import { Button, Center, Container, Flex, Text } from '@chakra-ui/react';
 
 export default function UnmatchedChain() {
   const dispatch = useAppDispatch();

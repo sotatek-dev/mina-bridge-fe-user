@@ -1,8 +1,9 @@
+import { FungibleToken } from 'mina-fungible-token';
+import { Field, Mina, PublicKey, UInt64, fetchAccount } from 'o1js';
+
 import { Bridge } from '@/configs/ABIs/zk/Bridge';
 import { handleAsync } from '@/helpers/asyncHandlers';
 import { Network } from '@/models/network';
-import { FungibleToken } from 'mina-fungible-token';
-import { Field, Mina, PublicKey, UInt64, fetchAccount } from 'o1js';
 
 export default class BridgeContract {
   tokenAddress: PublicKey;

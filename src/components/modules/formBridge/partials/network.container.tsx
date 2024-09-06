@@ -1,7 +1,9 @@
 'use client';
 import { StackProps, VStack } from '@chakra-ui/react';
+
 import NetworkCard from './network.card';
 import NetworkSwitch from './network.switch';
+
 import { NETWORK_KEY } from '@/store/slices/walletSlice';
 
 type Props = Pick<StackProps, ChakraBoxSizeProps>;

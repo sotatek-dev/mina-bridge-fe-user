@@ -1,37 +1,21 @@
-// TODO: fix eslint
-/* eslint-disable react/display-name */
 'use client';
-import NETWORKS, { NETWORK_NAME } from '@/models/network';
-import WALLETS, { Wallet } from '@/models/wallet';
-import {
-  getWalletInstanceSlice,
-  getWalletSlice,
-  useAppSelector,
-} from '@/store';
-import {
-  Image,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  InputLeftElement,
-  StackProps,
-  Text,
-  VStack,
-  useToast,
-} from '@chakra-ui/react';
-import React, {
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { useFormBridgeState } from '../context';
-import { NETWORK_TYPE } from '@/models/network/network';
-import Web3 from 'web3';
-import { handleException } from '@/helpers/asyncHandlers';
-import { PublicKey } from 'o1js';
-import ITV from '@/configs/time';
+import { Input, InputGroup, StackProps, Text, useToast, VStack } from "@chakra-ui/react";
+import { PublicKey } from "o1js";
+import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react";
+import Web3 from "web3";
+
+import { useFormBridgeState } from "../context";
+
+import ITV from "@/configs/time";
+import { handleException } from "@/helpers/asyncHandlers";
+import { NETWORK_NAME } from "@/models/network";
+import { NETWORK_TYPE } from "@/models/network/network";
+import WALLETS, { Wallet } from "@/models/wallet";
+import { getWalletInstanceSlice, getWalletSlice, useAppSelector } from "@/store";
+
+
+
+
 
 export type DesAddrRef = null | { resetValue: () => void };
 
@@ -39,7 +23,7 @@ type Props = { isDisplayed: boolean } & Pick<StackProps, ChakraBoxSizeProps>;
 
 const WarningList = {};
 
-const DesAddrContent = React.forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
+const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
   ({ ...props }, ref) => {
     type ErrorType = keyof typeof ErrorList | null;
     type WarningType = keyof typeof WarningList | null;
@@ -193,9 +177,11 @@ const DesAddrContent = React.forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
   }
 );
 
-export default function FormDesAddress({ isDisplayed, ...props }: Props) {
+const FormDesAddress = ({ isDisplayed, ...props }: Props) => {
   const { desAddrRef } = useFormBridgeState().constants;
 
   // return isDisplayed ? <DesAddrContent ref={desAddrRef} {...props} /> : null;
   return <DesAddrContent ref={desAddrRef} {...props} />;
-}
+};
+
+export default FormDesAddress;

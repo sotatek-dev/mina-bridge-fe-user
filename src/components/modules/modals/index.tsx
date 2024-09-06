@@ -1,12 +1,13 @@
 'use client';
 import React from 'react';
+
+import ModalConfirmBridge from './components/modalConfirmBridge';
 import ModalConnectWallet from './components/modalConnectWallet';
 import ModalConnectWalletError from './components/modalConnectWalletError';
-import ModalSelectNetwork from './components/modalSelectNetwork';
-import ModalSuccessAction from './components/modalSuccessAction';
-import ModalSelectToken from './components/modalSelectToken';
-import ModalConfirmBridge from './components/modalConfirmBridge';
 import ModalLoading from './components/modalLoading';
+import ModalSelectNetwork from './components/modalSelectNetwork';
+import ModalSelectToken from './components/modalSelectToken';
+import ModalSuccessAction from './components/modalSuccessAction';
 
 type Props = {};
 

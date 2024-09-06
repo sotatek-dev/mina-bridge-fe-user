@@ -1,10 +1,13 @@
 'use client';
-import React from 'react';
 import { Button, ButtonProps, Text } from '@chakra-ui/react';
+import React from 'react';
+
+import { useFormBridgeState } from '../context';
+
 import { MODAL_NAME } from '@/configs/modal';
 import { getWalletSlice, useAppDispatch, useAppSelector } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
-import { useFormBridgeState } from '../context';
+
 
 type Props = { isDisplayed: boolean } & Pick<ButtonProps, ChakraBoxSizeProps>;
 

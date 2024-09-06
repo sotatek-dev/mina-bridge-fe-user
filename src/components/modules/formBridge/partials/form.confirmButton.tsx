@@ -1,25 +1,17 @@
-// TODO: fix eslint
-/* eslint-disable react/no-children-prop */
 'use client';
-import { Button, ButtonProps } from '@chakra-ui/react';
-import React, { useMemo, useState } from 'react';
-import { useFormBridgeState } from '../context';
-import Loading from '@/components/elements/loading/spinner';
-import useETHBridgeContract from '@/hooks/useETHBridgeContract';
-import {
-  getWalletInstanceSlice,
-  getWalletSlice,
-  useAppDispatch,
-  useAppSelector,
-} from '@/store';
-import { NETWORK_TYPE } from '@/models/network/network';
-import {
-  ModalConfirmBridgePayload,
-  uiSliceActions,
-} from '@/store/slices/uiSlice';
-import { MODAL_NAME } from '@/configs/modal';
-import { formatNumber } from '@/helpers/common';
-import ITV from '@/configs/time';
+import { Button, ButtonProps } from "@chakra-ui/react";
+import React, { useMemo, useState } from "react";
+
+import { useFormBridgeState } from "../context";
+
+import Loading from "@/components/elements/loading/spinner";
+import { MODAL_NAME } from "@/configs/modal";
+import ITV from "@/configs/time";
+import { formatNumber } from "@/helpers/common";
+import useETHBridgeContract from "@/hooks/useETHBridgeContract";
+import { NETWORK_TYPE } from "@/models/network/network";
+import { getWalletInstanceSlice, getWalletSlice, useAppDispatch, useAppSelector } from "@/store";
+import { ModalConfirmBridgePayload, uiSliceActions } from "@/store/slices/uiSlice";
 
 type Props = { isDisplayed: boolean } & Pick<ButtonProps, ChakraBoxSizeProps>;
 

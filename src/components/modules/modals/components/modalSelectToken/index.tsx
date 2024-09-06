@@ -1,9 +1,10 @@
 'use client';
 
+import ModalSTContent from './content';
+import ModalSTProvider from './context';
+
 import CustomModal, { ModalTitle } from '@/components/elements/customModal';
 import { MODAL_NAME } from '@/configs/modal';
-import ModalSTProvider from './context';
-import ModalSTContent from './content';
 
 export type ModalSelectTokenProps = {};
 

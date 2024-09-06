@@ -1,7 +1,8 @@
 "use client";
+import { useEffect } from "react";
+
 import { useAppDispatch } from "@/store";
 import { persistSliceActions } from "@/store/slices/persistSlice";
-import { useEffect } from "react";
 
 export default function useInitPersistData() {
   const dispatch = useAppDispatch();

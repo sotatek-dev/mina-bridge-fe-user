@@ -1,8 +1,10 @@
 'use client';
-import React from 'react';
 import { Checkbox, Flex, HStack, Link } from '@chakra-ui/react';
-import Section from './partials/section';
+import React from 'react';
+
 import useModalCWLogic from './hooks/useModalCWLogic';
+import Section from './partials/section';
+
 import LoadingWithText from '@/components/elements/loading/spinner.text';
 
 type Props = {};

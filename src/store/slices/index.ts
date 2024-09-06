@@ -1,11 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import exampleSliceReducer from './exampleSlice';
+import persistSlice from './persistSlice';
 import uiSlice from './uiSlice';
+import walletInstanceSlice from './walletInstanceSlice';
 import walletObjSlice from './walletObjSlice';
 import walletSlice from './walletSlice';
-import walletInstanceSlice from './walletInstanceSlice';
-import persistSlice from './persistSlice';
 
 const rootReducer = combineReducers({
   persist: persistSlice,

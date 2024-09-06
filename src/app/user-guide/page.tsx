@@ -1,9 +1,11 @@
 'use client';
 import { Box, Heading, VStack } from '@chakra-ui/react';
+import { MDXProvider } from '@mdx-js/react';
+
+import { useMDXComponents } from '../mdx-components';
+
 import Introduction from '@/markdown/introduction.mdx';
 import UserGuideContent from '@/markdown/user_guide.mdx';
-import { MDXProvider } from '@mdx-js/react';
-import { useMDXComponents } from '../mdx-components';
 
 export type SectionType = {
   key: number;

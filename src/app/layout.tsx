@@ -1,11 +1,8 @@
-import Cookie from 'cookiejs';
-import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import type { Metadata } from "next";
 
-import WrapperLayout from '@/components/layouts/wrapper-layout';
-import ClientProviders from '@/components/providers/ClientProviders';
-import ROUTES from '@/configs/routes';
+import WrapperLayout from "@/components/layouts/wrapper-layout";
+import ClientProviders from "@/components/providers/ClientProviders";
+import ReduxProvider from "@/components/providers/ReduxProvider";
 
 export const metadata: Metadata = {
   title: 'Mina Bridge',
@@ -32,9 +29,11 @@ export default function RootLayout({
   return (
     <html lang={'en'}>
       <body>
-        <ClientProviders>
-          <WrapperLayout>{children}</WrapperLayout>
-        </ClientProviders>
+        <ReduxProvider>
+          <ClientProviders>
+            <WrapperLayout>{children}</WrapperLayout>
+          </ClientProviders>
+        </ReduxProvider>
       </body>
     </html>
   );

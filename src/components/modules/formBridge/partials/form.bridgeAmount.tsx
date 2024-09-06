@@ -7,37 +7,37 @@ import {
   InputRightElement,
   StackProps,
   Text,
-  VStack
-} from "@chakra-ui/react";
-import BigNumber from "bignumber.js";
-import moment from "moment";
+  VStack,
+} from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
+import moment from 'moment';
 import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
-  useState
-} from "react";
+  useState,
+} from 'react';
 
-import { useFormBridgeState } from "../context";
+import { useFormBridgeState } from '../context';
 
-import Loading from "@/components/elements/loading/spinner";
-import ITV from "@/configs/time";
-import { handleRequest } from "@/helpers/asyncHandlers";
-import { formatNumber, formWei, zeroCutterStart } from "@/helpers/common";
-import { getWeb3Instance } from "@/helpers/evmHandlers";
-import useNotifier from "@/hooks/useNotifier";
-import Network, { NETWORK_TYPE } from "@/models/network/network";
-import { Wallet } from "@/models/wallet";
+import Loading from '@/components/elements/loading/spinner';
+import ITV from '@/configs/time';
+import { handleRequest } from '@/helpers/asyncHandlers';
+import { formWei, formatNumber, zeroCutterStart } from '@/helpers/common';
+import { getWeb3Instance } from '@/helpers/evmHandlers';
+import useNotifier from '@/hooks/useNotifier';
+import Network, { NETWORK_TYPE } from '@/models/network/network';
+import { Wallet } from '@/models/wallet';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
-  useAppSelector
-} from "@/store";
-import { persistSliceActions, TokenType } from "@/store/slices/persistSlice";
+  useAppSelector,
+} from '@/store';
+import { TokenType, persistSliceActions } from '@/store/slices/persistSlice';
 
 export type FormBridgeAmountRef = null | { resetValue: () => void };
 

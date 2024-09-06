@@ -1,4 +1,4 @@
-import { PROVIDER_TYPE } from '../contract/evm/contract';
+import { PROVIDER_TYPE } from "../contract/evm/contract";
 
 // enum configs
 export enum NETWORK_NAME {
@@ -127,7 +127,7 @@ export const EVM_CHAINS_METADATA: Record<
     chainName: 'sepolia',
     provider: {
       type: PROVIDER_TYPE.HTTPS,
-      uri: 'https://rpc.sepolia.ethpandaops.io',
+      uri: 'https://ethereum-sepolia.blockpi.network/v1/rpc/public',
     },
     scanUrl: 'https://sepolia.etherscan.io',
   },

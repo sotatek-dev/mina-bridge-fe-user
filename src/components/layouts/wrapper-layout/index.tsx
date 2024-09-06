@@ -1,19 +1,20 @@
 'use client';
-import { PropsWithChildren, useEffect, useState } from 'react';
-import ROUTES from '@/configs/routes';
-import { usePathname } from 'next/navigation';
-import LoadingWithText from '@/components/elements/loading/spinner.text';
 import { Box, Center, Container } from '@chakra-ui/react';
+import { usePathname } from 'next/navigation';
+import { PropsWithChildren, useEffect, useState } from 'react';
+
+import LoadingWithText from '@/components/elements/loading/spinner.text';
 import UnmatchedChain from '@/components/layouts/banners/unmatchedChain';
-import useInitPersistData from '@/hooks/useInitPersistData';
-import useChakraTheme from '@/hooks/useChakraTheme';
-import useDeviceCheck from '@/hooks/useDeviceCheck';
 import Header from '@/components/layouts/header';
 import Modals from '@/components/modules/modals';
 import NotiReporter from '@/components/modules/notiReporter';
-import useWeb3Injected from '@/hooks/useWeb3Injected';
+import ROUTES from '@/configs/routes';
+import useChakraTheme from '@/hooks/useChakraTheme';
+import useDeviceCheck from '@/hooks/useDeviceCheck';
+import useInitPersistData from '@/hooks/useInitPersistData';
 import useLoadWalletInstances from '@/hooks/useLoadWalletInstances';
 import useWalletEvents from '@/hooks/useWalletEvents';
+import useWeb3Injected from '@/hooks/useWeb3Injected';
 import { useZKContractState } from '@/providers/zkBridgeInitalize';
 
 type Props = PropsWithChildren<{}>;

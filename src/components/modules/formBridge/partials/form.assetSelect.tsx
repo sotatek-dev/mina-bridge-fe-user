@@ -1,7 +1,12 @@
 'use client';
 import { Button, ButtonProps, Image, Text, VStack } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
+
 import { useFormBridgeState } from '../context';
+
+import { MODAL_NAME } from '@/configs/modal';
+import { NETWORK_TYPE } from '@/models/network/network';
+import { WALLET_NAME } from '@/models/wallet';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
@@ -9,10 +14,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/store';
-import { WALLET_NAME } from '@/models/wallet';
-import { NETWORK_TYPE } from '@/models/network/network';
 import { uiSliceActions } from '@/store/slices/uiSlice';
-import { MODAL_NAME } from '@/configs/modal';
 
 type Props = { buttonProps?: ButtonProps } & Pick<
   ButtonProps,

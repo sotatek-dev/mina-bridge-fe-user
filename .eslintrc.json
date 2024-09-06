@@ -13,6 +13,16 @@
   ],
   "rules": {
     // eslint rules
+    "import/order": [
+      "error",
+      {
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
     "unused-imports/no-unused-imports": "off",
     "react-hooks/exhaustive-deps": "off",
     "no-multi-spaces": [
@@ -25,6 +35,7 @@
     "jsx-a11y/alt-text": "off",
 
     // react rules
+    "react/display-name": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-pascal-case": [
       1,

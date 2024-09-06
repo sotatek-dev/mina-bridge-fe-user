@@ -4,6 +4,7 @@ import {
   keyframes,
   usePrefersReducedMotion,
 } from '@chakra-ui/react';
+
 import LoadingClip from './loadingClip';
 
 type Props = {

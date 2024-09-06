@@ -1,6 +1,3 @@
-import { MODAL_NAME } from '@/configs/modal';
-import { getUISlice, useAppDispatch, useAppSelector } from '@/store';
-import { uiSliceActions } from '@/store/slices/uiSlice';
 import {
   Box,
   BoxProps,
@@ -11,6 +8,10 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useCallback, useMemo } from 'react';
+
+import { MODAL_NAME } from '@/configs/modal';
+import { getUISlice, useAppDispatch, useAppSelector } from '@/store';
+import { uiSliceActions } from '@/store/slices/uiSlice';
 
 export default function useModalSALogic() {
   const { modals } = useAppSelector(getUISlice);

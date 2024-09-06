@@ -1,9 +1,10 @@
-import React from 'react';
-import Link from 'next/link';
-import ROUTES from '@/configs/routes';
 import { VStack } from '@chakra-ui/layout';
 import { Text } from '@chakra-ui/react';
+import Link from 'next/link';
+import React from 'react';
+
 import FormBridge from '@/components/modules/formBridge';
+import ROUTES from '@/configs/routes';
 
 export default function Home() {
   return (

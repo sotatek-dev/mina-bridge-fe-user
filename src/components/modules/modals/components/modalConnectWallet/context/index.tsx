@@ -1,3 +1,5 @@
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
 import { MODAL_NAME } from '@/configs/modal';
 import { handleRequest } from '@/helpers/asyncHandlers';
 import useNotifier from '@/hooks/useNotifier';
@@ -12,7 +14,6 @@ import {
 } from '@/store';
 import { TITLE, uiSliceActions } from '@/store/slices/uiSlice';
 import { walletSliceActions } from '@/store/slices/walletSlice';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 export type ModalCWState = {
   status: {

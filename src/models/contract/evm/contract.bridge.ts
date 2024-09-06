@@ -1,9 +1,11 @@
-import { TokenType } from '@/store/slices/persistSlice';
-import Contract, { InitializeContractType } from './contract';
-import ABIBridgeETH from '@/configs/ABIs/evm/Bridge_ETH';
 import { MatchPrimitiveType } from 'web3';
 import { PayableMethodObject } from 'web3-eth-contract';
+
+import Contract, { InitializeContractType } from './contract';
+
+import ABIBridgeETH from '@/configs/ABIs/evm/Bridge_ETH';
 import { formWei, toWei } from '@/helpers/common';
+import { TokenType } from '@/store/slices/persistSlice';
 type ABIType = typeof ABIBridgeETH;
 
 export type EVMBridgeCtrLockPayload = {

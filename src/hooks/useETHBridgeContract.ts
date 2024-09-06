@@ -1,10 +1,11 @@
+import { useMemo } from 'react';
+
 import { IsServer } from '@/constants';
 import { PROVIDER_TYPE, ProviderType } from '@/models/contract/evm/contract';
 import BridgeContract from '@/models/contract/evm/contract.bridge';
 import Network, { NETWORK_TYPE } from '@/models/network/network';
 import { WALLET_INJECT_OBJ } from '@/models/wallet/wallet.abstract';
 import { getWalletInstanceSlice, useAppSelector } from '@/store';
-import { useMemo } from 'react';
 
 type params = {
   network: Network | null;

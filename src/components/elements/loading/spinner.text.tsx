@@ -1,4 +1,5 @@
 import { Heading, Text, VStack } from '@chakra-ui/react';
+
 import Spinner from './spinner';
 
 type Props = {

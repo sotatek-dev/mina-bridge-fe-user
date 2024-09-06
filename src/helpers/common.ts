@@ -1,6 +1,7 @@
-import { ListFileName, ZkContractType } from '@/configs/constants';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
+
+import { ListFileName, ZkContractType } from '@/configs/constants';
 BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
 
 export const isDevelopment = () => process.env.NEXT_PUBLIC_ENV === 'development';

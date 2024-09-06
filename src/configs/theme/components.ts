@@ -1,9 +1,10 @@
 import { ComponentStyleConfig } from '@chakra-ui/react';
-import Modal from './comp.modal';
-import Input from './comp.input';
-import typo from './comp.typo';
+
 import Button from './comp.button';
 import { Checkbox } from './comp.checkbox';
+import Input from './comp.input';
+import Modal from './comp.modal';
+import typo from './comp.typo';
 
 const components: Record<string, ComponentStyleConfig> = {
   ...typo,

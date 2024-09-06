@@ -3,6 +3,7 @@ import {
   SystemStyleObject,
   createMultiStyleConfigHelpers,
 } from '@chakra-ui/react';
+
 import { textBaseVariants, textFW, typoVariantsGenerator } from './comp.typo';
 
 const { definePartsStyle, defineMultiStyleConfig } =

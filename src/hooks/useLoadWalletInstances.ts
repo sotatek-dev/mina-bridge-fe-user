@@ -1,3 +1,7 @@
+import { useEffect } from 'react';
+
+import useNotifier from './useNotifier';
+
 import { WALLET_NAME } from '@/models/wallet';
 import {
   getWalletInstanceSlice,
@@ -7,8 +11,6 @@ import {
   useAppSelector,
 } from '@/store';
 import { walletSliceActions } from '@/store/slices/walletSlice';
-import { useEffect } from 'react';
-import useNotifier from './useNotifier';
 
 export default function useLoadWalletInstances() {
   const dispatch = useAppDispatch();

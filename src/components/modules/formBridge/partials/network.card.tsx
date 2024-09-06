@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 import {
   AspectRatio,
   Box,
@@ -9,8 +8,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import React from 'react';
+
+import { useFormBridgeState } from '../context';
+
+import { MODAL_NAME } from '@/configs/modal';
 import NETWORKS from '@/models/network';
-import { NETWORK_KEY } from '@/store/slices/walletSlice';
 import {
   getWalletInstanceSlice,
   getWalletSlice,
@@ -18,8 +21,8 @@ import {
   useAppSelector,
 } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
-import { MODAL_NAME } from '@/configs/modal';
-import { useFormBridgeState } from '../context';
+import { NETWORK_KEY } from '@/store/slices/walletSlice';
+
 
 type Props = { label: string; networkKey: NETWORK_KEY };
 

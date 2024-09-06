@@ -1,10 +1,10 @@
 import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
 
-import styles from './styles';
-import colors from './colors';
-import fonts from './fonts';
 import breakpoints from './breakpoints';
+import colors from './colors';
 import components from './components';
+import fonts from './fonts';
+import styles from './styles';
 
 // color configs
 

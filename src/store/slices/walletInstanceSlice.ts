@@ -1,7 +1,9 @@
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+import { NETWORK_KEY } from "./walletSlice";
+
 import NETWORKS, { Network, NETWORK_NAME } from "@/models/network";
 import WALLETS, { Wallet, WALLET_NAME } from "@/models/wallet";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { NETWORK_KEY } from "./walletSlice";
 
 // state type
 export type WalletState = {

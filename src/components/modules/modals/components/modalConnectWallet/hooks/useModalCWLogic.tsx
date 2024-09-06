@@ -1,7 +1,9 @@
-import NETWORKS, { NETWORK_NAME } from '@/models/network';
-import Card, { CARD_STATUS } from '../partials/card';
 import { useCallback, useMemo } from 'react';
+
 import { useModalCWState } from '../context';
+import Card, { CARD_STATUS } from '../partials/card';
+
+import NETWORKS, { NETWORK_NAME } from '@/models/network';
 import WALLETS, { WALLET_NAME, Wallet } from '@/models/wallet';
 import { getPersistSlice, useAppSelector } from '@/store';
 

@@ -1,4 +1,5 @@
 import axiosService, { AxiosService } from './axiosService';
+
 import { USERS_ENDPOINT } from '@/services/config';
 
 export type SupportedPairResponse = {

@@ -1,7 +1,8 @@
 'use client';
+import useModalSALogic from './hooks/useModalSALogic';
+
 import CustomModal from '@/components/elements/customModal';
 import { MODAL_NAME } from '@/configs/modal';
-import useModalSALogic from './hooks/useModalSALogic';
 
 export default function ModalSuccessAction() {
   const { renderContentModal } = useModalSALogic();

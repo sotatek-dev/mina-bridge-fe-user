@@ -1,7 +1,8 @@
+import { useEffect, useRef } from 'react';
+
 import ITV from '@/configs/time';
 import { getWalletObjSlice, useAppDispatch, useAppSelector } from '@/store';
 import { walletObjSliceActions } from '@/store/slices/walletObjSlice';
-import { useEffect, useRef } from 'react';
 
 const maxIntervalPeriod = 5000;
 

@@ -1,8 +1,9 @@
 'use client';
-import CustomModal, { ModalTitle } from '@/components/elements/customModal';
-import { MODAL_NAME } from '@/configs/modal';
 import ModalSNProvider, { useModalSNState } from './context';
 import CardContainer from './partials/card.container';
+
+import CustomModal, { ModalTitle } from '@/components/elements/customModal';
+import { MODAL_NAME } from '@/configs/modal';
 
 function Content() {
   const { modalName } = useModalSNState().constants;

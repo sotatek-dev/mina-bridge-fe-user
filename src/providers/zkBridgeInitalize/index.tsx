@@ -1,3 +1,5 @@
+import React, { useEffect, useMemo, useState } from 'react';
+
 import { MODAL_NAME } from '@/configs/modal';
 import { IsServer } from '@/constants';
 import Network, { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
@@ -8,7 +10,6 @@ import {
   useAppSelector,
 } from '@/store';
 import { TokenType } from '@/store/slices/persistSlice';
-import React, { useEffect, useMemo, useState } from 'react';
 
 export type ZKContractCtxValueType = {
   state: {

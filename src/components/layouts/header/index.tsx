@@ -1,5 +1,5 @@
 'use client';
-import { PropsWithChildren, useRef } from 'react';
+import { Link } from '@chakra-ui/next-js';
 import {
   Box,
   Button,
@@ -14,12 +14,15 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { getWalletSlice, useAppSelector } from '@/store';
-import useHeaderLogic from './useHeaderLogic';
-import ROUTES from '@/configs/routes';
-import { Link } from '@chakra-ui/next-js';
+import { PropsWithChildren, useRef } from 'react';
+
 import Logo from '../../elements/logo';
+
+import useHeaderLogic from './useHeaderLogic';
+
+import ROUTES from '@/configs/routes';
 import { useOutsideCheck } from '@/hooks/useOutsideCheck';
+import { getWalletSlice, useAppSelector } from '@/store';
 
 type Props = PropsWithChildren<{}>;
 

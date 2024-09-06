@@ -1,11 +1,15 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import Cookie from 'cookiejs';
+
+import { createAppThunk } from '..';
+
+import { persistSliceActions, TokenType } from './persistSlice';
+import { walletInstanceSliceActions } from './walletInstanceSlice';
+
 import NETWORKS, { Network, NETWORK_NAME } from '@/models/network';
 import WALLETS, { Wallet, WALLET_NAME } from '@/models/wallet';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { walletInstanceSliceActions } from './walletInstanceSlice';
-import { createAppThunk } from '..';
-import { persistSliceActions, TokenType } from './persistSlice';
 import { WALLET_EVENT_NAME } from '@/models/wallet/wallet.abstract';
-import Cookie from 'cookiejs';
+
 
 export enum NETWORK_KEY {
   SRC = 'src',

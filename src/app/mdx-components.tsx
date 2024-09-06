@@ -1,7 +1,8 @@
-import { getPxFromUrl } from '@/helpers/common';
 import { Link } from '@chakra-ui/next-js';
 import { Flex, Heading, Image, Text } from '@chakra-ui/react';
 import type { MDXComponents } from 'mdx/types';
+
+import { getPxFromUrl } from '@/helpers/common';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {

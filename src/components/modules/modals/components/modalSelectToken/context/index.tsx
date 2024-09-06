@@ -1,3 +1,6 @@
+import { uniqBy } from 'lodash';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
 import { MODAL_NAME } from '@/configs/modal';
 import { handleRequest } from '@/helpers/asyncHandlers';
 import NETWORKS, { NETWORK_NAME } from '@/models/network';
@@ -14,8 +17,6 @@ import {
 import { PersistState, TokenType } from '@/store/slices/persistSlice';
 import { TITLE, uiSliceActions } from '@/store/slices/uiSlice';
 import { walletSliceActions } from '@/store/slices/walletSlice';
-import { uniqBy } from 'lodash';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 export type ModalSTState = {
   isLoading: boolean;

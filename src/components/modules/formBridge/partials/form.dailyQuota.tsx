@@ -1,12 +1,14 @@
 'use client';
-import { handleRequest } from '@/helpers/asyncHandlers';
-import usersService from '@/services/usersService';
-import { getWalletSlice, useAppSelector } from '@/store';
 import { Heading, Text } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
+
 import { DailyQuota, useFormBridgeState } from '../context';
-import { formWei, formatNumber } from '@/helpers/common';
+
 import ITV from '@/configs/time';
+import { handleRequest } from '@/helpers/asyncHandlers';
+import { formWei, formatNumber } from '@/helpers/common';
+import usersService from '@/services/usersService';
+import { getWalletSlice, useAppSelector } from '@/store';
 
 const initialData: DailyQuota = {
   max: '0',

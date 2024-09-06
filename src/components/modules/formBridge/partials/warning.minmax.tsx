@@ -1,6 +1,16 @@
 'use client';
 import { HStack, Image, StackProps, Text, VStack } from '@chakra-ui/react';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+
 import { useFormBridgeState } from '../context';
+
+import ITV from '@/configs/time';
+import { handleAsync, handleRequest } from '@/helpers/asyncHandlers';
+import { formWei, formatNumber } from '@/helpers/common';
+import { Network } from '@/models/network';
+import { NETWORK_TYPE } from '@/models/network/network';
+import { useZKContractState } from '@/providers/zkBridgeInitalize';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
@@ -8,14 +18,6 @@ import {
   useAppSelector,
 } from '@/store';
 import { TokenType, persistSliceActions } from '@/store/slices/persistSlice';
-import { Network } from '@/models/network';
-import { handleAsync, handleRequest } from '@/helpers/asyncHandlers';
-import { NETWORK_TYPE } from '@/models/network/network';
-import { useEffect, useState } from 'react';
-import { formWei, formatNumber } from '@/helpers/common';
-import moment from 'moment';
-import ITV from '@/configs/time';
-import { useZKContractState } from '@/providers/zkBridgeInitalize';
 
 type Props = { isDisplayed: boolean } & Pick<StackProps, ChakraBoxSizeProps>;
 

@@ -11,7 +11,7 @@ import MinaProvider, { ChainInfoArgs } from '@aurowallet/mina-provider';
 import { TokenType } from '@/store/slices/persistSlice';
 import { getAccountInfoQuery } from '@/grapql/queries';
 import { gql } from '@/grapql';
-import { handleRequest } from '@/helpers/asyncHandlers';
+import { handleException, handleRequest } from '@/helpers/asyncHandlers';
 import { formWei } from '@/helpers/common';
 import { IsServer } from '@/constants';
 
@@ -179,18 +179,20 @@ export default class WalletAuro extends Wallet {
         return formWei(data.account.balance.total, asset.decimals);
       }
     }
-    throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
 
-    // const [ctr, initCtrError] = handleException(
-    //   asset.tokenAddr,
-    //   (addr) => new ERC20Contract(addr, network)
-    // );
-    // if (initCtrError || !ctr) return '0';
-    //
-    // const [blnWei, reqError] = await handleRequest(ctr.getBalance(userAddr));
-    // if (reqError || !blnWei)
-    //   throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
-    //
-    // return formWei(blnWei!!.toString(), asset.decimals);
+    const ERC20Module = await import('@/models/contract/zk/contract.ERC20');
+    const ERC20Contract = ERC20Module.default;
+
+    const [ctr, initCtrError] = handleException(
+      asset.tokenAddr,
+      (addr) => new ERC20Contract(addr, network)
+    );
+    if (initCtrError || !ctr) return '0';
+
+    const [blnWei, reqError] = await handleRequest(ctr.getBalance(userAddr));
+    if (reqError || !blnWei)
+      throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
+
+    return formWei(blnWei!!.toString(), asset.decimals);
   }
 }

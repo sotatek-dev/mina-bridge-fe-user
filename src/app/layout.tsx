@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
-import WrapperLayout from "@/components/layouts/wrapper-layout";
-import ClientProviders from "@/components/providers/ClientProviders";
-import ReduxProvider from "@/components/providers/ReduxProvider";
+import WrapperLayout from '@/components/layouts/wrapper-layout';
+import ClientProviders from '@/components/providers/ClientProviders';
+import ReduxProvider from '@/components/providers/ReduxProvider';
 
 export const metadata: Metadata = {
   title: 'Mina Bridge',
@@ -15,17 +15,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const cookieStore = cookies();
-  // const isConnected = cookieStore.get('address');
-
-  // if (!isConnected  ) {
-  //   redirect(ROUTES
-  //     .HOME
-  //   );
-  // }
-
-  // console.log({ isConnected });
-
   return (
     <html lang={'en'}>
       <body>

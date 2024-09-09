@@ -61,6 +61,7 @@ function WrapperLayout({ children }: Props) {
             as={'section'}
             w={'full'}
             h={'full'}
+            minH={'calc(100vh - 75px)'}
             bgColor={'text.100'}
             bgImage={
               isNotPOAScreen && isNotHistoryScreen && isNotUserGuide

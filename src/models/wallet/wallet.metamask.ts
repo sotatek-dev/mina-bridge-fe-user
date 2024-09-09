@@ -2,7 +2,7 @@ import { MetaMaskInpageProvider, RequestArguments } from "@metamask/providers";
 import Web3, { ProviderMessage, ProviderRpcError } from "web3";
 
 import { PROVIDER_TYPE, ProviderType } from "../contract/evm/contract";
-import Network, { getZKChainIdOldVersion, NETWORK_NAME, NETWORK_TYPE } from "../network/network";
+import Network, { getZKChainIdName, NETWORK_NAME, NETWORK_TYPE } from "../network/network";
 
 import Wallet, {
   URL_INSTALL_ANDROID,
@@ -357,7 +357,7 @@ export default class WalletMetamask extends Wallet {
               request: {
                 method: 'mina_changeNetwork',
                 params: {
-                  networkName: getZKChainIdOldVersion(network.metadata.chainId),
+                  networkName: getZKChainIdName(network.metadata.chainId),
                 },
               },
             },

@@ -1,15 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from "react";
 
-import { MODAL_NAME } from '@/configs/modal';
-import { IsServer } from '@/constants';
-import Network, { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
-import {
-  getUISlice,
-  getWalletInstanceSlice,
-  getWalletSlice,
-  useAppSelector,
-} from '@/store';
-import { TokenType } from '@/store/slices/persistSlice';
+import { MODAL_NAME } from "@/configs/modal";
+import { IsServer } from "@/constants";
+import Network, { NETWORK_NAME, NETWORK_TYPE } from "@/models/network/network";
+import { getUISlice, getWalletInstanceSlice, getWalletSlice, useAppSelector } from "@/store";
+import { TokenType } from "@/store/slices/persistSlice";
 
 export type ZKContractCtxValueType = {
   state: {
@@ -115,14 +110,14 @@ export default function ZKContractProvider({
 
   // initialize instances
   useEffect(() => {
-    console.log(
-      !networkInstance.src,
-      networkInstance?.src?.type !== NETWORK_TYPE.ZK,
-      !asset,
-      isInitialized,
-      modalConnectWallet.isOpen,
-      modalConnectWalletSuccess.isOpen
-    );
+    // console.log(
+    //   !networkInstance.src,
+    //   networkInstance?.src?.type !== NETWORK_TYPE.ZK,
+    //   !asset,
+    //   isInitialized,
+    //   modalConnectWallet.isOpen,
+    //   modalConnectWalletSuccess.isOpen
+    // );
     console.log('Asset: ', asset);
     if (
       !networkInstance.src ||

@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { AccountUpdate, PublicKey, UInt64 } from 'o1js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { MODAL_NAME } from '@/configs/modal';
@@ -334,80 +333,81 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         modalPayload.asset.bridgeCtrAddr
       );
 
-      // TODO: Bug SSR ....
-      // const update = await AccountUpdate.create(
-      //   zkCtr.bridgeContract.bridgeAddress,
-      //   zkCtr.erc20Contract.contractInstance?.tokenId
-      // );
-      // const accountIsNew = await update.account.isNew.getAndRequireEquals();
+      // TODO: Import Client o1js
+      const { PublicKey, AccountUpdate, UInt64 } = await import('o1js');
+      const update = await AccountUpdate.create(
+        zkCtr.bridgeContract.bridgeAddress,
+        zkCtr.erc20Contract.contractInstance?.tokenId
+      );
+      const accountIsNew = await update.account.isNew.getAndRequireEquals();
 
-      // // register account for the first time
-      // if (accountIsNew.toBoolean()) {
-      //   const tx1 = await zkCtr.bridgeContract.provider.transaction(
-      //     {
-      //       sender: PublicKey.fromBase58(address),
-      //       fee: UInt64.from(Number(0.1) * 1e9),
-      //     },
-      //     async () => {
-      //       AccountUpdate.fundNewAccount(PublicKey.fromBase58(address), 1);
-      //       await zkCtr.bridgeContract!!.lock('1', '200000000');
-      //     }
-      //   );
+      // register account for the first time
+      if (accountIsNew.toBoolean()) {
+        const tx1 = await zkCtr.bridgeContract.provider.transaction(
+          {
+            sender: PublicKey.fromBase58(address),
+            fee: UInt64.from(Number(0.1) * 1e9),
+          },
+          async () => {
+            AccountUpdate.fundNewAccount(PublicKey.fromBase58(address), 1);
+            await zkCtr.bridgeContract!!.lock('1', '200000000');
+          }
+        );
 
-      //   await tx1.prove();
-      //   // send tx via wallet instances
-      //   switch (walletInstance.name) {
-      //     case WALLET_NAME.AURO:
-      //       await walletInstance.sendTx(tx1.toJSON());
-      //       break;
-      //     case WALLET_NAME.METAMASK:
-      //       await walletInstance.sendTx({
-      //         transaction: tx1.toJSON(),
-      //         fee: Number(0.1),
-      //       });
-      //       break;
-      //     default:
-      //       break;
-      //   }
-      // }
-      // // end register account
-      // // build tx
-      // const tx = await zkCtr.bridgeContract.provider.transaction(
-      //   // const tx = await ctr.provider.transaction(
-      //   {
-      //     sender: PublicKey.fromBase58(address),
-      //     fee: UInt64.from(Number(0.1) * 1e9),
-      //   },
-      //   // PublicKey.fromBase58(address),
-      //   async () => {
-      //     await zkCtr.bridgeContract!!.lock(
-      //       modalPayload.destAddr,
-      //       toWei(modalPayload.amount, modalPayload.asset.decimals)
-      //     );
-      //   }
-      // );
+        await tx1.prove();
+        // send tx via wallet instances
+        switch (walletInstance.name) {
+          case WALLET_NAME.AURO:
+            await walletInstance.sendTx(tx1.toJSON());
+            break;
+          case WALLET_NAME.METAMASK:
+            await walletInstance.sendTx({
+              transaction: tx1.toJSON(),
+              fee: Number(0.1),
+            });
+            break;
+          default:
+            break;
+        }
+      }
+      // end register account
+      // build tx
+      const tx = await zkCtr.bridgeContract.provider.transaction(
+        // const tx = await ctr.provider.transaction(
+        {
+          sender: PublicKey.fromBase58(address),
+          fee: UInt64.from(Number(0.1) * 1e9),
+        },
+        // PublicKey.fromBase58(address),
+        async () => {
+          await zkCtr.bridgeContract!!.lock(
+            modalPayload.destAddr,
+            toWei(modalPayload.amount, modalPayload.asset.decimals)
+          );
+        }
+      );
 
-      // // prove tx
-      // await tx.prove();
-      // console.log('🚀 ~ useModalConfirmLogic ~ tx:', tx.toPretty());
+      // prove tx
+      await tx.prove();
+      console.log('🚀 ~ useModalConfirmLogic ~ tx:', tx.toPretty());
 
       // only when a tx is proved then system will start send payment request
-      // setStatus(MODAL_CF_STATUS.LOADING);
+      setStatus(MODAL_CF_STATUS.LOADING);
 
-      // // send tx via wallet instances
-      // switch (walletInstance.name) {
-      //   case WALLET_NAME.AURO:
-      //     await walletInstance.sendTx(tx.toJSON());
-      //     break;
-      //   case WALLET_NAME.METAMASK:
-      //     await walletInstance.sendTx({
-      //       transaction: tx.toJSON(),
-      //       fee: Number(0.1),
-      //     });
-      //     break;
-      //   default:
-      //     break;
-      // }
+      // send tx via wallet instances
+      switch (walletInstance.name) {
+        case WALLET_NAME.AURO:
+          await walletInstance.sendTx(tx.toJSON());
+          break;
+        case WALLET_NAME.METAMASK:
+          await walletInstance.sendTx({
+            transaction: tx.toJSON(),
+            fee: Number(0.1),
+          });
+          break;
+        default:
+          break;
+      }
       return onSuccess();
     } catch (error) {
       console.log('🚀 ~ useModalConfirmLogic ~ error:', error);

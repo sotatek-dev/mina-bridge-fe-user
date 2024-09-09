@@ -7,7 +7,6 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-// import { PublicKey } from 'o1js';
 import React, {
   forwardRef,
   useImperativeHandle,
@@ -80,7 +79,7 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
         clearTimeout(throttleInput.current);
         throttleInput.current = null;
       }
-      throttleInput.current = setTimeout(() => {
+      throttleInput.current = setTimeout(async () => {
         if (value.length < 1) return dpError('required');
         switch (networkInstance.tar?.type) {
           case NETWORK_TYPE.EVM:
@@ -94,9 +93,10 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
             updateDesAddr(emitVal!!);
             break;
           case NETWORK_TYPE.ZK:
-            // TODO: Build SSR failed
-            // const [_, zkError] = handleException(value, PublicKey.fromBase58);
-            // if (zkError) return dpError('not_address');
+            // TODO: Import Client o1js
+            const { PublicKey } = await import('o1js');
+            const [_, zkError] = handleException(value, PublicKey.fromBase58);
+            if (zkError) return dpError('not_address');
             setError(null);
             updateDesAddr(value);
             break;

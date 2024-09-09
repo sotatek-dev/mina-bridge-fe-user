@@ -243,6 +243,7 @@ const disconnect = createAppThunk()(
     walletInstance!!.removeListener(WALLET_EVENT_NAME.MESSAGE);
     dispatch(walletSlicePrvActions.disconnectWallet());
     dispatch(walletInstanceSliceActions.removeInstances());
+    Cookie.remove('address');
     return true;
   }
 );

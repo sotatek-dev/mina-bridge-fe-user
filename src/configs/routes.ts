@@ -6,4 +6,6 @@ enum ROUTES {
   HISTORY = '/history',
 }
 
+export const PROTECTED_ROUTES = [ROUTES.HISTORY];
+
 export default ROUTES;

@@ -5,23 +5,6 @@ import React from "react";
 import theme from "@/configs/theme";
 import ZKContractProvider from "@/providers/zkBridgeInitalize";
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const cookies = Cookie.get('isConnected', context.req.headers.cookie);
-
-//   if (cookies !== 'true') {
-//     return {
-//       redirect: {
-//         destination: '/',
-//         permanent: false,
-//       },
-//     };
-//   }
-
-//   return {
-//     props: {},
-//   };
-// };
-
 const ClientProviders = ({ children }: { children: React.ReactNode }) => {
   return (
     <>

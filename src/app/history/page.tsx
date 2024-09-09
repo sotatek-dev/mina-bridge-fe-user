@@ -1,7 +1,12 @@
-import React from 'react';
+import HistoryContent from './content';
+import HistoryProvider from './context';
 
 const History = () => {
-  return <div>History</div>;
+  return (
+    <HistoryProvider>
+      <HistoryContent />
+    </HistoryProvider>
+  );
 };
 
 export default History;

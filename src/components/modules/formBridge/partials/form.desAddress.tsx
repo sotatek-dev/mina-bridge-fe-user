@@ -1,20 +1,34 @@
-// TODO: fix eslint
-/* eslint-disable react/display-name */
 'use client';
-import { Input, InputGroup, StackProps, Text, useToast, VStack } from "@chakra-ui/react";
-import { PublicKey } from "o1js";
-import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react";
-import Web3 from "web3";
+import {
+  Input,
+  InputGroup,
+  StackProps,
+  Text,
+  useToast,
+  VStack,
+} from '@chakra-ui/react';
+// import { PublicKey } from 'o1js';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import Web3 from 'web3';
 
-import { useFormBridgeState } from "../context";
+import { useFormBridgeState } from '../context';
 
-import ITV from "@/configs/time";
-import { handleException } from "@/helpers/asyncHandlers";
-import { NETWORK_NAME } from "@/models/network";
-import { NETWORK_TYPE } from "@/models/network/network";
-import WALLETS, { Wallet } from "@/models/wallet";
-import { getWalletInstanceSlice, getWalletSlice, useAppSelector } from "@/store";
-
+import ITV from '@/configs/time';
+import { handleException } from '@/helpers/asyncHandlers';
+import { NETWORK_NAME } from '@/models/network';
+import { NETWORK_TYPE } from '@/models/network/network';
+import WALLETS, { Wallet } from '@/models/wallet';
+import {
+  getWalletInstanceSlice,
+  getWalletSlice,
+  useAppSelector,
+} from '@/store';
 
 export type DesAddrRef = null | { resetValue: () => void };
 
@@ -68,23 +82,21 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
       }
       throttleInput.current = setTimeout(() => {
         if (value.length < 1) return dpError('required');
-
         switch (networkInstance.tar?.type) {
           case NETWORK_TYPE.EVM:
             const [emitVal, evmError] = handleException(
               value,
               Web3.utils.toChecksumAddress
             );
-
             if (evmError) return dpError('not_address');
             setError(null);
-
             setValue(emitVal!!);
             updateDesAddr(emitVal!!);
             break;
           case NETWORK_TYPE.ZK:
-            const [_, zkError] = handleException(value, PublicKey.fromBase58);
-            if (zkError) return dpError('not_address');
+            // TODO: Build SSR failed
+            // const [_, zkError] = handleException(value, PublicKey.fromBase58);
+            // if (zkError) return dpError('not_address');
             setError(null);
             updateDesAddr(value);
             break;

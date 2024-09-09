@@ -334,7 +334,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         modalPayload.asset.bridgeCtrAddr
       );
 
-      // Bug SSR ....
+      // TODO: Bug SSR ....
       // const update = await AccountUpdate.create(
       //   zkCtr.bridgeContract.bridgeAddress,
       //   zkCtr.erc20Contract.contractInstance?.tokenId

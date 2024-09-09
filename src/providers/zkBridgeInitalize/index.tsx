@@ -115,15 +115,7 @@ export default function ZKContractProvider({
 
   // initialize instances
   useEffect(() => {
-    console.log(
-      !networkInstance.src,
-      networkInstance?.src?.type !== NETWORK_TYPE.ZK,
-      !asset,
-      isInitialized,
-      modalConnectWallet.isOpen,
-      modalConnectWalletSuccess.isOpen
-    );
-    console.log('Asset: ', asset);
+    console.log('🚀 ~  Check Asset: ', asset);
     if (
       !networkInstance.src ||
       networkInstance.src.type !== NETWORK_TYPE.ZK ||
@@ -133,64 +125,6 @@ export default function ZKContractProvider({
       modalConnectWalletSuccess.isOpen
     )
       return;
-
-    // const asset: any = {
-    //   pairId: '1',
-    //   bridgeCtrAddr: 'B62qoArtCz52mtxKxtGR3sPdS9yq6DucRW53nAerndwg9oEhUvJvpRy',
-    //   tokenAddr: 'B62qqki2ZnVzaNsGaTDAP6wJYCth5UAcY6tPX2TQYHdwD8D4uBgrDKC',
-    //   des: 'tar',
-    //   symbol: 'WETH',
-    //   name: '',
-    //   decimals: 9,
-    //   network: 'mina',
-    // };
-
-    // const networkIn: any = {
-    //   src: {
-    //     name: 'mina',
-    //     type: 'ZK',
-    //     nativeCurrency: {
-    //       name: 'MINA',
-    //       symbol: 'MINA',
-    //       decimals: 9,
-    //     },
-    //     metadata: {
-    //       chainId: 'mina:testnet',
-    //       chainType: 'devnet',
-    //       chainName: 'Mina Devnet',
-    //       proxyUrl: 'https://api.minascan.io/node/devnet/v1/graphql',
-    //       archiveUrl: '',
-    //       scanUrl: 'https://minascan.io/devnet',
-    //       logo: {
-    //         base: '/assets/logos/logo.mina.circle.svg',
-    //         header: '/assets/logos/logo.mina.circle.svg',
-    //       },
-    //     },
-    //   },
-    //   tar: {
-    //     name: 'ethereum',
-    //     type: 'EVM',
-    //     nativeCurrency: {
-    //       name: 'ETH',
-    //       symbol: 'ETH',
-    //       decimals: 18,
-    //     },
-    //     metadata: {
-    //       chainId: '0xaa36a7',
-    //       chainType: 'testnet',
-    //       chainName: 'sepolia',
-    //       provider: {
-    //         type: 'https',
-    //         uri: 'https://rpc.sepolia.ethpandaops.io',
-    //       },
-    //       scanUrl: 'https://sepolia.etherscan.io',
-    //       logo: {
-    //         base: '/assets/logos/logo.ethereum.circle.svg',
-    //         header: '/assets/logos/logo.ethereum.circle.svg',
-    //       },
-    //     },
-    //   },
-    // };
 
     handleInitializeScripts(asset, networkInstance.src);
   }, [

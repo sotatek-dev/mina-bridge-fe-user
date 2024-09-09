@@ -19,7 +19,6 @@ export default class ERC20Contract {
   network: Network;
 
   constructor(tokenAddress: string, network: Network) {
-    console.log('test constructor ', window);
     this.network = network;
     if ('proxyUrl' in network.metadata && network.metadata.proxyUrl) {
       Mina.setActiveInstance(

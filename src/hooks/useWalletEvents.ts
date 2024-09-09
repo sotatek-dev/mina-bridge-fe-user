@@ -1,22 +1,13 @@
 'use client';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from "react";
 
-import { Network } from '@/models/network';
-import { NETWORK_TYPE } from '@/models/network/network';
-import { Wallet } from '@/models/wallet';
-import {
-  WALLET_EVENT_NAME,
-  WALLET_NAME,
-} from '@/models/wallet/wallet.abstract';
-import {
-  getUISlice,
-  getWalletInstanceSlice,
-  store,
-  useAppDispatch,
-  useAppSelector,
-} from '@/store';
-import { BANNER_NAME, uiSliceActions } from '@/store/slices/uiSlice';
-import { walletSliceActions } from '@/store/slices/walletSlice';
+import { Network } from "@/models/network";
+import { getZKChainIdName, NETWORK_TYPE } from "@/models/network/network";
+import { Wallet } from "@/models/wallet";
+import { WALLET_EVENT_NAME, WALLET_NAME } from "@/models/wallet/wallet.abstract";
+import { getUISlice, getWalletInstanceSlice, store, useAppDispatch, useAppSelector } from "@/store";
+import { BANNER_NAME, uiSliceActions } from "@/store/slices/uiSlice";
+import { walletSliceActions } from "@/store/slices/walletSlice";
 
 export default function useWalletEvents() {
   const { walletInstance, networkInstance } = useAppSelector(
@@ -34,7 +25,7 @@ export default function useWalletEvents() {
   async function checkMatchedNetwork(wallet: Wallet, nw: Network) {
     const curChain = await wallet.getNetwork(nw.type);
 
-    if (curChain.toLowerCase() !== nw.metadata.chainId.toLowerCase())
+    if (curChain.toLowerCase() !== getZKChainIdName(nw.metadata.chainId).toLowerCase())
       return dispatch(
         uiSliceActions.openBanner({
           bannerName: BANNER_NAME.UNMATCHED_CHAIN_ID,
@@ -94,7 +85,7 @@ export default function useWalletEvents() {
 
           if (
             chainId.toLowerCase() !==
-            networkInstance.src.metadata.chainId.toLowerCase()
+            getZKChainIdName(networkInstance.src.metadata.chainId).toLowerCase()
           )
             return dispatch(
               uiSliceActions.openBanner({

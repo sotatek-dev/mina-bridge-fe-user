@@ -1,10 +1,13 @@
-import { VStack } from '@chakra-ui/layout';
-import { Text } from '@chakra-ui/react';
-import Link from 'next/link';
-import React from 'react';
+"use client";
 
-import FormBridge from '@/components/modules/formBridge';
-import ROUTES from '@/configs/routes';
+import { VStack } from "@chakra-ui/layout";
+import { Text } from "@chakra-ui/react";
+import Link from "next/link";
+import React from "react";
+
+import ROUTES from "@/configs/routes";
+
+// const FormBridge = dynamic(() => import('@/components/modules/formBridge'), { ssr: false })
 
 export default function Home() {
   return (
@@ -14,7 +17,7 @@ export default function Home() {
       pt={{ base: '0', md: '20px' }}
       gap={'0'}
     >
-      <FormBridge />
+      {/*<FormBridge />*/}
       <VStack
         maxW={'500px'}
         w={'full'}

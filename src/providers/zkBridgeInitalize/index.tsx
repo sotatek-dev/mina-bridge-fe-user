@@ -79,8 +79,9 @@ export default function ZKContractProvider({
       const ERC20ContractC = ERC20Module.default;
       const BridgeContractC = BridgeModule.default;
 
-      await ERC20ContractC.init();
-      await BridgeContractC.init();
+      // TODO: fix compile failed
+      // await ERC20ContractC.init();
+      // await BridgeContractC.init();
 
       console.log('🚀 ~ asset:', asset);
 

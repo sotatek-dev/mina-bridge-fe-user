@@ -27,7 +27,12 @@ export default class BridgeContract extends Contract<ABIType> {
     address,
     provider,
   }: Omit<InitializeContractType<ABIType>, 'contractABI'>) {
-    super({ address, contractABI: ABIBridgeETH, provider });
+    // TODO: hardcode sc address - backend api is pending
+    super({
+      address: process.env.NEXT_PUBLIC_EVM_CONTRACT_ADDRESS || address,
+      contractABI: ABIBridgeETH,
+      provider,
+    });
   }
 
   buildTxLock({

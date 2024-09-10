@@ -164,6 +164,7 @@ export default class WalletAuro extends Wallet {
     return true;
   }
 
+  // TODO: N is not function
   async getBalance(
     network: Network,
     userAddr: string,

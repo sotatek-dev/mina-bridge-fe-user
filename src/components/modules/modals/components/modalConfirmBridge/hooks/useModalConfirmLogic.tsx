@@ -333,7 +333,6 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         modalPayload.asset.bridgeCtrAddr
       );
 
-      // TODO: Import Client o1js
       const { PublicKey, AccountUpdate, UInt64 } = await import('o1js');
       const update = await AccountUpdate.create(
         zkCtr.bridgeContract.bridgeAddress,

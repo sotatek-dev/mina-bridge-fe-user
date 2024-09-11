@@ -300,16 +300,18 @@ export default class WalletMetamask extends Wallet {
         const ERC20Module = await import('@/models/contract/zk/contract.ERC20');
         const ERC20Contract = ERC20Module.default;
 
-        const [ctr, initCtrError] = handleException(
-          asset.tokenAddr,
-          (addr) => new ERC20Contract(addr, network)
-        );
-        if (initCtrError || !ctr) return '0';
-        // console.log(
-        //   TokenId.toBase58(
-        //     TokenId.derive(PublicKey.fromBase58(asset.tokenAddr))
-        //   )
+        // const [ctr, initCtrError] = await handleException(
+        //   asset.tokenAddr,
+        //   async (addr) => {
+        //     const erc20ctr = new ERC20Contract()
+        //     await erc20ctr.setInfo(addr, network)
+        //     return erc20ctr
+        //   }
         // );
+        // if (initCtrError || !ctr) return '0';
+
+        const ctr = new ERC20Contract();
+        await ctr.setInfo(asset.tokenAddr, network);
 
         const [blnWei, reqError] = await handleRequest(
           ctr.getBalance(userAddr)

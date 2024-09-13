@@ -19,5 +19,5 @@ jobs:
       - run: |
           rm -rf .next
           yarn
-          yarn build
+#          yarn build
           pm2 restart develop.pm2.json

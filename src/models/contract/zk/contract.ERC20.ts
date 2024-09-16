@@ -1,13 +1,14 @@
-import { FungibleToken } from 'mina-fungible-token';
-import type { Mina, PublicKey } from 'o1js';
+"use client";
+import { FungibleToken } from "mina-fungible-token";
+import type { Mina, PublicKey } from "o1js";
 
-import { Bridge } from '@/configs/ABIs/zk/Bridge';
-import { ZkContractType } from '@/configs/constants';
-import { gql } from '@/grapql';
-import { getAccountInfoTokenQuery } from '@/grapql/queries';
-import { handleRequest } from '@/helpers/asyncHandlers';
-import { fetchFiles, fileSystem } from '@/helpers/common';
-import { Network } from '@/models/network';
+import { Bridge } from "@/configs/ABIs/zk/Bridge";
+import { ZkContractType } from "@/configs/constants";
+import { gql } from "@/grapql";
+import { getAccountInfoTokenQuery } from "@/grapql/queries";
+import { handleRequest } from "@/helpers/asyncHandlers";
+import { fetchFiles, fileSystem } from "@/helpers/common";
+import { Network } from "@/models/network";
 
 export default class ERC20Contract {
   tokenAddress!: PublicKey;
@@ -50,10 +51,13 @@ export default class ERC20Contract {
       console.log('-----fetch files done');
       console.timeEnd('fetch files');
       console.time('compile contracts');
-      console.log('-----compile contracts');
+
+      console.log('-----compile contracts Bridge');
       await Bridge.compile({
         cache: fileSystem(cacheBridgeFiles),
       });
+      console.log('-----compile contracts FungibleToken');
+
       await FungibleToken.compile({
         cache: fileSystem(cacheTokenFiles),
       });
@@ -72,19 +76,19 @@ export default class ERC20Contract {
 
   async fetchInvolveAccount(userAddr: string, bridgeAddress: string) {
     const { fetchAccount, PublicKey } = await import('o1js');
-    console.log('-----fetch user account');
+    console.log('-----fetch user account', userAddr);
     await fetchAccount({ publicKey: PublicKey.fromBase58(userAddr) });
 
-    console.log('-----fetch token account');
+    console.log('-----fetch token account', this.tokenAddress.toBase58());
     await fetchAccount({ publicKey: this.tokenAddress });
 
-    console.log('-----fetch bridge account');
+    console.log('-----fetch bridge account', bridgeAddress);
     console.log('bridgeAddress', this.contractInstance);
     await fetchAccount({
       publicKey: PublicKey.fromBase58(bridgeAddress),
     });
 
-    console.log('-----fetch bridge account with token');
+    console.log('-----fetch bridge account with token', {bridgeAddress, tokenId: this.contractInstance!!.tokenId.toConstant()});
     await fetchAccount({
       publicKey: PublicKey.fromBase58(bridgeAddress),
       tokenId: this.contractInstance!!.tokenId,

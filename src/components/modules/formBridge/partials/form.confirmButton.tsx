@@ -1,25 +1,17 @@
 'use client';
-import { Button, ButtonProps } from '@chakra-ui/react';
-import React, { useMemo, useState } from 'react';
+import { Button, ButtonProps } from "@chakra-ui/react";
+import React, { useMemo, useState } from "react";
 
-import { useFormBridgeState } from '../context';
+import { useFormBridgeState } from "../context";
 
-import Loading from '@/components/elements/loading/spinner';
-import { MODAL_NAME } from '@/configs/modal';
-import ITV from '@/configs/time';
-import { formatNumber } from '@/helpers/common';
-import useETHBridgeContract from '@/hooks/useETHBridgeContract';
-import { NETWORK_TYPE } from '@/models/network/network';
-import {
-  getWalletInstanceSlice,
-  getWalletSlice,
-  useAppDispatch,
-  useAppSelector,
-} from '@/store';
-import {
-  ModalConfirmBridgePayload,
-  uiSliceActions,
-} from '@/store/slices/uiSlice';
+import Loading from "@/components/elements/loading/spinner";
+import { MODAL_NAME } from "@/configs/modal";
+import ITV from "@/configs/time";
+import { formatNumber } from "@/helpers/common";
+import useETHBridgeContract from "@/hooks/useETHBridgeContract";
+import { NETWORK_TYPE } from "@/models/network/network";
+import { getWalletInstanceSlice, getWalletSlice, useAppDispatch, useAppSelector } from "@/store";
+import { ModalConfirmBridgePayload, uiSliceActions } from "@/store/slices/uiSlice";
 
 type Props = { isDisplayed: boolean } & Pick<ButtonProps, ChakraBoxSizeProps>;
 
@@ -36,6 +28,7 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
   const { networkInstance } = useAppSelector(getWalletInstanceSlice);
   const { address } = useAppSelector(getWalletSlice);
 
+  console.log('test', {status});
   const isClickable = status.isValidData && status.isMatchedNetwork;
 
   // only token in evm chains need to get allowance

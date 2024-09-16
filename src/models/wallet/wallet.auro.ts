@@ -1,6 +1,6 @@
-import MinaProvider, { ChainInfoArgs } from '@aurowallet/mina-provider';
+import MinaProvider, { ChainInfoArgs } from "@aurowallet/mina-provider";
 
-import Network, { NETWORK_NAME, NETWORK_TYPE } from '../network/network';
+import Network, { NETWORK_NAME, NETWORK_TYPE } from "../network/network";
 
 import Wallet, {
   URL_INSTALL_ANDROID,
@@ -8,15 +8,15 @@ import Wallet, {
   URL_INSTALL_IOS,
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
-  WALLET_NAME,
-} from './wallet.abstract';
+  WALLET_NAME
+} from "./wallet.abstract";
 
-import { IsServer } from '@/constants';
-import { gql } from '@/grapql';
-import { getAccountInfoQuery } from '@/grapql/queries';
-import { handleException, handleRequest } from '@/helpers/asyncHandlers';
-import { formWei } from '@/helpers/common';
-import { TokenType } from '@/store/slices/persistSlice';
+import { IsServer } from "@/constants";
+import { gql } from "@/grapql";
+import { getAccountInfoQuery } from "@/grapql/queries";
+import { handleRequest } from "@/helpers/asyncHandlers";
+import { formWei } from "@/helpers/common";
+import { TokenType } from "@/store/slices/persistSlice";
 
 type MinaRequestResType<T> = SplitType<T>[0];
 type MinaRequestErrorType<T> = SplitType<T>[1];
@@ -179,6 +179,9 @@ export default class WalletAuro extends Wallet {
         const [data, error] = await handleRequest(
           gql(network.metadata.proxyUrl, query, variables)
         );
+        console.log('test data', data);
+        console.log('test network.metadata.proxyUrl', network.metadata.proxyUrl);
+
         if (error || !data || !data.account) return '0';
         return formWei(data.account.balance.total, asset.decimals);
       }

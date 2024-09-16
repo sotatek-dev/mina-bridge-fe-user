@@ -93,8 +93,11 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
             updateDesAddr(emitVal!!);
             break;
           case NETWORK_TYPE.ZK:
+            // TODO: build faild N is not function
             const { PublicKey } = await import('o1js');
             const [_, zkError] = handleException(value, PublicKey.fromBase58);
+            console.log({ zkError });
+
             if (zkError) return dpError('not_address');
             setError(null);
             updateDesAddr(value);

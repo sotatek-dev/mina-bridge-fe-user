@@ -1,24 +1,25 @@
-import { FungibleToken } from "mina-fungible-token";
-import { fetchAccount, Mina, PublicKey, TokenId } from "o1js";
+import { FungibleToken } from 'mina-fungible-token';
+import type { Mina, PublicKey } from 'o1js';
 
-import { Bridge } from "@/configs/ABIs/zk/Bridge";
-import { ZkContractType } from "@/configs/constants";
-import { gql } from "@/grapql";
-import { getAccountInfoTokenQuery } from "@/grapql/queries";
-import { handleRequest } from "@/helpers/asyncHandlers";
-import { fetchFiles, fileSystem } from "@/helpers/common";
-import { Network } from "@/models/network";
+import { Bridge } from '@/configs/ABIs/zk/Bridge';
+import { ZkContractType } from '@/configs/constants';
+import { gql } from '@/grapql';
+import { getAccountInfoTokenQuery } from '@/grapql/queries';
+import { handleRequest } from '@/helpers/asyncHandlers';
+import { fetchFiles, fileSystem } from '@/helpers/common';
+import { Network } from '@/models/network';
 
 export default class ERC20Contract {
-  tokenAddress: PublicKey;
-  contractInstance: FungibleToken | null;
-  provider: typeof Mina;
-  hooks: PublicKey = PublicKey.fromBase58(
-    process.env.NEXT_PUBLIC_MINA_HOOKS_ADDRESS || ''
-  );
-  network: Network;
+  tokenAddress!: PublicKey;
+  contractInstance!: FungibleToken | null;
+  provider!: typeof Mina;
+  hooks!: PublicKey;
+  network!: Network;
 
-  constructor(tokenAddress: string, network: Network) {
+  constructor() {}
+
+  async setInfo(tokenAddress: string, network: Network) {
+    const { Mina, PublicKey } = await import('o1js');
     this.network = network;
     if ('proxyUrl' in network.metadata && network.metadata.proxyUrl) {
       Mina.setActiveInstance(
@@ -33,7 +34,11 @@ export default class ERC20Contract {
     this.provider = Mina;
     this.tokenAddress = PublicKey.fromBase58(tokenAddress);
     this.contractInstance = new FungibleToken(this.tokenAddress);
+    this.hooks = PublicKey.fromBase58(
+      process.env.NEXT_PUBLIC_MINA_HOOKS_ADDRESS || ''
+    );
   }
+
   static async init() {
     try {
       console.log('-----fetch files');
@@ -59,12 +64,14 @@ export default class ERC20Contract {
     }
   }
 
-  changeInstance(tokenAddress: string) {
+  async changeInstance(tokenAddress: string) {
+    const { PublicKey } = await import('o1js');
     this.tokenAddress = PublicKey.fromBase58(tokenAddress);
     this.contractInstance = new FungibleToken(this.tokenAddress);
   }
 
   async fetchInvolveAccount(userAddr: string, bridgeAddress: string) {
+    const { fetchAccount, PublicKey } = await import('o1js');
     console.log('-----fetch user account');
     await fetchAccount({ publicKey: PublicKey.fromBase58(userAddr) });
 
@@ -88,6 +95,8 @@ export default class ERC20Contract {
   }
 
   async getBalance(userAddr: string) {
+    const { TokenId, PublicKey } = await import('o1js');
+
     // Direct access to mina gql
     const query = getAccountInfoTokenQuery;
     const params = {

@@ -73,24 +73,24 @@ export default function ZKContractProvider({
     setIsInitializing(true);
 
     try {
-      const ERC20Module = await import('@/models/contract/zk/contract.ERC20');
-      const BridgeModule = await import('@/models/contract/zk/contract.Bridge');
-
-      const ERC20ContractC = ERC20Module.default;
-      const BridgeContractC = BridgeModule.default;
+      const { default: ERC20Ctr } = await import(
+        '@/models/contract/zk/contract.ERC20'
+      );
+      const { default: BridgeCtr } = await import(
+        '@/models/contract/zk/contract.Bridge'
+      );
 
       // TODO: fix compile failed
-      // await ERC20ContractC.init();
-      // await BridgeContractC.init();
+      await ERC20Ctr.init();
+      await BridgeCtr.init();
 
       console.log('🚀 ~ asset:', asset);
 
-      const erc20Ctr = new ERC20ContractC(asset.tokenAddr, nwInstance);
-      const bridgeCtr = new BridgeContractC(
-        asset.bridgeCtrAddr,
-        asset.tokenAddr,
-        nwInstance
-      );
+      const erc20Ctr = new ERC20Ctr();
+      const bridgeCtr = new BridgeCtr();
+
+      await erc20Ctr.setInfo(asset.tokenAddr, nwInstance);
+      await bridgeCtr.setInfo(asset.bridgeCtrAddr, asset.tokenAddr, nwInstance);
 
       setErc20Contract(erc20Ctr);
       setBridgeContract(bridgeCtr);

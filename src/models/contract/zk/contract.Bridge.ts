@@ -1,18 +1,22 @@
 import { FungibleToken } from 'mina-fungible-token';
-import { Field, Mina, PublicKey, UInt64, fetchAccount } from 'o1js';
+import type { Field, Mina, PublicKey, UInt64, fetchAccount } from 'o1js';
 
 import { Bridge } from '@/configs/ABIs/zk/Bridge';
 import { handleAsync } from '@/helpers/asyncHandlers';
 import { Network } from '@/models/network';
 
 export default class BridgeContract {
-  tokenAddress: PublicKey;
-  bridgeAddress: PublicKey;
-  provider: typeof Mina;
-  bridgeInstance: Bridge;
-  tokenInstance: FungibleToken;
+  tokenAddress!: PublicKey;
+  bridgeAddress!: PublicKey;
+  provider!: typeof Mina;
+  bridgeInstance!: Bridge;
+  tokenInstance!: FungibleToken;
 
-  constructor(bridgeAddress: string, tokenAddress: string, network: Network) {
+  constructor() {}
+
+  async setInfo(bridgeAddress: string, tokenAddress: string, network: Network) {
+    const { Mina, PublicKey } = await import('o1js');
+
     if ('proxyUrl' in network.metadata && network.metadata.proxyUrl) {
       Mina.setActiveInstance(
         Mina.Network({
@@ -31,6 +35,7 @@ export default class BridgeContract {
     this.tokenInstance = new FungibleToken(this.tokenAddress);
     this.bridgeInstance = new Bridge(this.bridgeAddress);
   }
+
   static async init() {
     // const [cacheBridgeFiles] = await Promise.all([
     //   fetchFiles(ZkContractType.BRIDGE),
@@ -41,7 +46,9 @@ export default class BridgeContract {
     // });
   }
 
-  changeInstance(bridgeAddress: string, tokenAddress: string) {
+  async changeInstance(bridgeAddress: string, tokenAddress: string) {
+    const { PublicKey } = await import('o1js');
+
     this.tokenAddress = PublicKey.fromBase58(tokenAddress);
     this.bridgeAddress = PublicKey.fromBase58(bridgeAddress);
     this.tokenInstance = new FungibleToken(this.tokenAddress);
@@ -52,6 +59,8 @@ export default class BridgeContract {
   }
 
   async fetchInvolveAccount() {
+    const { fetchAccount, PublicKey } = await import('o1js');
+
     console.log('-----fetch token account');
     await fetchAccount({ publicKey: this.tokenAddress });
 
@@ -65,7 +74,7 @@ export default class BridgeContract {
     });
   }
 
-  fetchMinMax() {
+  async fetchMinMax() {
     const bridgeInstance = this.bridgeInstance;
 
     return handleAsync(null, async () => ({
@@ -75,6 +84,8 @@ export default class BridgeContract {
   }
 
   async lock(receipt: string, amount: string) {
+    const { UInt64, Field } = await import('o1js');
+
     if (!this.bridgeInstance) return;
     return this.bridgeInstance.lock(UInt64.from(amount), Field.from(receipt));
   }

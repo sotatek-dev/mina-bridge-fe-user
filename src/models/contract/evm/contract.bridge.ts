@@ -1,11 +1,12 @@
-import { MatchPrimitiveType } from 'web3';
-import { PayableMethodObject } from 'web3-eth-contract';
+import { MatchPrimitiveType } from "web3";
+import { PayableMethodObject } from "web3-eth-contract";
 
-import Contract, { InitializeContractType } from './contract';
+import Contract, { InitializeContractType } from "./contract";
 
-import ABIBridgeETH from '@/configs/ABIs/evm/Bridge_ETH';
-import { formWei, toWei } from '@/helpers/common';
-import { TokenType } from '@/store/slices/persistSlice';
+import ABIBridgeETH from "@/configs/ABIs/evm/Bridge_ETH";
+import { formWei, toWei } from "@/helpers/common";
+import { TokenType } from "@/store/slices/persistSlice";
+
 type ABIType = typeof ABIBridgeETH;
 
 export type EVMBridgeCtrLockPayload = {
@@ -27,9 +28,8 @@ export default class BridgeContract extends Contract<ABIType> {
     address,
     provider,
   }: Omit<InitializeContractType<ABIType>, 'contractABI'>) {
-    // TODO: hardcode sc address - backend api is pending
     super({
-      address: process.env.NEXT_PUBLIC_EVM_CONTRACT_ADDRESS || address,
+      address: address,
       contractABI: ABIBridgeETH,
       provider,
     });

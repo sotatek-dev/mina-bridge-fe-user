@@ -1,9 +1,9 @@
-import { FungibleToken } from 'mina-fungible-token';
-import type { Field, Mina, PublicKey, UInt64, fetchAccount } from 'o1js';
+import { FungibleToken } from "mina-fungible-token";
+import type { fetchAccount, Field, Mina, PublicKey, UInt64 } from "o1js";
 
-import { Bridge } from '@/configs/ABIs/zk/Bridge';
-import { handleAsync } from '@/helpers/asyncHandlers';
-import { Network } from '@/models/network';
+import { Bridge } from "@/configs/ABIs/zk/Bridge";
+import { handleAsync } from "@/helpers/asyncHandlers";
+import { Network } from "@/models/network";
 
 export default class BridgeContract {
   tokenAddress!: PublicKey;
@@ -61,13 +61,13 @@ export default class BridgeContract {
   async fetchInvolveAccount() {
     const { fetchAccount, PublicKey } = await import('o1js');
 
-    console.log('-----fetch token account');
+    console.log('-----fetch token account', this.tokenAddress.toBase58());
     await fetchAccount({ publicKey: this.tokenAddress });
 
-    console.log('-----fetch bridge account');
+    console.log('-----fetch bridge account', this.bridgeAddress.toBase58());
     await fetchAccount({ publicKey: this.bridgeAddress });
 
-    console.log('-----fetch bridge account with token');
+    console.log('-----fetch bridge account with token', {bridgeAddress:this.bridgeAddress.toBase58(), tokenId: this.tokenInstance.tokenId.toConstant()});
     await fetchAccount({
       publicKey: this.bridgeAddress,
       tokenId: this.tokenInstance.tokenId,
@@ -78,8 +78,11 @@ export default class BridgeContract {
     const bridgeInstance = this.bridgeInstance;
 
     return handleAsync(null, async () => ({
-      min: await bridgeInstance.minAmount.get(),
-      max: await bridgeInstance.maxAmount.get(),
+      // TODO: get min and max amount
+      // min: await bridgeInstance.minAmount.get(),
+      // max: await bridgeInstance.maxAmount.get(),
+      min: 0,
+      max: 1000000
     }));
   }
 
@@ -87,6 +90,6 @@ export default class BridgeContract {
     const { UInt64, Field } = await import('o1js');
 
     if (!this.bridgeInstance) return;
-    return this.bridgeInstance.lock(UInt64.from(amount), Field.from(receipt));
+    return this.bridgeInstance.lock(UInt64.from(amount), Field.from(receipt), this.tokenAddress);
   }
 }

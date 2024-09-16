@@ -1,36 +1,27 @@
-import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import BigNumber from "bignumber.js";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { MODAL_NAME } from '@/configs/modal';
-import { IsServer } from '@/constants';
-import { handleAsync, handleRequest } from '@/helpers/asyncHandlers';
-import {
-  formWei,
-  formatNumber,
-  formatNumber2,
-  toWei,
-  truncateMid,
-} from '@/helpers/common';
-import { getWeb3Instance } from '@/helpers/evmHandlers';
-import useETHBridgeContract from '@/hooks/useETHBridgeContract';
-import { EVMBridgeTXLock } from '@/models/contract/evm/contract.bridge';
-import { NETWORK_TYPE } from '@/models/network/network';
-import { WALLET_NAME } from '@/models/wallet';
-import { useZKContractState } from '@/providers/zkBridgeInitalize';
-import usersService from '@/services/usersService';
+import { MODAL_NAME } from "@/configs/modal";
+import { IsServer } from "@/constants";
+import { handleAsync, handleRequest } from "@/helpers/asyncHandlers";
+import { formatNumber, formatNumber2, formWei, toWei, truncateMid } from "@/helpers/common";
+import { getWeb3Instance } from "@/helpers/evmHandlers";
+import useETHBridgeContract from "@/hooks/useETHBridgeContract";
+import { EVMBridgeTXLock } from "@/models/contract/evm/contract.bridge";
+import { NETWORK_TYPE } from "@/models/network/network";
+import { WALLET_NAME } from "@/models/wallet";
+import { useZKContractState } from "@/providers/zkBridgeInitalize";
+import usersService from "@/services/usersService";
 import {
   getPersistSlice,
   getUISlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
-  useAppSelector,
-} from '@/store';
-import { TokenType } from '@/store/slices/persistSlice';
-import {
-  ModalConfirmBridgePayload,
-  uiSliceActions,
-} from '@/store/slices/uiSlice';
+  useAppSelector
+} from "@/store";
+import { TokenType } from "@/store/slices/persistSlice";
+import { ModalConfirmBridgePayload, uiSliceActions } from "@/store/slices/uiSlice";
 
 type BridgePayload = {
   modalPayload: ModalConfirmBridgePayload;
@@ -324,6 +315,8 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     if (!walletInstance || !networkInstance.src) return onError();
 
     try {
+      const { PublicKey, AccountUpdate, UInt64 } = await import('o1js');
+
       // first we need to prove tx
       setStatus(MODAL_CF_STATUS.INITIALIZE);
 
@@ -333,7 +326,6 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         modalPayload.asset.bridgeCtrAddr
       );
 
-      const { PublicKey, AccountUpdate, UInt64 } = await import('o1js');
       const update = await AccountUpdate.create(
         zkCtr.bridgeContract.bridgeAddress,
         zkCtr.erc20Contract.contractInstance?.tokenId
@@ -369,6 +361,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
             break;
         }
       }
+
       // end register account
       // build tx
       const tx = await zkCtr.bridgeContract.provider.transaction(
@@ -377,7 +370,6 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           sender: PublicKey.fromBase58(address),
           fee: UInt64.from(Number(0.1) * 1e9),
         },
-        // PublicKey.fromBase58(address),
         async () => {
           await zkCtr.bridgeContract!!.lock(
             modalPayload.destAddr,
@@ -388,7 +380,6 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
       // prove tx
       await tx.prove();
-      console.log('🚀 ~ useModalConfirmLogic ~ tx:', tx.toPretty());
 
       // only when a tx is proved then system will start send payment request
       setStatus(MODAL_CF_STATUS.LOADING);

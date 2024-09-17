@@ -1,8 +1,15 @@
-import { WALLET_NAME } from "./wallet.abstract";
-import WalletAuro from "./wallet.auro";
-import WalletMetamask from "./wallet.metamask";
+import { WALLET_NAME } from './wallet.abstract';
+import WalletAuro from './wallet.auro';
+import WalletMetamask from './wallet.metamask';
 
-import { IsServer } from "@/constants";
+import { IsServer } from '@/constants';
+
+export enum OS {
+  ANDROID = 'Android',
+  IOS = 'iOS',
+}
+
+export const MOBILE_SUPPORTS = [OS.ANDROID, OS.IOS];
 
 export type Wallet = WalletMetamask | WalletAuro;
 

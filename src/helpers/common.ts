@@ -4,13 +4,14 @@ import moment from 'moment';
 import { ListFileName, ZkContractType } from '@/configs/constants';
 BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
 
-export const isDevelopment = () => process.env.NEXT_PUBLIC_ENV === 'development';
+export const isDevelopment = () =>
+  process.env.NEXT_PUBLIC_ENV === 'development';
 export const isFnc = <F>(maybeFnc: F | unknown): maybeFnc is F =>
   typeof maybeFnc === 'function';
 
 export const truncateMid = (src: string, start: number, end: number) => [
-  src.slice(0, start),
-  src.slice(src.length - end, src.length),
+  src?.slice(0, start),
+  src?.slice(src.length - end, src.length),
 ];
 
 export const toWei = (

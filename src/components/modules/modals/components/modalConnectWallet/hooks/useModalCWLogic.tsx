@@ -4,7 +4,12 @@ import { useModalCWState } from '../context';
 import Card, { CARD_STATUS } from '../partials/card';
 
 import NETWORKS, { NETWORK_NAME } from '@/models/network';
-import WALLETS, { WALLET_NAME, Wallet } from '@/models/wallet';
+import WALLETS, {
+  MOBILE_SUPPORTS,
+  OS,
+  WALLET_NAME,
+  Wallet,
+} from '@/models/wallet';
 import { getPersistSlice, useAppSelector } from '@/store';
 
 const networkOrder = [NETWORK_NAME.MINA, NETWORK_NAME.ETHEREUM];
@@ -16,7 +21,15 @@ export default function useModalCWLogic() {
 
   const getNetworkCardStatus = useCallback(
     (key: NETWORK_NAME) => {
-      if (!state.isAcceptTerm) return CARD_STATUS.UNSUPPORTED;
+      if (!state.isAcceptTerm || !userDevice) return CARD_STATUS.UNSUPPORTED;
+
+      // Check mobile wallet support
+      if (
+        MOBILE_SUPPORTS.includes(userDevice.os?.name as OS) &&
+        key === NETWORK_NAME.ETHEREUM &&
+        window?.mina
+      )
+        return CARD_STATUS.UNSUPPORTED;
 
       switch (true) {
         case state.selectedNetwork === key:
@@ -63,10 +76,12 @@ export default function useModalCWLogic() {
       const nwInstance = NETWORKS[state.selectedNetwork];
       const isSelected = state.selectedWallet === key;
       const isSupported =
-        data.metadata.supportedNetwork.includes(state.selectedNetwork) &&
-        data.metadata.supportedDevices[nwInstance.type].includes(
-          userDevice.device?.type || ''
-        );
+        (data.metadata.supportedNetwork.includes(state.selectedNetwork) &&
+          data.metadata.supportedDevices[nwInstance.type].includes(
+            userDevice.device?.type || ''
+          )) ||
+        (MOBILE_SUPPORTS.includes(userDevice.os?.name as OS) &&
+          window?.[key === WALLET_NAME.METAMASK ? 'ethereum' : 'mina']);
 
       switch (true) {
         case isSelected:

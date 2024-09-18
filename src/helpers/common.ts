@@ -1,8 +1,10 @@
-import BigNumber from 'bignumber.js';
-import moment from 'moment';
+import BigNumber from "bignumber.js";
+import moment from "moment";
 
-import { ListFileName, ZkContractType } from '@/configs/constants';
-BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
+import { ListFileName, ZkContractType } from "@/configs/constants";
+
+// remove rounding config
+// BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
 
 export const isDevelopment = () =>
   process.env.NEXT_PUBLIC_ENV === 'development';
@@ -101,9 +103,9 @@ export function formatNumber(balance: string, decimals: string | number) {
   const balBN = new BigNumber(balance);
   const decNum = Number(decimals);
   if (decNum > 4) {
-    return zeroCutterEnd(balBN.toFixed(4));
+    return balBN.dp(4).toString(10);
   }
-  return zeroCutterEnd(balBN.toFixed(decNum));
+  return balBN.dp(decNum).toString(10);
 }
 
 export function formatNumber2(

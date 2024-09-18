@@ -1,4 +1,4 @@
-import { StyleProps } from '@chakra-ui/react';
+import { StyleProps } from "@chakra-ui/react";
 
 const styles: Record<string, Record<string, StyleProps>> = {
   global: {
@@ -14,6 +14,9 @@ const styles: Record<string, Record<string, StyleProps>> = {
       bgColor: 'primary.purple.05',
       borderRadius: '5px',
     },
+    '::-webkit-scrollbar-track': {
+      w: '0',
+    }
   },
 };
 

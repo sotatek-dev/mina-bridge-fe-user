@@ -16,6 +16,7 @@ export default function ModalLoading() {
         size: 'md',
         scrollBehavior: 'inside',
         isCentered: true,
+        closeOnOverlayClick: false,
       }}
     >
       <LoadingWithText

@@ -39,6 +39,8 @@ import {
 } from "@/store";
 import { persistSliceActions, TokenType } from "@/store/slices/persistSlice";
 
+const numberRegex = new RegExp(/^([0-9]{1,100}\.[0-9]{1,100})$|^([0-9]{1,100})\.?$|^\.([0-9]{1,100})?$/);
+
 export type FormBridgeAmountRef = null | { resetValue: () => void };
 
 type Props = {} & Pick<StackProps, ChakraBoxSizeProps>;
@@ -220,7 +222,16 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   }
 
   function handleChangeValue(e: React.ChangeEvent<HTMLInputElement>) {
+    console.log('test handleChangeValue', e.currentTarget.value);
     if (status.isLoading || isFetching || !asset || !isConnected) {
+      e.preventDefault();
+      return;
+    }
+    if (e.currentTarget.value === '') {
+      setValue('');
+      return;
+    }
+    if (!numberRegex.test(e.currentTarget.value)) {
       e.preventDefault();
       return;
     }
@@ -232,9 +243,6 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (
-      e.key === "e" ||
-      e.key === "+" ||
-      e.key === "-" ||
       status.isLoading ||
       isFetching ||
       !asset ||
@@ -345,7 +353,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
           maxLength={79}
           isInvalid={isConnected && !!error}
           size={"md_medium"}
-          type={"number"}
+          type={"string"}
           pr={"75px"}
           inputMode={"decimal"}
           title={""}

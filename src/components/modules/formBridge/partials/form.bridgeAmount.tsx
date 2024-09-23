@@ -222,7 +222,6 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   }
 
   function handleChangeValue(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log('test handleChangeValue', e.currentTarget.value);
     if (status.isLoading || isFetching || !asset || !isConnected) {
       e.preventDefault();
       return;

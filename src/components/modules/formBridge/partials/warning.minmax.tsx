@@ -139,10 +139,7 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
         ].map((e) => formatNumber(e, asset.decimals));
 
         cacheAssetMaxMin(asset, zkRes);
-        // TODO: fake asset range mina
-        // return updateAssetRage(zkRes);
-        return updateAssetRage(['0', '0.1']);
-
+        return updateAssetRage(zkRes);
       default:
         updateStatus('isLoading', false);
         return updateAssetRage(['0', '0']);

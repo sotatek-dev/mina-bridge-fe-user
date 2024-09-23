@@ -1,7 +1,7 @@
 {
     "apps": [
         {
-            "name": "develop-mina-user-runner",
+            "name": "develop-mina-user",
             "script": "yarn dev",
             "node_args": "",
             "instances": 1

@@ -141,7 +141,7 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
         cacheAssetMaxMin(asset, zkRes);
         // TODO: fake asset range mina
         // return updateAssetRage(zkRes);
-        return updateAssetRage(['0', '0.1']);
+        return updateAssetRage(['0', '0.3']);
 
       default:
         updateStatus('isLoading', false);

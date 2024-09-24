@@ -81,7 +81,15 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   const dpAmount = useMemo(() => {
     if (!modalPayload) return 0;
     const { asset, amount } = modalPayload;
-    return formatNumber(new BigNumber(amount).toString(), asset.decimals);
+
+    const minimumNumber = asset.decimals > 4
+      ? new BigNumber(10).pow(-4)
+      : new BigNumber(10).pow(-asset.decimals);
+    if (new BigNumber(amount).lt(minimumNumber)) {
+      return `~${new BigNumber(minimumNumber).toString(10)}`
+    }
+
+    return formatNumber(new BigNumber(amount).toString(), asset.decimals, BigNumber.ROUND_DOWN);
   }, [modalPayload]);
 
   function getReceivedAmount(params: {

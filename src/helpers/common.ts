@@ -99,13 +99,13 @@ export const getDecimal = (network: string) => {
   }
 };
 
-export function formatNumber(balance: string, decimals: string | number) {
+export function formatNumber(balance: string, decimals: string | number, roundMode: BigNumber.RoundingMode = BigNumber.ROUND_HALF_UP) {
   const balBN = new BigNumber(balance);
   const decNum = Number(decimals);
   if (decNum > 4) {
-    return balBN.dp(4).toString(10);
+    return balBN.dp(4, roundMode).toString(10);
   }
-  return balBN.dp(decNum).toString(10);
+  return balBN.dp(decNum, roundMode).toString(10);
 }
 
 export function formatNumber2(

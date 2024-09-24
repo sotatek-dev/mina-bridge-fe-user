@@ -282,8 +282,8 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     if (status.isLoading || isFetching || !asset || !isConnected) {
       return;
     }
-    setValue(formatNumber(balance, asset.decimals));
-    throttleActions(formatNumber(balance, asset.decimals));
+    setValue(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
+    throttleActions(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
   }
 
   useImperativeHandle(
@@ -385,7 +385,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       {status.isConnected ? (
         <HStack>
           <Text variant={"md"} color={"text.500"}>
-            Available: {asset && formatNumber(balance, asset.decimals)}{" "}
+            Available: {asset && formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)}{" "}
             {(asset?.symbol.toUpperCase() || "") + " "}
             Tokens
           </Text>

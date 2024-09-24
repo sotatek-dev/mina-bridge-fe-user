@@ -179,9 +179,6 @@ export default class WalletAuro extends Wallet {
         const [data, error] = await handleRequest(
           gql(network.metadata.proxyUrl, query, variables)
         );
-        console.log('test data', data);
-        console.log('test network.metadata.proxyUrl', network.metadata.proxyUrl);
-
         if (error || !data || !data.account) return '0';
         return formWei(data.account.balance.total, asset.decimals);
       }
@@ -203,5 +200,22 @@ export default class WalletAuro extends Wallet {
       throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
 
     return formWei(blnWei!!.toString(), asset.decimals);
+  }
+
+  async getNativeBalance(
+    network: Network,
+    userAddr: string,
+    asset: TokenType
+  ): Promise<string> {
+    const query = getAccountInfoQuery;
+    const variables = { publicKey: userAddr };
+    if ('proxyUrl' in network.metadata && network.metadata.proxyUrl) {
+      const [data, error] = await handleRequest(
+        gql(network.metadata.proxyUrl, query, variables)
+      );
+      if (error || !data || !data.account) return '0';
+      return formWei(data.account.balance.total, asset.decimals);
+    }
+    return '0';
   }
 }

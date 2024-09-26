@@ -1,7 +1,7 @@
-import BigNumber from "bignumber.js";
-import moment from "moment";
+import BigNumber from 'bignumber.js';
+import moment from 'moment';
 
-import { ListFileName, ZkContractType } from "@/configs/constants";
+import { ListFileName, ZkContractType } from '@/configs/constants';
 
 // remove rounding config
 // BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
@@ -99,7 +99,29 @@ export const getDecimal = (network: string) => {
   }
 };
 
-export function formatNumber(balance: string, decimals: string | number, roundMode: BigNumber.RoundingMode = BigNumber.ROUND_HALF_UP) {
+export function calculateAmountReceived(
+  amountFrom: number,
+  percentTip: number
+) {
+  // Ensure percentTip is within a valid range (0-100)
+  if (percentTip < 0 || percentTip > 100) {
+    throw new Error('Percent tip must be between 0 and 100');
+  }
+
+  // Convert percentTip to a decimal
+  const tipDecimal = percentTip / 100;
+
+  // Calculate the amount received using the formula
+  const amountReceived = amountFrom - amountFrom * tipDecimal;
+
+  return amountReceived;
+}
+
+export function formatNumber(
+  balance: string,
+  decimals: string | number,
+  roundMode: BigNumber.RoundingMode = BigNumber.ROUND_HALF_UP
+) {
   const balBN = new BigNumber(balance);
   const decNum = Number(decimals);
   if (decNum > 4) {
@@ -115,6 +137,8 @@ export function formatNumber2(
 ) {
   const balBN = new BigNumber(balance);
   const decNum = Number(decimals);
+  const minimumNumber =
+    decNum > 4 ? new BigNumber(10).pow(-4) : new BigNumber(10).pow(-decNum);
 
   let value = '0';
   if (decNum > 4) {
@@ -125,6 +149,10 @@ export function formatNumber2(
 
   if (value.includes('<')) {
     return value;
+  }
+
+  if (prefixCharacter?.includes('~') && balBN.lt(minimumNumber)) {
+    return `~${new BigNumber(minimumNumber).toString(10)}`;
   }
 
   if (prefixCharacter) {
@@ -196,4 +224,16 @@ export function fileSystem(files: any) {
     },
     canWrite: true,
   };
+}
+
+export function getScanUrl(networkName: string) {
+  // response from api not match defined enum NETWORK_NAME
+  const NETWORK_NAME = {
+    MINA: 'mina',
+    ETHER: 'eth',
+  };
+
+  return networkName === NETWORK_NAME.MINA
+    ? process.env.NEXT_PUBLIC_REQUIRED_MINA_SCAN_URL
+    : process.env.NEXT_PUBLIC_REQUIRED_ETH_SCAN_URL;
 }

@@ -7,9 +7,10 @@ import { handleAsync, handleRequest } from "@/helpers/asyncHandlers";
 import { formatNumber, formatNumber2, formWei, toWei, truncateMid } from "@/helpers/common";
 import { getWeb3Instance } from "@/helpers/evmHandlers";
 import useETHBridgeContract from "@/hooks/useETHBridgeContract";
+import useNotifier from "@/hooks/useNotifier";
 import { EVMBridgeTXLock } from "@/models/contract/evm/contract.bridge";
 import { NETWORK_TYPE } from "@/models/network/network";
-import { WALLET_NAME } from "@/models/wallet";
+import { WALLET_NAME, WalletAuro } from "@/models/wallet";
 import { useZKContractState } from "@/providers/zkBridgeInitalize";
 import usersService from "@/services/usersService";
 import {
@@ -42,9 +43,10 @@ type Params = {
 
 export default function useModalConfirmLogic({ modalName }: Params) {
   const dispatch = useAppDispatch();
+  const { sendNotification } = useNotifier();
   const { modals } = useAppSelector(getUISlice);
   const { listIcon } = useAppSelector(getPersistSlice);
-  const { address } = useAppSelector(getWalletSlice);
+  const { address, asset, } = useAppSelector(getWalletSlice);
   const { networkInstance, walletInstance } = useAppSelector(
     getWalletInstanceSlice
   );
@@ -79,7 +81,15 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   const dpAmount = useMemo(() => {
     if (!modalPayload) return 0;
     const { asset, amount } = modalPayload;
-    return formatNumber(new BigNumber(amount).toString(), asset.decimals);
+
+    const minimumNumber = asset.decimals > 4
+      ? new BigNumber(10).pow(-4)
+      : new BigNumber(10).pow(-asset.decimals);
+    if (new BigNumber(amount).lt(minimumNumber)) {
+      return `~${new BigNumber(minimumNumber).toString(10)}`
+    }
+
+    return formatNumber(new BigNumber(amount).toString(), asset.decimals, BigNumber.ROUND_DOWN);
   }, [modalPayload]);
 
   function getReceivedAmount(params: {
@@ -332,6 +342,20 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       );
       const accountIsNew = await update.account.isNew.getAndRequireEquals();
 
+      // check balance before transaction
+      if (walletInstance.name === WALLET_NAME.AURO && asset) {
+        const balance = await (walletInstance as WalletAuro).getNativeBalance(networkInstance.src, address, asset);
+        if (new BigNumber(balance).lt(0.1)) {
+          sendNotification({
+            toastType: 'error',
+            options: {
+              title: 'Insufficient MINA to handle transaction',
+            },
+          });
+          throw new Error('Insufficient MINA to handle transaction');
+        }
+      }
+
       // register account for the first time
       if (accountIsNew.toBoolean()) {
         const tx1 = await zkCtr.bridgeContract.provider.transaction(
@@ -359,6 +383,20 @@ export default function useModalConfirmLogic({ modalName }: Params) {
             break;
           default:
             break;
+        }
+      }
+
+      // check balance before transaction
+      if (walletInstance.name === WALLET_NAME.AURO && asset) {
+        const balance = await (walletInstance as WalletAuro).getNativeBalance(networkInstance.src, address, asset);
+        if (new BigNumber(balance).lt(0.1)) {
+          sendNotification({
+            toastType: 'error',
+            options: {
+              title: 'Insufficient MINA to handle transaction',
+            },
+          });
+          throw new Error('Insufficient MINA to handle transaction');
         }
       }
 

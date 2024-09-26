@@ -6,7 +6,7 @@ on:
       - "develop"
 jobs:
   Deploy:
-    runs-on: [mina-bridge-fe-runner]
+    runs-on: [develop-mina-user-runner]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -19,4 +19,6 @@ jobs:
       - run: |
           rm -rf .next
           yarn
+          yarn build
+          cp .env.example .env
           pm2 restart develop.pm2.json

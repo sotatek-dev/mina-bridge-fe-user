@@ -1,22 +1,22 @@
 'use client';
-import { Box, Center, Container } from "@chakra-ui/react";
-import { redirect, usePathname } from "next/navigation";
-import { PropsWithChildren, useEffect, useState } from "react";
+import { Box, Center, Container } from '@chakra-ui/react';
+import { usePathname, useRouter } from 'next/navigation';
+import { PropsWithChildren, useEffect, useState } from 'react';
 
-import LoadingWithText from "@/components/elements/loading/spinner.text";
-import UnmatchedChain from "@/components/layouts/banners/unmatchedChain";
-import Header from "@/components/layouts/header";
-import Modals from "@/components/modules/modals";
-import NotiReporter from "@/components/modules/notiReporter";
-import ROUTES, { PROTECTED_ROUTES } from "@/configs/routes";
-import useChakraTheme from "@/hooks/useChakraTheme";
-import useDeviceCheck from "@/hooks/useDeviceCheck";
-import useInitPersistData from "@/hooks/useInitPersistData";
-import useLoadWalletInstances from "@/hooks/useLoadWalletInstances";
-import useWalletEvents from "@/hooks/useWalletEvents";
-import useWeb3Injected from "@/hooks/useWeb3Injected";
-import { useZKContractState } from "@/providers/zkBridgeInitalize";
-import { getWalletSlice, useAppSelector } from "@/store";
+import LoadingWithText from '@/components/elements/loading/spinner.text';
+import UnmatchedChain from '@/components/layouts/banners/unmatchedChain';
+import Header from '@/components/layouts/header';
+import Modals from '@/components/modules/modals';
+import NotiReporter from '@/components/modules/notiReporter';
+import ROUTES, { PROTECTED_ROUTES } from '@/configs/routes';
+import useChakraTheme from '@/hooks/useChakraTheme';
+import useDeviceCheck from '@/hooks/useDeviceCheck';
+import useInitPersistData from '@/hooks/useInitPersistData';
+import useLoadWalletInstances from '@/hooks/useLoadWalletInstances';
+import useWalletEvents from '@/hooks/useWalletEvents';
+import useWeb3Injected from '@/hooks/useWeb3Injected';
+import { useZKContractState } from '@/providers/zkBridgeInitalize';
+import { getWalletSlice, useAppSelector } from '@/store';
 
 type Props = PropsWithChildren<{}>;
 
@@ -29,6 +29,7 @@ function WrapperLayout({ children }: Props) {
   useDeviceCheck();
 
   const pathname = usePathname();
+  const router = useRouter();
   const { isConnected } = useAppSelector(getWalletSlice);
   const { isInitializing } = useZKContractState().state;
   const isNotPOAScreen = pathname !== ROUTES.PROOF_OF_ASSETS;
@@ -44,7 +45,7 @@ function WrapperLayout({ children }: Props) {
 
   useEffect(() => {
     if (!isConnected && PROTECTED_ROUTES.includes(pathname as ROUTES))
-      redirect(ROUTES.HOME);
+      router.replace(ROUTES.HOME);
   }, [isConnected, pathname]);
 
   return (

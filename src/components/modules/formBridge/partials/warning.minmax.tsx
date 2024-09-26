@@ -140,7 +140,6 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
 
         cacheAssetMaxMin(asset, zkRes);
         return updateAssetRage(zkRes);
-
       default:
         updateStatus('isLoading', false);
         return updateAssetRage(['0', '0']);

@@ -1,5 +1,8 @@
-import HistoryContent from './content';
-import HistoryProvider from './context';
+'use client';
+import dynamic from 'next/dynamic';
+
+const HistoryContent = dynamic(() => import('./content'), { ssr: false });
+const HistoryProvider = dynamic(() => import('./context'), { ssr: false });
 
 const History = () => {
   return (

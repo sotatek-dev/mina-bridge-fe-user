@@ -39,6 +39,8 @@ import {
 } from "@/store";
 import { persistSliceActions, TokenType } from "@/store/slices/persistSlice";
 
+const numberRegex = new RegExp(/^([0-9]{1,100}\.[0-9]{1,100})$|^([0-9]{1,100})\.?$|^\.([0-9]{1,100})?$/);
+
 export type FormBridgeAmountRef = null | { resetValue: () => void };
 
 type Props = {} & Pick<StackProps, ChakraBoxSizeProps>;
@@ -224,6 +226,14 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       e.preventDefault();
       return;
     }
+    if (e.currentTarget.value === '') {
+      setValue('');
+      return;
+    }
+    if (!numberRegex.test(e.currentTarget.value)) {
+      e.preventDefault();
+      return;
+    }
     // in case delete value, reset amount to avoid user quickly submit
     if (e.currentTarget.value.length < 1) updateAmount("");
     const newValue = zeroCutterStart(e.currentTarget.value);
@@ -232,9 +242,6 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (
-      e.key === "e" ||
-      e.key === "+" ||
-      e.key === "-" ||
       status.isLoading ||
       isFetching ||
       !asset ||
@@ -275,8 +282,8 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     if (status.isLoading || isFetching || !asset || !isConnected) {
       return;
     }
-    setValue(formatNumber(balance, asset.decimals));
-    throttleActions(formatNumber(balance, asset.decimals));
+    setValue(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
+    throttleActions(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
   }
 
   useImperativeHandle(
@@ -345,7 +352,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
           maxLength={79}
           isInvalid={isConnected && !!error}
           size={"md_medium"}
-          type={"number"}
+          type={"string"}
           pr={"75px"}
           inputMode={"decimal"}
           title={""}
@@ -378,7 +385,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       {status.isConnected ? (
         <HStack>
           <Text variant={"md"} color={"text.500"}>
-            Available: {asset && formatNumber(balance, asset.decimals)}{" "}
+            Available: {asset && formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)}{" "}
             {(asset?.symbol.toUpperCase() || "") + " "}
             Tokens
           </Text>

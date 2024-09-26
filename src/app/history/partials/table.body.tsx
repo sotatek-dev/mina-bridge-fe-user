@@ -10,17 +10,16 @@ import {
   formWei,
   formatDateAndTime,
   getDecimal,
+  getScanUrl,
   truncatedNumber,
 } from '@/helpers/common';
 import { HistoryResponse } from '@/services/usersService';
-import { getWalletInstanceSlice, useAppSelector } from '@/store';
 
 type PropsBodyTable = {
   data: HistoryResponse[];
 };
 
 function BodyTable({ data }: PropsBodyTable) {
-  const { networkInstance } = useAppSelector(getWalletInstanceSlice);
   return (
     <Tbody>
       {data.map((item) => {
@@ -35,7 +34,7 @@ function BodyTable({ data }: PropsBodyTable) {
                 tokenName={item.tokenFromName}
                 txHash={item.txHashLock}
                 networkName={item.networkFrom}
-                scanUrl={networkInstance.src?.metadata.scanUrl}
+                scanUrl={getScanUrl(item.networkFrom)}
               />
             </Td>
             <Td borderBottom={'solid 1px #E4E4E7'}>
@@ -44,7 +43,7 @@ function BodyTable({ data }: PropsBodyTable) {
                 tokenName={item.tokenReceivedName!!}
                 txHash={item.txHashUnlock}
                 networkName={item.networkReceived}
-                scanUrl={networkInstance.tar?.metadata.scanUrl}
+                scanUrl={getScanUrl(item.networkReceived)}
               />
             </Td>
             <Td borderBottom={'solid 1px #E4E4E7'}>

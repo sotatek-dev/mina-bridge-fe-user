@@ -1,28 +1,37 @@
-import BigNumber from "bignumber.js";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import BigNumber from 'bignumber.js';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { MODAL_NAME } from "@/configs/modal";
-import { IsServer } from "@/constants";
-import { handleAsync, handleRequest } from "@/helpers/asyncHandlers";
-import { formatNumber, formatNumber2, formWei, toWei, truncateMid } from "@/helpers/common";
-import { getWeb3Instance } from "@/helpers/evmHandlers";
-import useETHBridgeContract from "@/hooks/useETHBridgeContract";
-import useNotifier from "@/hooks/useNotifier";
-import { EVMBridgeTXLock } from "@/models/contract/evm/contract.bridge";
-import { NETWORK_TYPE } from "@/models/network/network";
-import { WALLET_NAME, WalletAuro } from "@/models/wallet";
-import { useZKContractState } from "@/providers/zkBridgeInitalize";
-import usersService from "@/services/usersService";
+import { MODAL_NAME } from '@/configs/modal';
+import { IsServer } from '@/constants';
+import { handleAsync, handleRequest } from '@/helpers/asyncHandlers';
+import {
+  formatNumber,
+  formatNumber2,
+  formWei,
+  toWei,
+  truncateMid,
+} from '@/helpers/common';
+import { getWeb3Instance } from '@/helpers/evmHandlers';
+import useETHBridgeContract from '@/hooks/useETHBridgeContract';
+import useNotifier from '@/hooks/useNotifier';
+import { EVMBridgeTXLock } from '@/models/contract/evm/contract.bridge';
+import { NETWORK_TYPE } from '@/models/network/network';
+import { WALLET_NAME, WalletAuro } from '@/models/wallet';
+import { useZKContractState } from '@/providers/zkBridgeInitalize';
+import usersService from '@/services/usersService';
 import {
   getPersistSlice,
   getUISlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
-  useAppSelector
-} from "@/store";
-import { TokenType } from "@/store/slices/persistSlice";
-import { ModalConfirmBridgePayload, uiSliceActions } from "@/store/slices/uiSlice";
+  useAppSelector,
+} from '@/store';
+import { TokenType } from '@/store/slices/persistSlice';
+import {
+  ModalConfirmBridgePayload,
+  uiSliceActions,
+} from '@/store/slices/uiSlice';
 
 type BridgePayload = {
   modalPayload: ModalConfirmBridgePayload;
@@ -46,7 +55,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   const { sendNotification } = useNotifier();
   const { modals } = useAppSelector(getUISlice);
   const { listIcon } = useAppSelector(getPersistSlice);
-  const { address, asset, } = useAppSelector(getWalletSlice);
+  const { address, asset } = useAppSelector(getWalletSlice);
   const { networkInstance, walletInstance } = useAppSelector(
     getWalletInstanceSlice
   );
@@ -82,14 +91,19 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     if (!modalPayload) return 0;
     const { asset, amount } = modalPayload;
 
-    const minimumNumber = asset.decimals > 4
-      ? new BigNumber(10).pow(-4)
-      : new BigNumber(10).pow(-asset.decimals);
+    const minimumNumber =
+      asset.decimals > 4
+        ? new BigNumber(10).pow(-4)
+        : new BigNumber(10).pow(-asset.decimals);
     if (new BigNumber(amount).lt(minimumNumber)) {
-      return `~${new BigNumber(minimumNumber).toString(10)}`
+      return `~${new BigNumber(minimumNumber).toString(10)}`;
     }
 
-    return formatNumber(new BigNumber(amount).toString(), asset.decimals, BigNumber.ROUND_DOWN);
+    return formatNumber(
+      new BigNumber(amount).toString(),
+      asset.decimals,
+      BigNumber.ROUND_DOWN
+    );
   }, [modalPayload]);
 
   function getReceivedAmount(params: {
@@ -160,6 +174,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       protocolFee,
       asset,
     });
+
     return [
       {
         label: 'Asset:',
@@ -344,7 +359,11 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
       // check balance before transaction
       if (walletInstance.name === WALLET_NAME.AURO && asset) {
-        const balance = await (walletInstance as WalletAuro).getNativeBalance(networkInstance.src, address, asset);
+        const balance = await (walletInstance as WalletAuro).getNativeBalance(
+          networkInstance.src,
+          address,
+          asset
+        );
         if (new BigNumber(balance).lt(0.1)) {
           sendNotification({
             toastType: 'error',
@@ -388,7 +407,11 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
       // check balance before transaction
       if (walletInstance.name === WALLET_NAME.AURO && asset) {
-        const balance = await (walletInstance as WalletAuro).getNativeBalance(networkInstance.src, address, asset);
+        const balance = await (walletInstance as WalletAuro).getNativeBalance(
+          networkInstance.src,
+          address,
+          asset
+        );
         if (new BigNumber(balance).lt(0.1)) {
           sendNotification({
             toastType: 'error',

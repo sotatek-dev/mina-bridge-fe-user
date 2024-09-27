@@ -121,12 +121,11 @@ class UsersService {
     );
   }
 
-  getProtocolFee(payload: { pairId: string | number; amount: string }) {
-    return this.service.post<{ amount: string }>(
+  getProtocolFee(payload: { pairId: string | number }) {
+    return this.service.post<{ gasFee: string, tipRate: string, decimal: string }>(
       `${this.baseURL}/${USERS_ENDPOINT.BRIDGE}/${USERS_ENDPOINT.PROTOCOL_FEE}`,
       {
         pairId: Number(payload.pairId),
-        amount: payload.amount,
       }
     );
   }

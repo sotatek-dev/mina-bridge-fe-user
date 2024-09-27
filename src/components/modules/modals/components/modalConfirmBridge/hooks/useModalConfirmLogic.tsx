@@ -1,37 +1,27 @@
-import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import BigNumber from "bignumber.js";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { MODAL_NAME } from '@/configs/modal';
-import { IsServer } from '@/constants';
-import { handleAsync, handleRequest } from '@/helpers/asyncHandlers';
-import {
-  formatNumber,
-  formatNumber2,
-  formWei,
-  toWei,
-  truncateMid,
-} from '@/helpers/common';
-import { getWeb3Instance } from '@/helpers/evmHandlers';
-import useETHBridgeContract from '@/hooks/useETHBridgeContract';
-import useNotifier from '@/hooks/useNotifier';
-import { EVMBridgeTXLock } from '@/models/contract/evm/contract.bridge';
-import { NETWORK_TYPE } from '@/models/network/network';
-import { WALLET_NAME, WalletAuro } from '@/models/wallet';
-import { useZKContractState } from '@/providers/zkBridgeInitalize';
-import usersService from '@/services/usersService';
+import { MODAL_NAME } from "@/configs/modal";
+import { IsServer } from "@/constants";
+import { handleRequest } from "@/helpers/asyncHandlers";
+import { formatNumber, formatNumber2, formWei, toWei, truncateMid } from "@/helpers/common";
+import useETHBridgeContract from "@/hooks/useETHBridgeContract";
+import useNotifier from "@/hooks/useNotifier";
+import { EVMBridgeTXLock } from "@/models/contract/evm/contract.bridge";
+import { NETWORK_TYPE } from "@/models/network/network";
+import { WALLET_NAME, WalletAuro } from "@/models/wallet";
+import { useZKContractState } from "@/providers/zkBridgeInitalize";
+import usersService from "@/services/usersService";
 import {
   getPersistSlice,
   getUISlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
-  useAppSelector,
-} from '@/store';
-import { TokenType } from '@/store/slices/persistSlice';
-import {
-  ModalConfirmBridgePayload,
-  uiSliceActions,
-} from '@/store/slices/uiSlice';
+  useAppSelector
+} from "@/store";
+import { TokenType } from "@/store/slices/persistSlice";
+import { ModalConfirmBridgePayload, uiSliceActions } from "@/store/slices/uiSlice";
 
 type BridgePayload = {
   modalPayload: ModalConfirmBridgePayload;
@@ -64,8 +54,9 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
   const [isAgreeTerm, setIsAgreeTerm] = useState<boolean>(false);
   const [status, setStatus] = useState<MODAL_CF_STATUS>(MODAL_CF_STATUS.IDLE);
-  const [transferFee, setTransferFee] = useState<string>('0');
-  const [protocolFee, setProtocolFee] = useState<string>('0');
+  // const [transferFee, setTransferFee] = useState<string>('0');
+  const [gasFee, setGasFee] = useState<string>('0');
+  const [tipFee, setTipFee] = useState<string>('0');
 
   const curModal = useMemo(() => modals[modalName], [modalName, modals]);
 
@@ -108,34 +99,47 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
   function getReceivedAmount(params: {
     balance: string;
-    transferFee: string;
-    protocolFee: string;
     amount: string;
     asset: TokenType;
+    tipFee: string;
+    gasFee: string;
   }) {
-    const amBn = new BigNumber(params.amount);
-    const balBn = new BigNumber(params.balance);
-    const tFeeBn = new BigNumber(params.transferFee);
-    console.log('🚀 ~ useModalConfirmLogic ~ tFeeBn:', tFeeBn.toString());
-    const pFeeBn = new BigNumber(params.protocolFee);
-    console.log('🚀 ~ useModalConfirmLogic ~ pFeeBn:', pFeeBn.toString());
+    // const amBn = new BigNumber(params.amount);
+    // const balBn = new BigNumber(params.balance);
+    // const pFeeBn = new BigNumber(params.protocolFee);
+    // const tFeeBn = new BigNumber(params.transferFee);
+    // console.log('🚀 ~ useModalConfirmLogic ~ tFeeBn:', tFeeBn.toString());
+    // const pFeeBn = new BigNumber(params.protocolFee);
+    // console.log('🚀 ~ useModalConfirmLogic ~ pFeeBn:', pFeeBn.toString());
+    //
+    // const diffBalTFee = balBn.minus(tFeeBn); // compare balance with transaction fee
+    // const diffBalTFeeAm = diffBalTFee.minus(amBn); // compare balance with amount and transfer fee
+    // const isAmHasToOffset = diffBalTFeeAm.isNegative(); // check if amount have to pay for transfer fee
+    // const feeBn = isAmHasToOffset
+    //   ? pFeeBn.plus(diffBalTFeeAm.multipliedBy(-1))
+    //   : pFeeBn;
+    // const AmOffsetAmount = isAmHasToOffset
+    //   ? diffBalTFeeAm.multipliedBy(-1)
+    //   : '0';
+    //
+    // console.log('🚀 ~ useModalConfirmLogic ~ feeBn:', feeBn.toString());
+    // return {
+    //   receivedAmount: amBn.minus(feeBn).toString(),
+    //   transferAmount: amBn.minus(AmOffsetAmount).toString(),
+    //   fee: feeBn.toString(),
+    // };
 
-    const diffBalTFee = balBn.minus(tFeeBn); // compare balance with transaction fee
-    const diffBalTFeeAm = diffBalTFee.minus(amBn); // compare balance with amount and transfer fee
-    const isAmHasToOffset = diffBalTFeeAm.isNegative(); // check if amount have to pay for transfer fee
-    const feeBn = isAmHasToOffset
-      ? pFeeBn.plus(diffBalTFeeAm.multipliedBy(-1))
-      : pFeeBn;
-    const AmOffsetAmount = isAmHasToOffset
-      ? diffBalTFeeAm.multipliedBy(-1)
-      : '0';
+    const amountBn = new BigNumber(params.amount);
+    const balanceBn = new BigNumber(params.balance);
+    const tipFeeBn = new BigNumber(params.tipFee);
+    const gasFeeBn = new BigNumber(params.gasFee);
 
-    console.log('🚀 ~ useModalConfirmLogic ~ feeBn:', feeBn.toString());
     return {
-      receivedAmount: amBn.minus(feeBn).toString(),
-      transferAmount: amBn.minus(AmOffsetAmount).toString(),
-      fee: feeBn.toString(),
-    };
+      receivedAmount: amountBn.minus(tipFee).toString(),
+      transferAmount: amountBn.toString(),
+      tipFeeAmount: tipFeeBn.toString(),
+      gasFeeAmount: gasFeeBn.toString()
+    }
   }
 
   const displayValues = useMemo(() => {
@@ -152,7 +156,12 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           affixIcon: '',
         },
         {
-          label: 'Protocol fee:',
+          label: 'Tip fee:',
+          value: '~',
+          affixIcon: '',
+        },
+        {
+          label: 'Gas fee:',
           value: '~',
           affixIcon: '',
         },
@@ -167,12 +176,12 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     const [addrStart, addrEnd] = truncateMid(destAddr, 4, 4);
     const assetIcon = listIcon.find((e) => e.symbol === asset.symbol);
 
-    const { receivedAmount, fee } = getReceivedAmount({
-      amount,
+    const { receivedAmount, tipFeeAmount, gasFeeAmount } = getReceivedAmount({
       balance,
-      transferFee,
-      protocolFee,
+      amount,
       asset,
+      tipFee,
+      gasFee,
     });
 
     return [
@@ -187,9 +196,18 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         affixIcon: assetIcon?.icon || '',
       },
       {
-        label: 'Protocol fee:',
+        label: 'Tip fee:',
         value: `${formatNumber2(
-          fee,
+          tipFeeAmount,
+          asset.decimals,
+          '~'
+        )} ${asset.symbol.toUpperCase()}`,
+        affixIcon: assetIcon?.icon || '',
+      },
+      {
+        label: 'Unlocking fee:',
+        value: `${formatNumber2(
+          gasFeeAmount,
           asset.decimals,
           '~'
         )} ${asset.symbol.toUpperCase()}`,
@@ -205,7 +223,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         affixIcon: assetIcon?.icon || '',
       },
     ];
-  }, [modalPayload, listIcon, transferFee, protocolFee]);
+  }, [modalPayload, listIcon, gasFee]);
 
   function toggleAgreeTerm() {
     setIsAgreeTerm((prev) => !prev);
@@ -215,16 +233,16 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     modalPayload && modalPayload.onFinish();
     setIsAgreeTerm(false);
     setStatus(MODAL_CF_STATUS.SUCCESS);
-    setTransferFee('0');
-    setProtocolFee('0');
+    setGasFee('0');
+    setTipFee('0');
     return true;
   }
   function onError(): false {
     modalPayload && modalPayload.onError();
     setIsAgreeTerm(false);
     setStatus(MODAL_CF_STATUS.ERROR);
-    setTransferFee('0');
-    setProtocolFee('0');
+    setGasFee('0');
+    setTipFee('0');
     return false;
   }
 
@@ -232,8 +250,8 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     modalPayload && modalPayload.onFinish();
     setStatus(MODAL_CF_STATUS.IDLE);
     setIsAgreeTerm(false);
-    setTransferFee('0');
-    setProtocolFee('0');
+    setGasFee('0');
+    setTipFee('0');
   }
 
   const handleCloseModal = useCallback(() => {
@@ -244,11 +262,15 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     const [res, error] = await handleRequest(
       usersService.getProtocolFee({
         pairId: modalPayload.asset.pairId,
-        amount: toWei(modalPayload.amount, modalPayload.asset.decimals),
       })
     );
-    if (error || !res) return setProtocolFee('0');
-    return setProtocolFee(formWei(res.amount, modalPayload.asset.decimals));
+    if (error || !res) {
+      setGasFee("0");
+      setTipFee('0');
+      return;
+    }
+    setGasFee(formWei(res.gasFee, res.decimal));
+    setTipFee(new BigNumber(modalPayload.amount).times(res.tipRate).div(100).toString())
   }
 
   function buildEVMBridgeTX(
@@ -264,56 +286,56 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     });
   }
 
-  async function EVMBridgeTXGasEstimate(
-    modalPayload: ModalConfirmBridgePayload,
-    userAddr: string
-  ) {
-    if (!modalPayload.isNativeCurrency || !bridgeEVMCtr)
-      return setTransferFee('0');
-    const tx = buildEVMBridgeTX(modalPayload);
-    if (!tx) return setTransferFee('0');
-    const [res, error] = await handleAsync(
-      {
-        tx,
-        userAddr,
-      },
-      async (params) => {
-        // const sendValue = modalPayload.isNativeCurrency
-        //   ? toWei(modalPayload.amount, modalPayload.asset.decimals)
-        //   : '0';
-        // console.log('🚀 ~ sendValue:', sendValue);
-        const gasPrice = await getWeb3Instance(
-          bridgeEVMCtr.provider
-        ).eth.getGasPrice();
-        console.log('🚀 ~ gasPrice:', gasPrice);
-        // const gasAmount = await params.tx.estimateGas({
-        //   from: params.userAddr,
-        //   value: sendValue,
-        // });
-        const gasAmount = '100000';
-        return { gasPrice, gasAmount };
-      }
-    );
-
-    if (error || !res) return setTransferFee('0');
-    const priceBN = new BigNumber(res.gasPrice?.toString() || '0').multipliedBy(
-      10
-    );
-    console.log('🚀 ~ useModalConfirmLogic ~ priceBN:', priceBN.toString());
-    const amountBN = new BigNumber(res.gasAmount.toString());
-    console.log('🚀 ~ useModalConfirmLogic ~ amountBN:', amountBN.toString());
-    console.log(
-      '🚀 ~ useModalConfirmLogic ~ amountBN multiple:',
-      amountBN.multipliedBy(priceBN).toString()
-    );
-
-    return setTransferFee(
-      formWei(
-        amountBN.multipliedBy(priceBN).toString(),
-        modalPayload.asset.decimals
-      )
-    );
-  }
+  // async function EVMBridgeTXGasEstimate(
+  //   modalPayload: ModalConfirmBridgePayload,
+  //   userAddr: string
+  // ) {
+  //   if (!modalPayload.isNativeCurrency || !bridgeEVMCtr)
+  //     return setTransferFee('0');
+  //   const tx = buildEVMBridgeTX(modalPayload);
+  //   if (!tx) return setTransferFee('0');
+  //   const [res, error] = await handleAsync(
+  //     {
+  //       tx,
+  //       userAddr,
+  //     },
+  //     async (params) => {
+  //       // const sendValue = modalPayload.isNativeCurrency
+  //       //   ? toWei(modalPayload.amount, modalPayload.asset.decimals)
+  //       //   : '0';
+  //       // console.log('🚀 ~ sendValue:', sendValue);
+  //       const gasPrice = await getWeb3Instance(
+  //         bridgeEVMCtr.provider
+  //       ).eth.getGasPrice();
+  //       console.log('🚀 ~ gasPrice:', gasPrice);
+  //       // const gasAmount = await params.tx.estimateGas({
+  //       //   from: params.userAddr,
+  //       //   value: sendValue,
+  //       // });
+  //       const gasAmount = process.env.NEXT_PUBLIC_ESTIMATE_GAS_AMOUNT || '50000';
+  //       return { gasPrice, gasAmount };
+  //     }
+  //   );
+  //
+  //   if (error || !res) return setTransferFee('0');
+  //   const priceBN = new BigNumber(res.gasPrice?.toString() || '0').multipliedBy(
+  //     process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10
+  //   );
+  //   console.log('🚀 ~ useModalConfirmLogic ~ priceBN:', priceBN.toString());
+  //   const amountBN = new BigNumber(res.gasAmount.toString());
+  //   console.log('🚀 ~ useModalConfirmLogic ~ amountBN:', amountBN.toString());
+  //   console.log(
+  //     '🚀 ~ useModalConfirmLogic ~ amountBN multiple:',
+  //     amountBN.multipliedBy(priceBN).toString()
+  //   );
+  //
+  //   return setTransferFee(
+  //     formWei(
+  //       amountBN.multipliedBy(priceBN).toString(),
+  //       modalPayload.asset.decimals
+  //     )
+  //   );
+  // }
 
   async function handleEVMBridge(
     tx: EVMBridgeTXLock,
@@ -482,10 +504,10 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         if (modalPayload.isNativeCurrency) {
           const { transferAmount } = getReceivedAmount({
             balance,
-            transferFee,
-            protocolFee,
             amount,
             asset,
+            tipFee,
+            gasFee
           });
           console.log('🚀 ~ handleConfirm ~ receivedAmount:', transferAmount);
           const emitTx = buildEVMBridgeTX({
@@ -514,17 +536,17 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   }
 
   // get transaction fee in evm chain
-  useEffect(() => {
-    if (
-      !modalPayload ||
-      !address ||
-      !curModal.isOpen ||
-      !networkInstance.src ||
-      networkInstance.src.type !== NETWORK_TYPE.EVM
-    )
-      return;
-    EVMBridgeTXGasEstimate(modalPayload, address);
-  }, [modalPayload, address, curModal.isOpen, networkInstance.src]);
+  // useEffect(() => {
+  //   if (
+  //     !modalPayload ||
+  //     !address ||
+  //     !curModal.isOpen ||
+  //     !networkInstance.src ||
+  //     networkInstance.src.type !== NETWORK_TYPE.EVM
+  //   )
+  //     return;
+  //   EVMBridgeTXGasEstimate(modalPayload, address);
+  // }, [modalPayload, address, curModal.isOpen, networkInstance.src]);
 
   // get protocol fee
   useEffect(() => {
@@ -533,7 +555,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   }, [curModal.isOpen, modalPayload]);
 
   return {
-    transferFee,
+    // transferFee,
     dpAmount,
     status,
     modalPayload,

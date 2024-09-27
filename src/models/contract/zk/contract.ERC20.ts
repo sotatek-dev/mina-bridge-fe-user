@@ -35,9 +35,6 @@ export default class ERC20Contract {
     this.provider = Mina;
     this.tokenAddress = PublicKey.fromBase58(tokenAddress);
     this.contractInstance = new FungibleToken(this.tokenAddress);
-    this.hooks = PublicKey.fromBase58(
-      process.env.NEXT_PUBLIC_MINA_HOOKS_ADDRESS || ''
-    );
   }
 
   static async init() {
@@ -93,9 +90,6 @@ export default class ERC20Contract {
       publicKey: PublicKey.fromBase58(bridgeAddress),
       tokenId: this.contractInstance!!.tokenId,
     });
-
-    // console.log('-----fetch hook account', this.hooks);
-    // await fetchAccount({ publicKey: this.hooks });
   }
 
   async getBalance(userAddr: string) {

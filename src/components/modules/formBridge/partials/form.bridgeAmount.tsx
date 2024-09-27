@@ -103,20 +103,20 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       const nwFee = lastNetworkFee[srcNetwork.name];
       if (
         nwFee.timestamp &&
-        moment(moment.now()).diff(moment(nwFee.timestamp), "minute") <= 5
+        moment(moment.now()).diff(moment(nwFee.timestamp), "seconds") <= 10
       ) {
         return;
       }
     }
 
-    const gasAmount = "100000";
+    const gasAmount = process.env.NEXT_PUBLIC_ESTIMATE_GAS_AMOUNT || '50000';
     updateStatus("isLoading", true);
 
     const [gasPrice, error] = await handleRequest(
       getWeb3Instance(nwProvider).eth.getGasPrice()
     );
     if (error || !gasPrice) return "0";
-    const priceBN = new BigNumber(gasPrice?.toString() || "0").multipliedBy(10);
+    const priceBN = new BigNumber(gasPrice?.toString() || "0").multipliedBy(process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10);
     const amountBN = new BigNumber(gasAmount.toString());
     updateStatus("isLoading", false);
     dispatch(
@@ -190,33 +190,33 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
 
       setError(null);
       // additional filter for evm chain
-      if (
-        srcNetwork &&
-        srcNetwork.type === NETWORK_TYPE.EVM &&
-        lastNetworkFee
-      ) {
-        const tFee = lastNetworkFee[srcNetwork.name].value;
-        const tFeeBn = new BigNumber(tFee);
-        const diffBalTFeeAm = balanceBN.minus(tFeeBn).minus(bn); // compare balance with amount and transfer fee
-        const isAmHasToOffset = diffBalTFeeAm.isNegative(); // check if amount have to pay for transfer fee
-
-        // amount of transfer value have to offset
-        const AmOffsetAmount = isAmHasToOffset
-          ? diffBalTFeeAm.multipliedBy(-1)
-          : "0";
-        const tfAmount = bn.minus(AmOffsetAmount);
-        // if balance less then fee then user balance is not enough to bridge
-        const isBalanceLTFee = balanceBN.minus(tFeeBn).isLessThan(0);
-
-        // if transfer amount couldn't pay for offset
-        const isInvalidTransferAm = tfAmount.isLessThan(0);
-
-        // if transfer amount not exceed minimum amount
-        const isTransferAmLTMin = tfAmount.isLessThan(min);
-
-        if (isBalanceLTFee || isInvalidTransferAm || isTransferAmLTMin)
-          return dpError("insufficient_fund_fee");
-      }
+      // if (
+      //   srcNetwork &&
+      //   srcNetwork.type === NETWORK_TYPE.EVM &&
+      //   lastNetworkFee
+      // ) {
+      //   const tFee = lastNetworkFee[srcNetwork.name].value;
+      //   const tFeeBn = new BigNumber(tFee);
+      //   const diffBalTFeeAm = balanceBN.minus(tFeeBn).minus(bn); // compare balance with amount and transfer fee
+      //   const isAmHasToOffset = diffBalTFeeAm.isNegative(); // check if amount have to pay for transfer fee
+      //
+      //   // amount of transfer value have to offset
+      //   const AmOffsetAmount = isAmHasToOffset
+      //     ? diffBalTFeeAm.multipliedBy(-1)
+      //     : "0";
+      //   const tfAmount = bn.minus(AmOffsetAmount);
+      //   // if balance less than fee then user balance is not enough to bridge
+      //   const isBalanceLTFee = balanceBN.minus(tFeeBn).isLessThan(0);
+      //
+      //   // if transfer amount couldn't pay for offset
+      //   const isInvalidTransferAm = tfAmount.isLessThan(0);
+      //
+      //   // if transfer amount not exceed minimum amount
+      //   const isTransferAmLTMin = tfAmount.isLessThan(min);
+      //
+      //   if (isBalanceLTFee || isInvalidTransferAm || isTransferAmLTMin)
+      //     return dpError("insufficient_fund_fee");
+      // }
       updateAmount(value);
     }, ITV.MS5);
   }
@@ -282,8 +282,20 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     if (status.isLoading || isFetching || !asset || !isConnected) {
       return;
     }
-    setValue(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
-    throttleActions(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
+    if (
+      srcNetwork &&
+      srcNetwork.type === NETWORK_TYPE.EVM &&
+      lastNetworkFee
+    ) {
+      const estimateFee = lastNetworkFee[srcNetwork.name].value || '0';
+      const maxAmount = new BigNumber(balance).minus(estimateFee).toString(10);
+      setValue(formatNumber(maxAmount, asset.decimals, BigNumber.ROUND_DOWN));
+      throttleActions(formatNumber(maxAmount, asset.decimals, BigNumber.ROUND_DOWN));
+    }
+    else {
+      setValue(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
+      throttleActions(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
+    }
   }
 
   useImperativeHandle(
@@ -330,7 +342,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     switch (srcNetwork.type) {
       case NETWORK_TYPE.EVM:
         estimateFee();
-        itvFetchEVMFee.current = setInterval(estimateFee, ITV.M5); // 5min
+        itvFetchEVMFee.current = setInterval(estimateFee, ITV.S10); // 10 seconds
         return () => {
           clearInterval(itvFetchEVMFee.current);
           itvFetchEVMFee.current = null;

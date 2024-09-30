@@ -9,6 +9,8 @@ export default function ModalLoading() {
   const { modals } = useAppSelector(getUISlice);
   const payload = modals.loading.payload as ModalLoadingPayload;
 
+  console.log('Payload: ', payload?.titleLoading);
+
   return (
     <CustomModal
       modalName={MODAL_NAME.LOADING}

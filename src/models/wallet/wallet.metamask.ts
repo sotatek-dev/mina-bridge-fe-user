@@ -1,12 +1,8 @@
-import { MetaMaskInpageProvider, RequestArguments } from '@metamask/providers';
-import Web3, { ProviderMessage, ProviderRpcError } from 'web3';
+import { MetaMaskInpageProvider, RequestArguments } from "@metamask/providers";
+import Web3, { ProviderMessage, ProviderRpcError } from "web3";
 
-import { PROVIDER_TYPE, ProviderType } from '../contract/evm/contract';
-import Network, {
-  getZKChainIdName,
-  NETWORK_NAME,
-  NETWORK_TYPE,
-} from '../network/network';
+import { PROVIDER_TYPE, ProviderType } from "../contract/evm/contract";
+import Network, { getZKChainIdName, NETWORK_NAME, NETWORK_TYPE } from "../network/network";
 
 import Wallet, {
   URL_INSTALL_ANDROID,
@@ -14,15 +10,15 @@ import Wallet, {
   URL_INSTALL_IOS,
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
-  WALLET_NAME,
-} from './wallet.abstract';
+  WALLET_NAME
+} from "./wallet.abstract";
 
-import ITV from '@/configs/time';
-import { IsServer } from '@/constants';
-import { handleException, handleRequest } from '@/helpers/asyncHandlers';
-import { formWei } from '@/helpers/common';
-import { getWeb3Instance } from '@/helpers/evmHandlers';
-import { TokenType } from '@/store/slices/persistSlice';
+import ITV from "@/configs/time";
+import { IsServer } from "@/constants";
+import { handleRequest } from "@/helpers/asyncHandlers";
+import { formWei } from "@/helpers/common";
+import { getWeb3Instance } from "@/helpers/evmHandlers";
+import { TokenType } from "@/store/slices/persistSlice";
 
 export type WalletMetamaskEvents =
   | {
@@ -227,7 +223,6 @@ export default class WalletMetamask extends Wallet {
     return '0';
   }
 
-  // TODO: N is not function
   async getBalance(
     network: Network,
     userAddr: string,
@@ -310,6 +305,9 @@ export default class WalletMetamask extends Wallet {
         // );
         // if (initCtrError || !ctr) return '0';
 
+        if (asset.network === NETWORK_NAME.ETHEREUM) {
+          return '';
+        }
         const ctr = new ERC20Contract();
         await ctr.setInfo(asset.tokenAddr, network);
 

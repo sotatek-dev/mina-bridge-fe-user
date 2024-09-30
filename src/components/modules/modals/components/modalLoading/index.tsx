@@ -12,6 +12,9 @@ export default function ModalLoading() {
   return (
     <CustomModal
       modalName={MODAL_NAME.LOADING}
+      hiddenCloseButton={'Waiting for confirmation'.includes(
+        payload?.titleLoading
+      )}
       modalOptions={{
         size: 'md',
         scrollBehavior: 'inside',

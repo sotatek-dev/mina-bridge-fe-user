@@ -1,6 +1,6 @@
-import axiosService, { AxiosService } from "./axiosService";
+import axiosService, { AxiosService } from './axiosService';
 
-import { USERS_ENDPOINT } from "@/services/config";
+import { USERS_ENDPOINT } from '@/services/config';
 
 export type SupportedPairResponse = {
   id: number;
@@ -40,6 +40,8 @@ export type HistoryResponse = {
   blockNumber: string;
   blockTimeLock: string;
   protocolFee: string | null;
+  tip: string;
+  gasFee: string;
   event: string;
   returnValues: string;
   errorDetail: string | null;
@@ -91,18 +93,24 @@ class UsersService {
     );
 
     // TODO: remove fake data if data from BE is updated
-    for (let i = 0; i < res.length; i++){
+    for (let i = 0; i < res.length; i++) {
       if (res[i].fromAddress === '0x0000000000000000000000000000000000000000') {
-        process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS && (res[i].toAddress = process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS);
-        process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS && (res[i].toScAddress = process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS);
+        process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS &&
+          (res[i].toAddress = process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS);
+        process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS &&
+          (res[i].toScAddress =
+            process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS);
       }
       if (res[i].toAddress === '0x0000000000000000000000000000000000000000') {
-        process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS && (res[i].fromAddress = process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS);
-        process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS && (res[i].fromScAddress = process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS);
+        process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS &&
+          (res[i].fromAddress = process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS);
+        process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS &&
+          (res[i].fromScAddress =
+            process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS);
       }
     }
 
-    console.log('fake asset', {...res});
+    console.log('fake asset', { ...res });
     return res;
   }
 

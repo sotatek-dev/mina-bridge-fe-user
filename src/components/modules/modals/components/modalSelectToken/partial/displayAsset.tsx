@@ -1,20 +1,15 @@
 'use client';
-import { Button, HStack, Image, Text, VStack } from '@chakra-ui/react';
-import React, { useEffect, useMemo, useState } from 'react';
-import { NumericFormat } from 'react-number-format';
+import { Button, HStack, Image, Text, VStack } from "@chakra-ui/react";
+import React, { useEffect, useMemo, useState } from "react";
+import { NumericFormat } from "react-number-format";
 
-import { useModalSTState } from '../context';
+import { useModalSTState } from "../context";
 
-import { formatNumber } from '@/helpers/common';
-import { Network } from '@/models/network';
-import { Wallet } from '@/models/wallet';
-import {
-  getPersistSlice,
-  getWalletInstanceSlice,
-  getWalletSlice,
-  useAppSelector,
-} from '@/store';
-import { TokenType } from '@/store/slices/persistSlice';
+import { formatNumber } from "@/helpers/common";
+import { Network } from "@/models/network";
+import { Wallet } from "@/models/wallet";
+import { getPersistSlice, getWalletInstanceSlice, getWalletSlice, useAppSelector } from "@/store";
+import { TokenType } from "@/store/slices/persistSlice";
 
 type Props = { data: TokenType };
 

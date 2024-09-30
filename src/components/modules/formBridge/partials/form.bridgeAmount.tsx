@@ -49,7 +49,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   type ErrorType = keyof typeof ErrorList | null;
   const dispatch = useAppDispatch();
   const { address, isConnected } = useAppSelector(getWalletSlice);
-  const { walletInstance } = useAppSelector(getWalletInstanceSlice);
+  const { walletInstance , networkInstance} = useAppSelector(getWalletInstanceSlice);
 
   const {
     status,
@@ -310,7 +310,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   );
 
   useEffect(() => {
-    if (!address || !asset || !walletInstance || !srcNetwork) {
+    if (!address || !asset || !walletInstance || !srcNetwork || !networkInstance.src || srcNetwork.name !== networkInstance.src.name) {
       updateBalance("0");
       return;
     }

@@ -1,15 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from "react";
 
-import { MODAL_NAME } from '@/configs/modal';
-import { IsServer } from '@/constants';
-import Network, { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
-import {
-  getUISlice,
-  getWalletInstanceSlice,
-  getWalletSlice,
-  useAppSelector,
-} from '@/store';
-import { TokenType } from '@/store/slices/persistSlice';
+import { MODAL_NAME } from "@/configs/modal";
+import { IsServer } from "@/constants";
+import Network, { NETWORK_NAME, NETWORK_TYPE } from "@/models/network/network";
+import { getUISlice, getWalletInstanceSlice, getWalletSlice, useAppSelector } from "@/store";
+import { TokenType } from "@/store/slices/persistSlice";
 
 export type ZKContractCtxValueType = {
   state: {
@@ -80,7 +75,6 @@ export default function ZKContractProvider({
         '@/models/contract/zk/contract.Bridge'
       );
 
-      // TODO: fix compile failed
       await ERC20Ctr.init();
       await BridgeCtr.init();
 

@@ -36,11 +36,6 @@ export default function useWalletEvents() {
   const isMinaSnap =
     walletKey === WALLET_NAME.METAMASK && networkName.src === NETWORK_NAME.MINA;
 
-  const bannerUnmatchedChain = useMemo(
-    () => banners[BANNER_NAME.UNMATCHED_CHAIN_ID],
-    [banners]
-  );
-
   async function checkMatchedNetwork(wallet: Wallet, nw: Network) {
     const curChain = await wallet.getNetwork(nw.type);
 
@@ -58,13 +53,12 @@ export default function useWalletEvents() {
           },
         })
       );
-    if (bannerUnmatchedChain.isDisplay)
-      return dispatch(
-        uiSliceActions.closeBanner({
-          bannerName: BANNER_NAME.UNMATCHED_CHAIN_ID,
-        })
-      );
-    return;
+
+    return dispatch(
+      uiSliceActions.closeBanner({
+        bannerName: BANNER_NAME.UNMATCHED_CHAIN_ID,
+      })
+    );
   }
 
   // native event
@@ -108,8 +102,12 @@ export default function useWalletEvents() {
           const chainId = typeof chain === 'string' ? chain : chain?.networkID;
 
           if (
-            chainId.toLowerCase() !==
-            getZKChainIdName(networkInstance.src.metadata.chainId).toLowerCase()
+            walletKey === WALLET_NAME.AURO
+              ? chainId.toLowerCase() !== networkInstance.src.metadata.chainId
+              : chainId.toLowerCase() !==
+                getZKChainIdName(
+                  networkInstance.src.metadata.chainId
+                ).toLowerCase()
           )
             return dispatch(
               uiSliceActions.openBanner({
@@ -119,17 +117,12 @@ export default function useWalletEvents() {
                 },
               })
             );
-          const isBannerDisplayed =
-            store.getState().ui.banners[BANNER_NAME.UNMATCHED_CHAIN_ID]
-              .isDisplay;
 
-          if (isBannerDisplayed)
-            return dispatch(
-              uiSliceActions.closeBanner({
-                bannerName: BANNER_NAME.UNMATCHED_CHAIN_ID,
-              })
-            );
-          return;
+          return dispatch(
+            uiSliceActions.closeBanner({
+              bannerName: BANNER_NAME.UNMATCHED_CHAIN_ID,
+            })
+          );
         },
       },
       isSnap ? networkInstance.src.type : undefined

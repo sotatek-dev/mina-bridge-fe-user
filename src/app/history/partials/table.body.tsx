@@ -49,14 +49,22 @@ function BodyTable({ data }: PropsBodyTable) {
             <Td borderBottom={'solid 1px #E4E4E7'}>
               <Text variant={'lg'} color={'text.900'}>
                 {`${truncatedNumber(
-                  item.protocolFee
-                    ? formWei(
-                        item.protocolFee,
-                        getDecimal(item.networkReceived)
-                      )
+                  item.tip
+                    ? formWei(item.tip, getDecimal(item.networkReceived))
                     : '0.00'
                 )} ${_.isEmpty(item.tokenReceivedName) ? '' : item.tokenReceivedName}`}
               </Text>
+            </Td>
+            <Td borderBottom={'solid 1px #E4E4E7'}>
+              <Text variant={'lg'} color={'text.900'}>
+                {`${truncatedNumber(
+                  item.gasFee
+                    ? formWei(item.gasFee, getDecimal(item.networkReceived))
+                    : '0.00'
+                )} ${_.isEmpty(item.tokenReceivedName) ? '' : item.tokenReceivedName}`}
+              </Text>
+            </Td>
+            <Td borderBottom={'solid 1px #E4E4E7'}>
               <Text variant={'md'} color={'text.500'}>
                 {formatDateAndTime(item.blockTimeLock)}
               </Text>

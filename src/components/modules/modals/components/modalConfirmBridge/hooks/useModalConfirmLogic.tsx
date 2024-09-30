@@ -1,27 +1,37 @@
-import BigNumber from "bignumber.js";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import BigNumber from 'bignumber.js';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { MODAL_NAME } from "@/configs/modal";
-import { IsServer } from "@/constants";
-import { handleRequest } from "@/helpers/asyncHandlers";
-import { formatNumber, formatNumber2, formWei, toWei, truncateMid } from "@/helpers/common";
-import useETHBridgeContract from "@/hooks/useETHBridgeContract";
-import useNotifier from "@/hooks/useNotifier";
-import { EVMBridgeTXLock } from "@/models/contract/evm/contract.bridge";
-import { NETWORK_NAME, NETWORK_TYPE } from "@/models/network/network";
-import { WALLET_NAME, WalletAuro } from "@/models/wallet";
-import { useZKContractState } from "@/providers/zkBridgeInitalize";
-import usersService from "@/services/usersService";
+import { MODAL_NAME } from '@/configs/modal';
+import { IsServer } from '@/constants';
+import { handleAsync, handleRequest } from '@/helpers/asyncHandlers';
+import {
+  formatNumber,
+  formatNumber2,
+  formWei,
+  toWei,
+  truncateMid,
+} from '@/helpers/common';
+import { getWeb3Instance } from '@/helpers/evmHandlers';
+import useETHBridgeContract from '@/hooks/useETHBridgeContract';
+import useNotifier from '@/hooks/useNotifier';
+import { EVMBridgeTXLock } from '@/models/contract/evm/contract.bridge';
+import { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
+import { WALLET_NAME, WalletAuro } from '@/models/wallet';
+import { useZKContractState } from '@/providers/zkBridgeInitalize';
+import usersService from '@/services/usersService';
 import {
   getPersistSlice,
   getUISlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
-  useAppSelector
-} from "@/store";
-import { TokenType } from "@/store/slices/persistSlice";
-import { ModalConfirmBridgePayload, uiSliceActions } from "@/store/slices/uiSlice";
+  useAppSelector,
+} from '@/store';
+import { TokenType } from '@/store/slices/persistSlice';
+import {
+  ModalConfirmBridgePayload,
+  uiSliceActions,
+} from '@/store/slices/uiSlice';
 
 type BridgePayload = {
   modalPayload: ModalConfirmBridgePayload;
@@ -205,7 +215,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         affixIcon: assetIcon?.icon || '',
       },
       {
-        label: asset.network === NETWORK_NAME.ETHEREUM ? 'Unlocking fee:' : 'Minting Fee',
+        label: asset.network === NETWORK_NAME.ETHEREUM ? 'Minting Fee' : 'Unlocking fee:',
         value: `${formatNumber2(
           gasFeeAmount,
           asset.decimals,

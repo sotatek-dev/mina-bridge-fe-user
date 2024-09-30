@@ -155,7 +155,6 @@ export default class WalletAuro extends Wallet {
     if (walletChainId === network.metadata.chainId) return true;
     const [_, error] = await this.handleRequestWithError(
       this.InjectedObject.switchChain({
-        // TODO: check type of old version
         // chainId: network.metadata.chainId.toLowerCase(),
         networkID: network.metadata.chainId.toLowerCase(),
       })
@@ -164,7 +163,6 @@ export default class WalletAuro extends Wallet {
     return true;
   }
 
-  // TODO: N is not function
   async getBalance(
     network: Network,
     userAddr: string,

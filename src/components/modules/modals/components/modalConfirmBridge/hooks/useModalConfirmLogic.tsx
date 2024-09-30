@@ -205,7 +205,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         affixIcon: assetIcon?.icon || '',
       },
       {
-        label: asset.network === NETWORK_NAME.ETHEREUM ? 'Unlocking fee:' : 'Minting Fee',
+        label: asset.network === NETWORK_NAME.ETHEREUM ? 'Minting Fee' : 'Unlocking fee:',
         value: `${formatNumber2(
           gasFeeAmount,
           asset.decimals,

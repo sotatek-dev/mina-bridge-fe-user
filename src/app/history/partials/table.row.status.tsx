@@ -52,7 +52,7 @@ function RowStatus({ status, networkName }: RowStatusProps) {
     return (
       <Flex align={'center'}>
         <Box {...boxStyle} bg={'red.500'} />
-        <Text as={'span'}>No token pair</Text>
+        <Text as={'span'}>Failed</Text>
       </Flex>
     );
 }

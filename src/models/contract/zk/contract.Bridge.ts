@@ -81,8 +81,8 @@ export default class BridgeContract {
     const bridgeInstance = this.bridgeInstance;
 
     return handleAsync(null, async () => ({
-      min: await bridgeInstance.minAmount.get(),
-      max: await bridgeInstance.maxAmount.get(),
+      min: await bridgeInstance.minAmount.getAndRequireEquals(),
+      max: await bridgeInstance.maxAmount.getAndRequireEquals(),
     }));
   }
 

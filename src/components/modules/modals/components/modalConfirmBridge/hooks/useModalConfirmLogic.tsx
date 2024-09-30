@@ -15,7 +15,7 @@ import { getWeb3Instance } from '@/helpers/evmHandlers';
 import useETHBridgeContract from '@/hooks/useETHBridgeContract';
 import useNotifier from '@/hooks/useNotifier';
 import { EVMBridgeTXLock } from '@/models/contract/evm/contract.bridge';
-import { NETWORK_TYPE } from '@/models/network/network';
+import { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
 import { WALLET_NAME, WalletAuro } from '@/models/wallet';
 import { useZKContractState } from '@/providers/zkBridgeInitalize';
 import usersService from '@/services/usersService';
@@ -171,7 +171,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           affixIcon: '',
         },
         {
-          label: 'Gas fee:',
+          label: 'Unlocking/Minting fee:',
           value: '~',
           affixIcon: '',
         },
@@ -215,7 +215,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         affixIcon: assetIcon?.icon || '',
       },
       {
-        label: 'Unlocking fee:',
+        label: asset.network === NETWORK_NAME.ETHEREUM ? 'Unlocking fee:' : 'Minting Fee',
         value: `${formatNumber2(
           gasFeeAmount,
           asset.decimals,

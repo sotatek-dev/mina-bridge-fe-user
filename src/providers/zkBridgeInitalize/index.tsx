@@ -115,6 +115,7 @@ export default function ZKContractProvider({
       !networkInstance.src ||
       networkInstance.src.type !== NETWORK_TYPE.ZK ||
       !asset ||
+      asset.network !== networkInstance.src.name ||
       isInitialized ||
       modalConnectWallet.isOpen ||
       modalConnectWalletSuccess.isOpen

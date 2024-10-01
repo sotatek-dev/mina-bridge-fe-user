@@ -133,8 +133,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     );
     return;
   }
-
-  // async function checkBalance() {
+  
   async function checkBalance(
     address: string,
     asset: TokenType,
@@ -142,6 +141,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     walletInstance: Wallet
   ) {
     if (isFetching) return;
+    if (srcNetwork.name !== asset.network) return;
 
     setIsFetching(true);
     const [res, error] = await handleRequest(

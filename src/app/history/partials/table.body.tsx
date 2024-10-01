@@ -61,7 +61,7 @@ function BodyTable({ data }: PropsBodyTable) {
               </Text>
             </Td>
             <Td borderBottom={'solid 1px #E4E4E7'}>
-              <Text variant={'md'} color={'text.900'}>
+              <Text variant={'lg'} color={'text.900'}>
                 {formatDateAndTime(item.blockTimeLock)}
               </Text>
             </Td>

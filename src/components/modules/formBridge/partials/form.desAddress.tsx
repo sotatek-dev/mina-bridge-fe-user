@@ -43,7 +43,7 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
     const { updateDesAddr } = useFormBridgeState().methods;
     const { status } = useFormBridgeState().state;
     const [value, setValue] = useState<string>('');
-    const { networkName } = useAppSelector(getWalletSlice);
+    const { networkName, isConnected } = useAppSelector(getWalletSlice);
     const { networkInstance } = useAppSelector(getWalletInstanceSlice);
 
     // const [tarWallet, setTarWallet] = useState<Wallet | null>(null);
@@ -167,6 +167,7 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
           </InputLeftElement> */}
           <Input
             size={'md_medium'}
+            isDisabled={!isConnected}
             // pl="44px"
             pl={'12px'}
             value={value}

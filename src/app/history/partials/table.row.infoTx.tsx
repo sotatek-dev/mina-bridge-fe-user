@@ -29,7 +29,7 @@ function InfoTransaction({
   const value = amount ? formWei(amount, getDecimal(networkName)) : '0.00';
   return (
     <>
-      <Text variant={'md'} color={'text.500'}>
+      <Text variant={'md'} color={'text.900'}>
         {`${truncatedNumber(value, 0.0001)} ${_.isEmpty(tokenName) ? '' : tokenName}`}
       </Text>
 

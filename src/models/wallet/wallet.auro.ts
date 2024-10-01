@@ -1,6 +1,6 @@
-import MinaProvider, { ChainInfoArgs } from "@aurowallet/mina-provider";
+import MinaProvider, { ChainInfoArgs } from '@aurowallet/mina-provider';
 
-import Network, { NETWORK_NAME, NETWORK_TYPE } from "../network/network";
+import Network, { NETWORK_NAME, NETWORK_TYPE } from '../network/network';
 
 import Wallet, {
   URL_INSTALL_ANDROID,
@@ -8,15 +8,15 @@ import Wallet, {
   URL_INSTALL_IOS,
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
-  WALLET_NAME
-} from "./wallet.abstract";
+  WALLET_NAME,
+} from './wallet.abstract';
 
-import { IsServer } from "@/constants";
-import { gql } from "@/grapql";
-import { getAccountInfoQuery } from "@/grapql/queries";
-import { handleRequest } from "@/helpers/asyncHandlers";
-import { formWei } from "@/helpers/common";
-import { TokenType } from "@/store/slices/persistSlice";
+import { IsServer } from '@/constants';
+import { gql } from '@/grapql';
+import { getAccountInfoQuery } from '@/grapql/queries';
+import { handleRequest } from '@/helpers/asyncHandlers';
+import { formWei } from '@/helpers/common';
+import { TokenType } from '@/store/slices/persistSlice';
 
 type MinaRequestResType<T> = SplitType<T>[0];
 type MinaRequestErrorType<T> = SplitType<T>[1];
@@ -60,7 +60,7 @@ export default class WalletAuro extends Wallet {
           checked: '/assets/logos/logo.auro.circle.svg',
           supported: '/assets/logos/logo.auro.circle.svg',
           unchecked: '/assets/logos/logo.auro.circle.svg',
-          unsupported: '/assets/logos/logo.auro.unsupported.svg',
+          unsupported: '/assets/logos/logo.auro.circle.svg',
         },
         installationURL: {
           pc: URL_INSTALL_EXTENSION.AURO,

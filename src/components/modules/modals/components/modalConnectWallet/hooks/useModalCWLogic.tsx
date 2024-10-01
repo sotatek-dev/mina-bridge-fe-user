@@ -73,6 +73,11 @@ export default function useModalCWLogic() {
   const getWalletCardStatus = useCallback(
     (key: WALLET_NAME, data: Wallet) => {
       if (!state.isAcceptTerm || !userDevice) return CARD_STATUS.UNSUPPORTED;
+
+      const isSnap =
+        key === WALLET_NAME.METAMASK &&
+        state.selectedNetwork === NETWORK_NAME.MINA;
+
       const nwInstance = NETWORKS[state.selectedNetwork];
       const isSelected = state.selectedWallet === key;
       const isSupported =
@@ -81,6 +86,7 @@ export default function useModalCWLogic() {
             userDevice.device?.type || ''
           )) ||
         (MOBILE_SUPPORTS.includes(userDevice.os?.name as OS) &&
+          !isSnap &&
           window?.[key === WALLET_NAME.METAMASK ? 'ethereum' : 'mina']);
 
       switch (true) {

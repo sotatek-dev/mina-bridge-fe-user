@@ -332,6 +332,10 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     };
   }, [address, asset, walletInstance, srcNetwork, txEmitCount]);
 
+  useEffect(() => {
+    throttleActions(value);
+  }, [balance])
+
   // frequently get gas price
   useEffect(() => {
     if (!srcNetwork) return;

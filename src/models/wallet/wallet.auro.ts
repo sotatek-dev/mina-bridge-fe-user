@@ -56,11 +56,11 @@ export default class WalletAuro extends Wallet {
         supportedNetwork: [NETWORK_NAME.MINA],
         InjectedObject: WALLET_INJECT_OBJ.AURO,
         logo: {
-          base: '/assets/logos/logo.auro.circle.svg',
-          checked: '/assets/logos/logo.auro.circle.svg',
-          supported: '/assets/logos/logo.auro.circle.svg',
-          unchecked: '/assets/logos/logo.auro.circle.svg',
-          unsupported: '/assets/logos/logo.auro.circle.svg',
+          base: '/assets/logos/logo.auro.png',
+          checked: '/assets/logos/logo.auro.png',
+          supported: '/assets/logos/logo.auro.png',
+          unchecked: '/assets/logos/logo.auro.png',
+          unsupported: '/assets/logos/logo.auro.png',
         },
         installationURL: {
           pc: URL_INSTALL_EXTENSION.AURO,

@@ -140,7 +140,6 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     return;
   }
 
-  // async function checkBalance() {
   async function checkBalance(
     address: string,
     asset: TokenType,
@@ -148,6 +147,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     walletInstance: Wallet
   ) {
     if (isFetching) return;
+    if (srcNetwork.name !== asset.network) return;
 
     setIsFetching(true);
     const [res, error] = await handleRequest(
@@ -285,11 +285,34 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     }
     if (srcNetwork && srcNetwork.type === NETWORK_TYPE.EVM && lastNetworkFee) {
       const estimateFee = lastNetworkFee[srcNetwork.name].value || '0';
-      const maxAmount = new BigNumber(balance).minus(estimateFee).toString(10);
-      setValue(formatNumber(maxAmount, asset.decimals, BigNumber.ROUND_DOWN));
-      throttleActions(
-        formatNumber(maxAmount, asset.decimals, BigNumber.ROUND_DOWN)
-      );
+      const maxAmount = new BigNumber(balance).minus(estimateFee);
+
+      if (maxAmount.lte(0)) {
+        sendNotification({
+          toastType: 'warning',
+          options: {
+            title: `Current Estimate fee is ${new BigNumber(estimateFee).dp(4).toString(10)} and greater than account balance`,
+          },
+        });
+
+        setValue('0');
+        throttleActions('0');
+      } else {
+        setValue(
+          formatNumber(
+            maxAmount.toString(10),
+            asset.decimals,
+            BigNumber.ROUND_DOWN
+          )
+        );
+        throttleActions(
+          formatNumber(
+            maxAmount.toString(10),
+            asset.decimals,
+            BigNumber.ROUND_DOWN
+          )
+        );
+      }
     } else {
       setValue(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
       throttleActions(

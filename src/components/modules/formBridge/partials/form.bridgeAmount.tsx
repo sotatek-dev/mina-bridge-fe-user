@@ -22,14 +22,14 @@ import React, {
 
 import { useFormBridgeState } from '../context';
 
-import Loading from '@/components/elements/loading/spinner';
-import ITV from '@/configs/time';
-import { handleRequest } from '@/helpers/asyncHandlers';
-import { formatNumber, formWei, zeroCutterStart } from '@/helpers/common';
-import { getWeb3Instance } from '@/helpers/evmHandlers';
-import useNotifier from '@/hooks/useNotifier';
-import Network, { NETWORK_TYPE } from '@/models/network/network';
-import { Wallet } from '@/models/wallet';
+import Loading from "@/components/elements/loading/spinner";
+import ITV from "@/configs/time";
+import { handleRequest } from "@/helpers/asyncHandlers";
+import { formatNumber, fromWei, zeroCutterStart } from "@/helpers/common";
+import { getWeb3Instance } from "@/helpers/evmHandlers";
+import useNotifier from "@/hooks/useNotifier";
+import Network, { NETWORK_TYPE } from "@/models/network/network";
+import { Wallet } from "@/models/wallet";
 import {
   getPersistSlice,
   getWalletInstanceSlice,
@@ -129,7 +129,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       persistSliceActions.setLastNwFee({
         nw: srcNetwork.name,
         data: {
-          value: formWei(
+          value: fromWei(
             amountBN.multipliedBy(priceBN).toString(),
             asset.decimals
           ),

@@ -1,25 +1,17 @@
 'use client';
-import {
-  Badge,
-  Button,
-  Flex,
-  HStack,
-  Image,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { NumericFormat } from 'react-number-format';
-import Web3 from 'web3';
+import { Badge, Button, Flex, HStack, Image, Text, VStack } from "@chakra-ui/react";
+import BigNumber from "bignumber.js";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Web3 from "web3";
 
-import { handleRequest } from '@/helpers/asyncHandlers';
-import { formWei, truncateMid } from '@/helpers/common';
-import useNotifier from '@/hooks/useNotifier';
-import { Network } from '@/models/network';
-import { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
-import { getEtherAccountScan } from '@/models/network/network.ethereum';
-import { getMinaAccountScan } from '@/models/network/network.mina';
-import { TokenType } from '@/store/slices/persistSlice';
+import { handleRequest } from "@/helpers/asyncHandlers";
+import { formatNumber, fromWei, truncateMid } from "@/helpers/common";
+import useNotifier from "@/hooks/useNotifier";
+import { Network } from "@/models/network";
+import { NETWORK_NAME, NETWORK_TYPE } from "@/models/network/network";
+import { getEtherAccountScan } from "@/models/network/network.ethereum";
+import { getMinaAccountScan } from "@/models/network/network.mina";
+import { TokenType } from "@/store/slices/persistSlice";
 
 type Props = {
   asset: TokenType;
@@ -62,7 +54,7 @@ export default function DisplayBalance({
         if (error || !res) {
           return setBalance('0');
         }
-        return setBalance(formWei(res.toString(), asset.decimals));
+        return setBalance(fromWei(res.toString(), asset.decimals));
       case NETWORK_TYPE.ZK:
         return setBalance('0');
 
@@ -154,14 +146,15 @@ export default function DisplayBalance({
       <VStack alignItems={'flex-start'} mr={'auto'} gap={'4px'}>
         {balance !== '0' && (
           <Text variant={'xl_semiBold'} color={'text.900'}>
-            <NumericFormat
-              value={balance}
-              thousandSeparator={','}
-              decimalScale={4}
-              decimalSeparator={'.'}
-              displayType={'text'}
-              renderText={(value) => value + ' '}
-            />
+            {/*<NumericFormat*/}
+            {/*  value={balance}*/}
+            {/*  thousandSeparator={','}*/}
+            {/*  decimalScale={4}*/}
+            {/*  decimalSeparator={'.'}*/}
+            {/*  displayType={'text'}*/}
+            {/*  renderText={(value) => value + ' '}*/}
+            {/*/>*/}
+            {formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)}
             {asset.symbol}
           </Text>
         )}

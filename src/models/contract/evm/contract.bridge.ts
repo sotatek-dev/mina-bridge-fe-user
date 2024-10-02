@@ -4,7 +4,7 @@ import { PayableMethodObject } from "web3-eth-contract";
 import Contract, { InitializeContractType } from "./contract";
 
 import ABIBridgeETH from "@/configs/ABIs/evm/Bridge_ETH";
-import { formWei, toWei } from "@/helpers/common";
+import { fromWei, toWei } from "@/helpers/common";
 import { TokenType } from "@/store/slices/persistSlice";
 
 type ABIType = typeof ABIBridgeETH;
@@ -48,7 +48,7 @@ export default class BridgeContract extends Contract<ABIType> {
     console.log(
       '🚀 ~ BridgeContract ~ emitVal:',
       emitVal,
-      formWei(emitVal, asset.decimals)
+      fromWei(emitVal, asset.decimals)
     );
     return this.contractInstance.methods.lock(tkAddr, desAddr, emitVal);
   }

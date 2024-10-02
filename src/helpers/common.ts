@@ -60,7 +60,7 @@ export const truncatedNumber = (value: string, minumumNumber = 0.0001) => {
     .toFormat();
 };
 
-export const formWei = (amount: string | number, decimal: string | number) => {
+export const fromWei = (amount: string | number, decimal: string | number) => {
   decimal = typeof decimal === 'number' ? decimal : parseInt(decimal);
   if (decimal != 0) {
     const amountToBN = new BigNumber(amount);

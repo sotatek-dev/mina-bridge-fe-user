@@ -1,19 +1,13 @@
 'use client';
-import { Tbody, Td, Text, Tr } from '@chakra-ui/react';
-import _ from 'lodash';
-import React from 'react';
+import { Tbody, Td, Text, Tr } from "@chakra-ui/react";
+import _ from "lodash";
+import React from "react";
 
-import InfoTransaction from './table.row.infoTx';
-import RowStatus from './table.row.status';
+import InfoTransaction from "./table.row.infoTx";
+import RowStatus from "./table.row.status";
 
-import {
-  formWei,
-  formatDateAndTime,
-  getDecimal,
-  getScanUrl,
-  truncatedNumber,
-} from '@/helpers/common';
-import { HistoryResponse } from '@/services/usersService';
+import { formatDateAndTime, getScanUrl, truncatedNumber } from "@/helpers/common";
+import { HistoryResponse } from "@/services/usersService";
 
 type PropsBodyTable = {
   data: HistoryResponse[];

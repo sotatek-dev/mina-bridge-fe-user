@@ -1,14 +1,14 @@
 'use client';
-import { Heading, Text } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { Heading } from "@chakra-ui/react";
+import { useEffect, useRef } from "react";
 
-import { DailyQuota, useFormBridgeState } from '../context';
+import { DailyQuota, useFormBridgeState } from "../context";
 
-import ITV from '@/configs/time';
-import { handleRequest } from '@/helpers/asyncHandlers';
-import { formWei, formatNumber } from '@/helpers/common';
-import usersService from '@/services/usersService';
-import { getWalletSlice, useAppSelector } from '@/store';
+import ITV from "@/configs/time";
+import { handleRequest } from "@/helpers/asyncHandlers";
+import { formatNumber, fromWei } from "@/helpers/common";
+import usersService from "@/services/usersService";
+import { getWalletSlice, useAppSelector } from "@/store";
 
 const initialData: DailyQuota = {
   max: '0',
@@ -31,9 +31,9 @@ export default function FormDailyQuota() {
     );
     if (error || !res) return updateQuota({ ...initialData });
     return updateQuota({
-      max: res.dailyQuota.dailyQuota,
+      max: formatNumber(res.dailyQuota.dailyQuota, 4),
       current: formatNumber(
-        formWei(`${res.totalAmountOfToDay}`, asset!!.decimals),
+        fromWei(`${res.totalAmountOfToDay}`, asset!!.decimals),
         asset!!.decimals
       ),
       asset: res.dailyQuota.asset,

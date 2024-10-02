@@ -1,6 +1,6 @@
-import MinaProvider, { ChainInfoArgs } from '@aurowallet/mina-provider';
+import MinaProvider, { ChainInfoArgs } from "@aurowallet/mina-provider";
 
-import Network, { NETWORK_NAME, NETWORK_TYPE } from '../network/network';
+import Network, { NETWORK_NAME, NETWORK_TYPE } from "../network/network";
 
 import Wallet, {
   URL_INSTALL_ANDROID,
@@ -8,15 +8,15 @@ import Wallet, {
   URL_INSTALL_IOS,
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
-  WALLET_NAME,
-} from './wallet.abstract';
+  WALLET_NAME
+} from "./wallet.abstract";
 
-import { IsServer } from '@/constants';
-import { gql } from '@/grapql';
-import { getAccountInfoQuery } from '@/grapql/queries';
-import { handleRequest } from '@/helpers/asyncHandlers';
-import { formWei } from '@/helpers/common';
-import { TokenType } from '@/store/slices/persistSlice';
+import { IsServer } from "@/constants";
+import { gql } from "@/grapql";
+import { getAccountInfoQuery } from "@/grapql/queries";
+import { handleRequest } from "@/helpers/asyncHandlers";
+import { fromWei } from "@/helpers/common";
+import { TokenType } from "@/store/slices/persistSlice";
 
 type MinaRequestResType<T> = SplitType<T>[0];
 type MinaRequestErrorType<T> = SplitType<T>[1];
@@ -178,7 +178,7 @@ export default class WalletAuro extends Wallet {
           gql(network.metadata.proxyUrl, query, variables)
         );
         if (error || !data || !data.account) return '0';
-        return formWei(data.account.balance.total, asset.decimals);
+        return fromWei(data.account.balance.total, asset.decimals);
       }
     }
 
@@ -197,7 +197,7 @@ export default class WalletAuro extends Wallet {
     if (reqError || !blnWei)
       throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
 
-    return formWei(blnWei!!.toString(), asset.decimals);
+    return fromWei(blnWei!!.toString(), asset.decimals);
   }
 
   async getNativeBalance(
@@ -212,7 +212,7 @@ export default class WalletAuro extends Wallet {
         gql(network.metadata.proxyUrl, query, variables)
       );
       if (error || !data || !data.account) return '0';
-      return formWei(data.account.balance.total, asset.decimals);
+      return fromWei(data.account.balance.total, asset.decimals);
     }
     return '0';
   }

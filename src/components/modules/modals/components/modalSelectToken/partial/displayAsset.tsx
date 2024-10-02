@@ -1,5 +1,6 @@
 'use client';
 import { Button, HStack, Image, Text, VStack } from "@chakra-ui/react";
+import BigNumber from "bignumber.js";
 import React, { useEffect, useMemo, useState } from "react";
 import { NumericFormat } from "react-number-format";
 
@@ -48,7 +49,7 @@ export default function DisplayAsset({ data }: Props) {
     network: Network
   ) {
     const res = await wallet.getBalance(network, userAddr, asset);
-    setBalance(formatNumber(res, asset.decimals));
+    setBalance(formatNumber(res, asset.decimals, BigNumber.ROUND_DOWN));
   }
 
   useEffect(() => {

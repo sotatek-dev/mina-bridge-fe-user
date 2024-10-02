@@ -16,7 +16,7 @@ import Wallet, {
 import ITV from "@/configs/time";
 import { IsServer } from "@/constants";
 import { handleRequest } from "@/helpers/asyncHandlers";
-import { formWei } from "@/helpers/common";
+import { fromWei } from "@/helpers/common";
 import { getWeb3Instance } from "@/helpers/evmHandlers";
 import { TokenType } from "@/store/slices/persistSlice";
 
@@ -243,7 +243,7 @@ export default class WalletMetamask extends Wallet {
             web3.eth.getBalance(userAddr)
           );
           if (error) throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
-          return formWei(blnWei!!.toString(), asset.decimals);
+          return fromWei(blnWei!!.toString(), asset.decimals);
         }
         return '';
       case NETWORK_TYPE.ZK:
@@ -259,7 +259,7 @@ export default class WalletMetamask extends Wallet {
               },
             },
           });
-          return formWei(accountInfo.balance.total, asset.decimals);
+          return fromWei(accountInfo.balance.total, asset.decimals);
         }
         // check balance as ERC20 token
         // const [tokenPub, convertPubError] = handleException(
@@ -317,7 +317,7 @@ export default class WalletMetamask extends Wallet {
         if (reqError || !blnWei)
           throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
 
-        return formWei(blnWei!!.toString(), asset.decimals);
+        return fromWei(blnWei!!.toString(), asset.decimals);
 
       default:
         return '';

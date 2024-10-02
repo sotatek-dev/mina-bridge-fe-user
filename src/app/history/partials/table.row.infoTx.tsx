@@ -1,14 +1,9 @@
 'use client';
-import { Link, Text } from '@chakra-ui/react';
-import _ from 'lodash';
-import React from 'react';
+import { Link, Text } from "@chakra-ui/react";
+import _ from "lodash";
+import React from "react";
 
-import {
-  formWei,
-  getDecimal,
-  truncateMid,
-  truncatedNumber,
-} from '@/helpers/common';
+import { fromWei, getDecimal, truncatedNumber, truncateMid } from "@/helpers/common";
 
 type InfoTransactionProps = {
   amount: string;
@@ -26,7 +21,7 @@ function InfoTransaction({
   scanUrl,
 }: InfoTransactionProps) {
   const [fSlice, sSlice] = !txHash ? ['', ''] : truncateMid(txHash, 4, 4);
-  const value = amount ? formWei(amount, getDecimal(networkName)) : '0.00';
+  const value = amount ? fromWei(amount, getDecimal(networkName)) : '0.00';
   return (
     <>
       <Text variant={'lg'} color={'text.900'}>

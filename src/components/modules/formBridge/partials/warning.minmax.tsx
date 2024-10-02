@@ -1,23 +1,18 @@
 'use client';
-import { HStack, Image, StackProps, Text, VStack } from '@chakra-ui/react';
-import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { HStack, Image, StackProps, Text, VStack } from "@chakra-ui/react";
+import moment from "moment";
+import { useEffect, useState } from "react";
 
-import { useFormBridgeState } from '../context';
+import { useFormBridgeState } from "../context";
 
-import ITV from '@/configs/time';
-import { handleAsync, handleRequest } from '@/helpers/asyncHandlers';
-import { formWei, formatNumber } from '@/helpers/common';
-import { Network } from '@/models/network';
-import { NETWORK_TYPE } from '@/models/network/network';
-import { useZKContractState } from '@/providers/zkBridgeInitalize';
-import {
-  getPersistSlice,
-  getWalletInstanceSlice,
-  useAppDispatch,
-  useAppSelector,
-} from '@/store';
-import { TokenType, persistSliceActions } from '@/store/slices/persistSlice';
+import ITV from "@/configs/time";
+import { handleAsync } from "@/helpers/asyncHandlers";
+import { formatNumber, fromWei } from "@/helpers/common";
+import { Network } from "@/models/network";
+import { NETWORK_TYPE } from "@/models/network/network";
+import { useZKContractState } from "@/providers/zkBridgeInitalize";
+import { getPersistSlice, getWalletInstanceSlice, useAppDispatch, useAppSelector } from "@/store";
+import { persistSliceActions, TokenType } from "@/store/slices/persistSlice";
 
 type Props = { isDisplayed: boolean } & Pick<StackProps, ChakraBoxSizeProps>;
 
@@ -98,8 +93,8 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
         // handle if success fetched
         updateStatus('isLoading', false);
         const evmRes = [
-          formWei(evmRange.min.toString(), asset.decimals),
-          formWei(evmRange.max.toString(), asset.decimals),
+          fromWei(evmRange.min.toString(), asset.decimals),
+          fromWei(evmRange.max.toString(), asset.decimals),
         ].map((e) => formatNumber(e, asset.decimals));
 
         cacheAssetMaxMin(asset, evmRes);
@@ -134,8 +129,8 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
         // handle if success fetched
         updateStatus('isLoading', false);
         const zkRes = [
-          formWei(zkRange.min.toString(), asset.decimals),
-          formWei(zkRange.max.toString(), asset.decimals),
+          fromWei(zkRange.min.toString(), asset.decimals),
+          fromWei(zkRange.max.toString(), asset.decimals),
         ].map((e) => formatNumber(e, asset.decimals));
 
         cacheAssetMaxMin(asset, zkRes);

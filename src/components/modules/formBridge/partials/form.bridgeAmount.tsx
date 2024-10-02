@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   Button,
   HStack,
@@ -7,25 +7,25 @@ import {
   InputRightElement,
   StackProps,
   Text,
-  VStack
-} from "@chakra-ui/react";
-import BigNumber from "bignumber.js";
-import moment from "moment";
+  VStack,
+} from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
+import moment from 'moment';
 import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
-  useState
-} from "react";
+  useState,
+} from 'react';
 
-import { useFormBridgeState } from "../context";
+import { useFormBridgeState } from '../context';
 
 import Loading from "@/components/elements/loading/spinner";
 import ITV from "@/configs/time";
 import { handleRequest } from "@/helpers/asyncHandlers";
-import { formatNumber, formWei, zeroCutterStart } from "@/helpers/common";
+import { formatNumber, fromWei, zeroCutterStart } from "@/helpers/common";
 import { getWeb3Instance } from "@/helpers/evmHandlers";
 import useNotifier from "@/hooks/useNotifier";
 import Network, { NETWORK_TYPE } from "@/models/network/network";
@@ -35,11 +35,13 @@ import {
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
-  useAppSelector
-} from "@/store";
-import { persistSliceActions, TokenType } from "@/store/slices/persistSlice";
+  useAppSelector,
+} from '@/store';
+import { persistSliceActions, TokenType } from '@/store/slices/persistSlice';
 
-const numberRegex = new RegExp(/^([0-9]{1,100}\.[0-9]{1,100})$|^([0-9]{1,100})\.?$|^\.([0-9]{1,100})?$/);
+const numberRegex = new RegExp(
+  /^([0-9]{1,100}\.[0-9]{1,100})$|^([0-9]{1,100})\.?$|^\.([0-9]{1,100})?$/
+);
 
 export type FormBridgeAmountRef = null | { resetValue: () => void };
 
@@ -49,7 +51,9 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   type ErrorType = keyof typeof ErrorList | null;
   const dispatch = useAppDispatch();
   const { address, isConnected } = useAppSelector(getWalletSlice);
-  const { walletInstance , networkInstance} = useAppSelector(getWalletInstanceSlice);
+  const { walletInstance, networkInstance } = useAppSelector(
+    getWalletInstanceSlice
+  );
 
   const {
     status,
@@ -58,7 +62,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     balance,
     dailyQuota,
     srcNetwork,
-    txEmitCount
+    txEmitCount,
   } = useFormBridgeState().state;
   const { nwProvider } = useFormBridgeState().constants;
   const { updateAmount, updateStatus, updateBalance } =
@@ -66,7 +70,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
 
   const { lastNetworkFee } = useAppSelector(getPersistSlice);
 
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>('');
   const [error, setError] = useState<ErrorType>(null);
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
@@ -80,55 +84,57 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
 
   const ErrorList = useMemo(
     () => ({
-      required: "This field is required",
+      required: 'This field is required',
       insufficient_fund: `Insufficient balance`,
       reach_min: `You have to bridge at least ${assetRange[0]} ${
-        asset?.symbol || ""
+        asset?.symbol || ''
       }`,
       reach_max: `You can only bridge maximum ${assetRange[1]} ${
-        asset?.symbol || ""
+        asset?.symbol || ''
       }`,
       insufficient_fund_fee: `Transaction can’t be made because of insufficient balance for transfer fee`,
       insufficient_daily_quota: `You can only bridge ${dailyQuota.max} ${
-        asset?.symbol || ""
-      } per address daily`
+        asset?.symbol || ''
+      } per address daily`,
     }),
     [asset, assetRange, dailyQuota]
   );
 
   async function estimateFee() {
-    if (!nwProvider || !address || !asset || !srcNetwork) return "0";
+    if (!nwProvider || !address || !asset || !srcNetwork) return '0';
 
     if (lastNetworkFee && lastNetworkFee[srcNetwork.name].timestamp > 0) {
       const nwFee = lastNetworkFee[srcNetwork.name];
       if (
         nwFee.timestamp &&
-        moment(moment.now()).diff(moment(nwFee.timestamp), "seconds") <= 10
+        moment(moment.now()).diff(moment(nwFee.timestamp), 'seconds') <= 10
       ) {
         return;
       }
     }
 
     const gasAmount = process.env.NEXT_PUBLIC_ESTIMATE_GAS_AMOUNT || '50000';
-    updateStatus("isLoading", true);
+    updateStatus('isLoading', true);
 
     const [gasPrice, error] = await handleRequest(
       getWeb3Instance(nwProvider).eth.getGasPrice()
     );
-    if (error || !gasPrice) return "0";
-    const priceBN = new BigNumber(gasPrice?.toString() || "0").multipliedBy(process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10);
+    if (error || !gasPrice) return '0';
+    const priceBN = new BigNumber(gasPrice?.toString() || '0').multipliedBy(
+      process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10
+    );
     const amountBN = new BigNumber(gasAmount.toString());
-    updateStatus("isLoading", false);
+    updateStatus('isLoading', false);
     dispatch(
       persistSliceActions.setLastNwFee({
         nw: srcNetwork.name,
         data: {
-          value: formWei(
+          value: fromWei(
             amountBN.multipliedBy(priceBN).toString(),
             asset.decimals
           ),
-          timestamp: moment.now()
-        }
+          timestamp: moment.now(),
+        },
       })
     );
     return;
@@ -147,14 +153,14 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     const [res, error] = await handleRequest(
       walletInstance.getBalance(srcNetwork, address, asset)
     );
-    console.log("🚀 ~ checkBalance ~ res, error:", res, error);
+    console.log('🚀 ~ checkBalance ~ res, error:', res, error);
     if (error || res === null) {
-      if (balance === "0") {
+      if (balance === '0') {
         sendNotification({
-          toastType: "error",
+          toastType: 'error',
           options: {
-            title: error.message
-          }
+            title: error.message,
+          },
         });
       }
       setIsFetching(false);
@@ -166,7 +172,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
 
   function dpError(e: ErrorType) {
     setError(e);
-    updateAmount("");
+    updateAmount('');
   }
 
   function throttleActions(value: string) {
@@ -175,18 +181,18 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       if (!asset) return;
       const [min, max] = assetRange;
       const bn = new BigNumber(value);
-      console.log("🚀 ~ throttleInput.current=setTimeout ~ value:", value);
+      console.log('🚀 ~ throttleInput.current=setTimeout ~ value:', value);
       const balanceBN = new BigNumber(balance);
       const availQuota = new BigNumber(dailyQuota.max).minus(
         new BigNumber(dailyQuota.current)
       );
       // return error
-      if (bn.isNaN()) return dpError("required");
-      if (bn.isLessThan(min)) return dpError("reach_min");
-      if (bn.isGreaterThan(max)) return dpError("reach_max");
-      if (bn.isGreaterThan(balanceBN)) return dpError("insufficient_fund");
+      if (bn.isNaN()) return dpError('required');
+      if (bn.isLessThan(min)) return dpError('reach_min');
+      if (bn.isGreaterThan(max)) return dpError('reach_max');
+      if (bn.isGreaterThan(balanceBN)) return dpError('insufficient_fund');
       if (bn.isGreaterThan(availQuota))
-        return dpError("insufficient_daily_quota");
+        return dpError('insufficient_daily_quota');
 
       setError(null);
       // additional filter for evm chain
@@ -235,18 +241,13 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       return;
     }
     // in case delete value, reset amount to avoid user quickly submit
-    if (e.currentTarget.value.length < 1) updateAmount("");
+    if (e.currentTarget.value.length < 1) updateAmount('');
     const newValue = zeroCutterStart(e.currentTarget.value);
     setValue(newValue.length > 79 ? newValue.slice(0, 79) : newValue);
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (
-      status.isLoading ||
-      isFetching ||
-      !asset ||
-      !isConnected
-    ) {
+    if (status.isLoading || isFetching || !asset || !isConnected) {
       e.preventDefault();
       return;
     }
@@ -258,16 +259,16 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       e.preventDefault();
       return;
     }
-    const reg = "^[-]?[0-9]*\\.?[0-9]*$";
+    const reg = '^[-]?[0-9]*\\.?[0-9]*$';
     const current = e.currentTarget.value;
 
     if (
-      !e.clipboardData.getData("Text").match(reg) ||
-      !(current + e.clipboardData.getData("Text")).match(reg)
+      !e.clipboardData.getData('Text').match(reg) ||
+      !(current + e.clipboardData.getData('Text')).match(reg)
     ) {
       e.preventDefault();
     }
-    throttleActions(current + e.clipboardData.getData("Text"));
+    throttleActions(current + e.clipboardData.getData('Text'));
   }
 
   function handleKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -282,32 +283,41 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     if (status.isLoading || isFetching || !asset || !isConnected) {
       return;
     }
-    if (
-      srcNetwork &&
-      srcNetwork.type === NETWORK_TYPE.EVM &&
-      lastNetworkFee
-    ) {
+    if (srcNetwork && srcNetwork.type === NETWORK_TYPE.EVM && lastNetworkFee) {
       const estimateFee = lastNetworkFee[srcNetwork.name].value || '0';
       const maxAmount = new BigNumber(balance).minus(estimateFee);
 
       if (maxAmount.lte(0)) {
         sendNotification({
-          toastType: "warning",
+          toastType: 'warning',
           options: {
-            title: `Current Estimate fee is ${new BigNumber(estimateFee).dp(4).toString(10)} and greater than account balance`
-          }
+            title: `Current Estimate fee is ${new BigNumber(estimateFee).dp(4).toString(10)} and greater than account balance`,
+          },
         });
 
         setValue('0');
         throttleActions('0');
       } else {
-        setValue(formatNumber(maxAmount.toString(10), asset.decimals, BigNumber.ROUND_DOWN));
-        throttleActions(formatNumber(maxAmount.toString(10), asset.decimals, BigNumber.ROUND_DOWN));
+        setValue(
+          formatNumber(
+            maxAmount.toString(10),
+            asset.decimals,
+            BigNumber.ROUND_DOWN
+          )
+        );
+        throttleActions(
+          formatNumber(
+            maxAmount.toString(10),
+            asset.decimals,
+            BigNumber.ROUND_DOWN
+          )
+        );
       }
-    }
-    else {
+    } else {
       setValue(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
-      throttleActions(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
+      throttleActions(
+        formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)
+      );
     }
   }
 
@@ -315,16 +325,23 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     ref,
     () => ({
       resetValue: () => {
-        setValue("");
+        setValue('');
         setError(null);
-      }
+      },
     }),
     [setValue, setError]
   );
 
   useEffect(() => {
-    if (!address || !asset || !walletInstance || !srcNetwork || !networkInstance.src || srcNetwork.name !== networkInstance.src.name) {
-      updateBalance("0");
+    if (
+      !address ||
+      !asset ||
+      !walletInstance ||
+      !srcNetwork ||
+      !networkInstance.src ||
+      srcNetwork.name !== networkInstance.src.name
+    ) {
+      updateBalance('0');
       return;
     }
     if (itvCheckBalance.current) {
@@ -346,8 +363,10 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   }, [address, asset, walletInstance, srcNetwork, txEmitCount]);
 
   useEffect(() => {
-    throttleActions(value);
-  }, [balance])
+    if (value) {
+      throttleActions(value);
+    }
+  }, [address, balance]);
 
   // frequently get gas price
   useEffect(() => {
@@ -371,8 +390,8 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   }, [srcNetwork, nwProvider, address, asset, lastNetworkFee]);
 
   return (
-    <VStack w={"full"} align={"flex-start"} gap={"4px"} {...props}>
-      <Text variant={"lg_medium"} m={"0"}>
+    <VStack w={'full'} align={'flex-start'} gap={'4px'} {...props}>
+      <Text variant={'lg_medium'} m={'0'}>
         Amount
       </Text>
       <InputGroup>
@@ -380,11 +399,10 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
           isDisabled={!isConnected}
           maxLength={79}
           isInvalid={isConnected && !!error}
-          size={"md_medium"}
-          type={"string"}
-          pr={"75px"}
-          inputMode={"decimal"}
-          title={""}
+          size={'md_medium'}
+          pr={'75px'}
+          inputMode={'text'}
+          title={''}
           value={value}
           onChange={handleChangeValue}
           onKeyDown={handleKeyDown}
@@ -393,37 +411,39 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
           onWheel={(e) => e.currentTarget.blur()}
         />
         {status.isConnected ? (
-          <InputRightElement w={"unset"} h={"48px"} pr={"12px"}>
+          <InputRightElement w={'unset'} h={'48px'} pr={'12px'}>
             <Button
-              variant={"primary.purple.solid.15"}
-              h={"30px"}
-              p={"6px 16px"}
-              borderRadius={"5px"}
+              variant={'primary.purple.solid.15'}
+              h={'30px'}
+              p={'6px 16px'}
+              borderRadius={'5px'}
               onClick={updateValueToMax}
             >
-              <Text variant={"md_semiBold"}>Max</Text>
+              <Text variant={'md_semiBold'}>Max</Text>
             </Button>
           </InputRightElement>
         ) : null}
       </InputGroup>
       {status.isConnected && error ? (
-        <Text variant={"md"} color={"red.500"}>
+        <Text variant={'md'} color={'red.500'}>
           {ErrorList[error]}
         </Text>
       ) : null}
       {status.isConnected ? (
         <HStack>
-          <Text variant={"md"} color={"text.500"}>
-            Available: {asset && formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)}{" "}
-            {(asset?.symbol.toUpperCase() || "") + " "}
+          <Text variant={'md'} color={'text.500'}>
+            Available:{' '}
+            {asset &&
+              formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)}{' '}
+            {(asset?.symbol.toUpperCase() || '') + ' '}
             Tokens
           </Text>
           {isFetching && (
             <Loading
-              id={"bridge-amount-loading"}
+              id={'bridge-amount-loading'}
               bgOpacity={0}
-              w={"15px"}
-              h={"15px"}
+              w={'15px'}
+              h={'15px'}
               spinnerSize={15}
               spinnerThickness={8}
             />

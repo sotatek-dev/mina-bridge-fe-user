@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js';
-import moment from 'moment';
+import BigNumber from "bignumber.js";
+import moment from "moment";
 
-import { ListFileName, ZkContractType } from '@/configs/constants';
+import { ListFileName, ZkContractType } from "@/configs/constants";
 
 // remove rounding config
 // BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
@@ -190,6 +190,25 @@ export function getPxFromUrl(url?: string) {
 
 export function fetchFiles(type: ZkContractType) {
   const listFiles = ListFileName[type];
+
+  const publicStaticUri = process.env.NEXT_PUBLIC_BASE_PUBLIC_STATIC_URI || '';
+
+  if (publicStaticUri) {
+    return Promise.all(
+      listFiles.map((file) => {
+        return Promise.all([
+          fetch(`${publicStaticUri}/o1js/${file}.header`).then((res) => res.text()),
+          fetch(`${publicStaticUri}/o1js/${file}`).then((res) => res.text()),
+        ]).then(([header, data]) => ({ file, header, data }));
+      })
+    ).then((cacheList) =>
+      cacheList.reduce((acc: any, { file, header, data }) => {
+        acc[file] = { file, header, data };
+        return acc;
+      }, {})
+    );
+  }
+
   return Promise.all(
     listFiles.map((file) => {
       return Promise.all([

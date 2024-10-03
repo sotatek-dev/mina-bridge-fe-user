@@ -3,7 +3,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { MODAL_NAME } from '@/configs/modal';
 import { IsServer } from '@/constants';
 import Network, { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
-import { getUISlice, getWalletInstanceSlice, getWalletSlice, useAppSelector } from '@/store';
+import {
+  getUISlice,
+  getWalletInstanceSlice,
+  getWalletSlice,
+  useAppSelector,
+} from '@/store';
 import { TokenType } from '@/store/slices/persistSlice';
 
 export type ZKContractCtxValueType = {
@@ -53,15 +58,15 @@ export default function ZKContractProvider({
 
   const modalConnectWallet = useMemo(
     () => modals[MODAL_NAME.CONNECT_WALLET],
-    [modals]
+    [modals],
   );
   const modalConnectWalletSuccess = useMemo(
     () => modals[MODAL_NAME.SUCCESS_ACTION],
-    [modals]
+    [modals],
   );
   async function handleInitializeScripts(
     asset: TokenType,
-    nwInstance: Network
+    nwInstance: Network,
   ) {
     if (isInitializing || isInitialized) return;
 
@@ -77,8 +82,6 @@ export default function ZKContractProvider({
 
       await ERC20Ctr.init();
       await BridgeCtr.init();
-
-      console.log('🚀 ~ asset:', asset);
 
       const erc20Ctr = new ERC20Ctr();
       const bridgeCtr = new BridgeCtr();
@@ -110,7 +113,6 @@ export default function ZKContractProvider({
 
   // initialize instances
   useEffect(() => {
-    console.log('🚀 ~  Check Asset: ', asset);
     if (
       !networkInstance.src ||
       networkInstance.src.type !== NETWORK_TYPE.ZK ||
@@ -149,7 +151,7 @@ export default function ZKContractProvider({
       constants: {},
       methods: {},
     }),
-    [isInitialized, isInitializing, erc20Contract, bridgeContract]
+    [isInitialized, isInitializing, erc20Contract, bridgeContract],
   );
 
   return (

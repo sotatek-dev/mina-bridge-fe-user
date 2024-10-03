@@ -3,8 +3,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { MODAL_NAME } from '@/configs/modal';
 import { handleRequest } from '@/helpers/asyncHandlers';
 import useNotifier from '@/hooks/useNotifier';
-import NETWORKS, { NETWORK_NAME, Network } from '@/models/network';
-import WALLETS, { WALLET_NAME, Wallet } from '@/models/wallet';
+import NETWORKS, { Network, NETWORK_NAME } from '@/models/network';
+import WALLETS, { Wallet, WALLET_NAME } from '@/models/wallet';
 import {
   getPersistSlice,
   getUISlice,
@@ -47,7 +47,7 @@ export const initModalCWState: ModalCWState = {
 };
 
 export const ModalCWContext = React.createContext<ModalCWCtxValueType | null>(
-  null
+  null,
 );
 
 export function useModalCWState() {
@@ -83,18 +83,18 @@ export default function ModalCWProvider({
         selectedNetwork: net,
       }));
     },
-    [setState]
+    [setState],
   );
 
   const switchNetwork = useCallback(
     async (wallet: Wallet, network: Network) => {
       const [res, error] = await handleRequest(wallet.switchNetwork(network));
       if (error) {
-        console.log(error);
+        console.error(error);
         return;
       }
     },
-    []
+    [],
   );
 
   const openConnectWalletErrorModal = useCallback(
@@ -103,10 +103,10 @@ export default function ModalCWProvider({
         uiSliceActions.openModal({
           modalName: MODAL_NAME.CONNECT_WALLET_ERROR,
           payload: { walletName },
-        })
+        }),
       );
     },
-    [dispatch]
+    [dispatch],
   );
 
   const openCWSuccessModal = useCallback(() => {
@@ -116,7 +116,7 @@ export default function ModalCWProvider({
         payload: {
           title: TITLE.CONNECT_WALLET_SUCCESS,
         },
-      })
+      }),
     );
   }, [dispatch]);
 
@@ -129,7 +129,7 @@ export default function ModalCWProvider({
           isScreenLoading: value,
         },
       })),
-    [setState]
+    [setState],
   );
 
   const updateSnapLoading = useCallback(
@@ -141,7 +141,7 @@ export default function ModalCWProvider({
           isSnapInstalling: value,
         },
       })),
-    [setState]
+    [setState],
   );
 
   const onSelectWallet = useCallback(
@@ -170,7 +170,7 @@ export default function ModalCWProvider({
           network: NETWORKS[state.selectedNetwork],
           onCnStart: () => {
             if (needSnapInstall) {
-              console.log('start loading install');
+              // console.log('start loading install');
 
               updateSnapLoading(true);
             }
@@ -180,7 +180,7 @@ export default function ModalCWProvider({
               updateSnapLoading(false);
             }
           },
-        })
+        }),
       );
       await switchNetwork(WALLETS[wallet], NETWORKS[state.selectedNetwork]);
 
@@ -211,7 +211,7 @@ export default function ModalCWProvider({
       sendNotification,
       updateScreenLoading,
       updateSnapLoading,
-    ]
+    ],
   );
 
   // default network must follow global state and reset state on close
@@ -232,7 +232,7 @@ export default function ModalCWProvider({
       state,
       methods: { onSelectNetwork, onSelectWallet, onToggleAcceptTerm },
     }),
-    [state, onSelectNetwork, onSelectWallet, onToggleAcceptTerm]
+    [state, onSelectNetwork, onSelectWallet, onToggleAcceptTerm],
   );
 
   return (

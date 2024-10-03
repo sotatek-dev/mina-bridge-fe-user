@@ -55,7 +55,7 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
       () => ({
         required: 'This field is required',
         // not_address: `Invalid ${networkName.tar} network address`,
-        not_address: `Invalid address`,
+        not_address: 'Invalid address',
       }),
       [networkName.tar]
     );

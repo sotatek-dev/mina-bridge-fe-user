@@ -1,6 +1,6 @@
-import MinaProvider, { ChainInfoArgs } from "@aurowallet/mina-provider";
+import MinaProvider, { ChainInfoArgs } from '@aurowallet/mina-provider';
 
-import Network, { NETWORK_NAME, NETWORK_TYPE } from "../network/network";
+import Network, { NETWORK_NAME, NETWORK_TYPE } from '../network/network';
 
 import Wallet, {
   URL_INSTALL_ANDROID,
@@ -9,14 +9,14 @@ import Wallet, {
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
   WALLET_NAME
-} from "./wallet.abstract";
+} from './wallet.abstract';
 
-import { IsServer } from "@/constants";
-import { gql } from "@/grapql";
-import { getAccountInfoQuery } from "@/grapql/queries";
-import { handleRequest } from "@/helpers/asyncHandlers";
-import { fromWei } from "@/helpers/common";
-import { TokenType } from "@/store/slices/persistSlice";
+import { IsServer } from '@/constants';
+import { gql } from '@/grapql';
+import { getAccountInfoQuery } from '@/grapql/queries';
+import { handleRequest } from '@/helpers/asyncHandlers';
+import { fromWei } from '@/helpers/common';
+import { TokenType } from '@/store/slices/persistSlice';
 
 type MinaRequestResType<T> = SplitType<T>[0];
 type MinaRequestErrorType<T> = SplitType<T>[1];
@@ -45,7 +45,7 @@ export default class WalletAuro extends Wallet {
     WALLET_WRONG_CHAIN: 'You have connected to unsupported chain',
     WALLET_CONNECT_FAILED: 'Fail to connect wallet',
     WALLET_CONNECT_REJECTED: 'User rejected the request.',
-    WALLET_GET_BALANCE_FAIL: "Can't get the current balance",
+    WALLET_GET_BALANCE_FAIL: 'Can\'t get the current balance',
   };
 
   constructor() {

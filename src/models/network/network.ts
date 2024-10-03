@@ -1,4 +1,4 @@
-import { PROVIDER_TYPE } from "../contract/evm/contract";
+import { PROVIDER_TYPE } from '../contract/evm/contract';
 
 // enum configs
 export enum NETWORK_NAME {
@@ -27,9 +27,9 @@ export enum ZK_CHAIN {
 }
 
 enum ENetworkNameOldVersion {
-  MAINNET = "Mainnet",
-  DEVNET = "Devnet",
-  BERKELEY = "Berkeley",
+  MAINNET = 'Mainnet',
+  DEVNET = 'Devnet',
+  BERKELEY = 'Berkeley',
 }
 
 export enum CHAIN_TYPE {

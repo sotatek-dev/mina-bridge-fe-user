@@ -1,10 +1,10 @@
 'use client';
-import { Image, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
+import { Image, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
+import React, { useRef, useState } from 'react';
 
-import { useModalSTState } from "../context";
+import { useModalSTState } from '../context';
 
-import ITV from "@/configs/time";
+import ITV from '@/configs/time';
 
 type Props = {};
 

@@ -1,8 +1,8 @@
-import { MetaMaskInpageProvider, RequestArguments } from "@metamask/providers";
-import Web3, { ProviderMessage, ProviderRpcError } from "web3";
+import { MetaMaskInpageProvider, RequestArguments } from '@metamask/providers';
+import Web3, { ProviderMessage, ProviderRpcError } from 'web3';
 
-import { PROVIDER_TYPE, ProviderType } from "../contract/evm/contract";
-import Network, { getZKChainIdName, NETWORK_NAME, NETWORK_TYPE } from "../network/network";
+import { PROVIDER_TYPE, ProviderType } from '../contract/evm/contract';
+import Network, { getZKChainIdName, NETWORK_NAME, NETWORK_TYPE } from '../network/network';
 
 import Wallet, {
   URL_INSTALL_ANDROID,
@@ -11,14 +11,14 @@ import Wallet, {
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
   WALLET_NAME
-} from "./wallet.abstract";
+} from './wallet.abstract';
 
-import ITV from "@/configs/time";
-import { IsServer } from "@/constants";
-import { handleRequest } from "@/helpers/asyncHandlers";
-import { fromWei } from "@/helpers/common";
-import { getWeb3Instance } from "@/helpers/evmHandlers";
-import { TokenType } from "@/store/slices/persistSlice";
+import ITV from '@/configs/time';
+import { IsServer } from '@/constants';
+import { handleRequest } from '@/helpers/asyncHandlers';
+import { fromWei } from '@/helpers/common';
+import { getWeb3Instance } from '@/helpers/evmHandlers';
+import { TokenType } from '@/store/slices/persistSlice';
 
 export type WalletMetamaskEvents =
   | {
@@ -43,11 +43,11 @@ export default class WalletMetamask extends Wallet {
     WALLET_WRONG_CHAIN: 'You have connected to unsupported chain',
     WALLET_CONNECT_FAILED: 'Fail to connect wallet',
     WALLET_CONNECT_REJECTED: 'User rejected the request.',
-    WALLET_GET_BALANCE_FAIL: "Can't get the current balance",
+    WALLET_GET_BALANCE_FAIL: 'Can\'t get the current balance',
     MINA_UNKNOWN_SEND_ERROR: 'Unknown mina transaction error',
   };
   errorMessageList = {
-    UNKNOWN_MINA_SEND_TX: "Couldn't send zkApp command",
+    UNKNOWN_MINA_SEND_TX: 'Couldn\'t send zkApp command',
   };
 
   constructor() {

@@ -3,7 +3,7 @@ import { ACCESS_TOKEN } from '@/configs/constants';
 export default class StorageUtils {
   static setItem(key: string, value: string) {
     try {
-      console.log({ window });
+      // console.log({ window });
       window?.localStorage?.setItem(key, value);
     } catch (error) {}
   }

@@ -53,10 +53,10 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
 
   // get user allowance if spending token
   async function getAllowance(amount: string) {
-    console.log(
-      '🚀 ~ file: form.confirmButton.tsx:15 ~ getAllowance ~ amount:',
-      amount
-    );
+    // console.log(
+    //   '🚀 ~ file: form.confirmButton.tsx:15 ~ getAllowance ~ amount:',
+    //   amount
+    // );
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         setIsAllowed(true);
@@ -147,7 +147,7 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
       uiSliceActions.openModal({
         modalName: MODAL_NAME.CONFIRM_BRIDGE,
         payload,
-      })
+      }),
     );
   }
 

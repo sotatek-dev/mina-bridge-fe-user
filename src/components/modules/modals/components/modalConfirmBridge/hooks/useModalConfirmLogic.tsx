@@ -296,7 +296,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     params: ModalConfirmBridgePayload,
   ): EVMBridgeTXLock | null {
     if (!bridgeEVMCtr) return null;
-    console.log('🚀 ~ useModalConfirmLogic ~ params.amount:', params.amount);
+    // console.log('🚀 ~ useModalConfirmLogic ~ params.amount:', params.amount);
     return bridgeEVMCtr.buildTxLock({
       desAddr: params.destAddr,
       tkAddr: params.asset.tokenAddr,
@@ -502,7 +502,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       }
       return onSuccess();
     } catch (error) {
-      console.log('🚀 ~ useModalConfirmLogic ~ error:', error);
+      // console.log('🚀 ~ useModalConfirmLogic ~ error:', error);
       return onError();
     }
   }
@@ -528,12 +528,12 @@ export default function useModalConfirmLogic({ modalName }: Params) {
             tipFee,
             gasFee,
           });
-          console.log('🚀 ~ handleConfirm ~ receivedAmount:', transferAmount);
+          // console.log('🚀 ~ handleConfirm ~ receivedAmount:', transferAmount);
           const emitTx = buildEVMBridgeTX({
             ...modalPayload,
             amount: transferAmount,
           });
-          console.log('🚀 ~ handleConfirm ~ emitTx:', emitTx);
+          // console.log('🚀 ~ handleConfirm ~ emitTx:', emitTx);
           if (!emitTx) return onError();
           emitTx;
           return await handleEVMBridge(emitTx, {

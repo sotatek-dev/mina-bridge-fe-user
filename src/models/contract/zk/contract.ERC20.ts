@@ -29,7 +29,7 @@ export default class ERC20Contract {
           archive:
             network.metadata.archiveUrl ||
             'https://api.minascan.io/archive/berkeley/v1/graphql/',
-        })
+        }),
       );
     }
     this.provider = Mina;
@@ -80,12 +80,14 @@ export default class ERC20Contract {
     await fetchAccount({ publicKey: this.tokenAddress });
 
     console.log('-----fetch bridge account', bridgeAddress);
-    console.log('bridgeAddress', this.contractInstance);
     await fetchAccount({
       publicKey: PublicKey.fromBase58(bridgeAddress),
     });
 
-    console.log('-----fetch bridge account with token', {bridgeAddress, tokenId: this.contractInstance!!.tokenId.toConstant()});
+    console.log('-----fetch bridge account with token', {
+      bridgeAddress,
+      tokenId: this.contractInstance!!.tokenId.toConstant(),
+    });
     await fetchAccount({
       publicKey: PublicKey.fromBase58(bridgeAddress),
       tokenId: this.contractInstance!!.tokenId,
@@ -104,7 +106,7 @@ export default class ERC20Contract {
 
     if ('proxyUrl' in this.network.metadata && this.network.metadata.proxyUrl) {
       const [data, error] = await handleRequest(
-        gql(this.network.metadata.proxyUrl, query, params)
+        gql(this.network.metadata.proxyUrl, query, params),
       );
       if (error || !data || !data.account) return '0';
       return data.account.balance.total;

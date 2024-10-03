@@ -4,7 +4,7 @@ import { PayableMethodObject } from 'web3-eth-contract';
 import Contract, { InitializeContractType } from './contract';
 
 import ABIBridgeETH from '@/configs/ABIs/evm/Bridge_ETH';
-import { fromWei, toWei } from '@/helpers/common';
+import { toWei } from '@/helpers/common';
 import { TokenType } from '@/store/slices/persistSlice';
 
 type ABIType = typeof ABIBridgeETH;
@@ -45,11 +45,11 @@ export default class BridgeContract extends Contract<ABIType> {
     'userAddr' | 'isNativeToken'
   >): EVMBridgeTXLock {
     const emitVal = toWei(amount, asset.decimals);
-    console.log(
-      '🚀 ~ BridgeContract ~ emitVal:',
-      emitVal,
-      fromWei(emitVal, asset.decimals)
-    );
+    // console.log(
+    //   '🚀 ~ BridgeContract ~ emitVal:',
+    //   emitVal,
+    //   fromWei(emitVal, asset.decimals)
+    // );
     return this.contractInstance.methods.lock(tkAddr, desAddr, emitVal);
   }
 
@@ -60,7 +60,7 @@ export default class BridgeContract extends Contract<ABIType> {
       userAddr,
       asset,
       isNativeToken,
-    }: Omit<EVMBridgeCtrLockPayload, 'tkAddr' | 'desAddr'>
+    }: Omit<EVMBridgeCtrLockPayload, 'tkAddr' | 'desAddr'>,
   ) {
     const emitVal = toWei(amount, asset.decimals);
     return tx.send({

@@ -2,7 +2,11 @@ import { MetaMaskInpageProvider, RequestArguments } from '@metamask/providers';
 import Web3, { ProviderMessage, ProviderRpcError } from 'web3';
 
 import { PROVIDER_TYPE, ProviderType } from '../contract/evm/contract';
-import Network, { getZKChainIdName, NETWORK_NAME, NETWORK_TYPE } from '../network/network';
+import Network, {
+  getZKChainIdName,
+  NETWORK_NAME,
+  NETWORK_TYPE,
+} from '../network/network';
 
 import Wallet, {
   URL_INSTALL_ANDROID,
@@ -10,7 +14,7 @@ import Wallet, {
   URL_INSTALL_IOS,
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
-  WALLET_NAME
+  WALLET_NAME,
 } from './wallet.abstract';
 
 import ITV from '@/configs/time';
@@ -127,7 +131,7 @@ export default class WalletMetamask extends Wallet {
     onStart?: () => void,
     onFinish?: () => void,
     onError?: () => void,
-    whileHandle?: () => void
+    whileHandle?: () => void,
   ) {
     let account: string = '';
     switch (network.type) {
@@ -157,8 +161,6 @@ export default class WalletMetamask extends Wallet {
           process.env.NEXT_PUBLIC_REQUIRED_SNAP_VERSION || '';
 
         if (!snap.hasOwnProperty(snapId) || snap[snapId].version !== version) {
-          console.log('run');
-
           onStart && onStart();
           const [req, reqError] = await handleRequest(
             this.sendRequest({
@@ -168,7 +170,7 @@ export default class WalletMetamask extends Wallet {
                   version: `^${version}`,
                 },
               },
-            })
+            }),
           );
           whileHandle && whileHandle();
           if (reqError) throw reqError;
@@ -226,7 +228,7 @@ export default class WalletMetamask extends Wallet {
   async getBalance(
     network: Network,
     userAddr: string,
-    asset: TokenType
+    asset: TokenType,
   ): Promise<string> {
     const isNativeToken = network.nativeCurrency.symbol === asset.symbol;
 
@@ -240,7 +242,7 @@ export default class WalletMetamask extends Wallet {
           };
           const web3 = getWeb3Instance(provider);
           const [blnWei, error] = await handleRequest(
-            web3.eth.getBalance(userAddr)
+            web3.eth.getBalance(userAddr),
           );
           if (error) throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
           return fromWei(blnWei!!.toString(), asset.decimals);
@@ -312,7 +314,7 @@ export default class WalletMetamask extends Wallet {
         await ctr.setInfo(asset.tokenAddr, network);
 
         const [blnWei, reqError] = await handleRequest(
-          ctr.getBalance(userAddr)
+          ctr.getBalance(userAddr),
         );
         if (reqError || !blnWei)
           throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
@@ -337,7 +339,7 @@ export default class WalletMetamask extends Wallet {
                   chainId: network.metadata.chainId,
                 },
               ],
-            })
+            }),
           );
           if (error) return false;
         }
@@ -352,7 +354,7 @@ export default class WalletMetamask extends Wallet {
                 method: 'mina_networkConfig',
               },
             },
-          }
+          },
         );
         if (name !== network.metadata.chainId) {
           await this.sendRequest({

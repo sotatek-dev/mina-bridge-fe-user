@@ -89,28 +89,8 @@ class UsersService {
 
   async getListSupportedPairs() {
     const res = await this.service.get<GetListSpPairsResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.SP_PAIRS}`
+      `${this.baseURL}/${USERS_ENDPOINT.SP_PAIRS}`,
     );
-
-    // TODO: remove fake data if data from BE is updated
-    for (let i = 0; i < res.length; i++) {
-      if (res[i].fromAddress === '0x0000000000000000000000000000000000000000') {
-        process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS &&
-          (res[i].toAddress = process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS);
-        process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS &&
-          (res[i].toScAddress =
-            process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS);
-      }
-      if (res[i].toAddress === '0x0000000000000000000000000000000000000000') {
-        process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS &&
-          (res[i].fromAddress = process.env.NEXT_PUBLIC_ZK_WETH_TOKEN_ADDRESS);
-        process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS &&
-          (res[i].fromScAddress =
-            process.env.NEXT_PUBLIC_ZK_BRIDGE_CONTRACT_ADDRESS);
-      }
-    }
-
-    console.log('fake asset', { ...res });
     return res;
   }
 
@@ -119,22 +99,26 @@ class UsersService {
       `${this.baseURL}/${USERS_ENDPOINT.HISTORY}/${query.address}`,
       {
         params: { limit: query.limit, page: query.page },
-      }
+      },
     );
   }
 
   getDailyQuota(query: { address: string }) {
     return this.service.get<GetDailyQuotaResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.address}`
+      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.address}`,
     );
   }
 
   getProtocolFee(payload: { pairId: string | number }) {
-    return this.service.post<{ gasFee: string, tipRate: string, decimal: string }>(
+    return this.service.post<{
+      gasFee: string;
+      tipRate: string;
+      decimal: string;
+    }>(
       `${this.baseURL}/${USERS_ENDPOINT.BRIDGE}/${USERS_ENDPOINT.PROTOCOL_FEE}`,
       {
         pairId: Number(payload.pairId),
-      }
+      },
     );
   }
 }

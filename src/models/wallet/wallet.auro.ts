@@ -8,7 +8,7 @@ import Wallet, {
   URL_INSTALL_IOS,
   WALLET_EVENT_NAME,
   WALLET_INJECT_OBJ,
-  WALLET_NAME
+  WALLET_NAME,
 } from './wallet.abstract';
 
 import { IsServer } from '@/constants';
@@ -90,7 +90,7 @@ export default class WalletAuro extends Wallet {
   }
 
   async handleRequestWithError<T>(
-    cb: Promise<T>
+    cb: Promise<T>,
   ): Promise<[MinaRequestResType<T>, null] | [null, MinaRequestErrorType<T>]> {
     try {
       return [await cb, null];
@@ -112,12 +112,12 @@ export default class WalletAuro extends Wallet {
     onStart?: () => void,
     onFinish?: () => void,
     onError?: () => void,
-    whileHandle?: () => void
+    whileHandle?: () => void,
   ) {
     onStart && onStart();
 
     const [res, error] = await this.handleRequestWithError(
-      this.InjectedObject.requestAccounts()
+      this.InjectedObject.requestAccounts(),
     );
 
     if (error) throw error;
@@ -139,10 +139,10 @@ export default class WalletAuro extends Wallet {
 
   async sendTx(payload: any): Promise<void> {
     const [res, error] = await this.handleRequestWithError(
-      this.InjectedObject.sendTransaction({ transaction: payload })
+      this.InjectedObject.sendTransaction({ transaction: payload }),
     );
     if (error) throw error;
-    console.log('🚀 ~ WalletAuro ~ sendTx ~ res:', res);
+    // console.log('🚀 ~ WalletAuro ~ sendTx ~ res:', res);
   }
 
   async getNetwork() {
@@ -157,7 +157,7 @@ export default class WalletAuro extends Wallet {
       this.InjectedObject.switchChain({
         // chainId: network.metadata.chainId.toLowerCase(),
         networkID: network.metadata.chainId.toLowerCase(),
-      })
+      }),
     );
     if (error) return false;
     return true;
@@ -166,7 +166,7 @@ export default class WalletAuro extends Wallet {
   async getBalance(
     network: Network,
     userAddr: string,
-    asset: TokenType
+    asset: TokenType,
   ): Promise<string> {
     const isNativeToken = network.nativeCurrency.symbol === asset.symbol;
 
@@ -175,7 +175,7 @@ export default class WalletAuro extends Wallet {
       const variables = { publicKey: userAddr };
       if ('proxyUrl' in network.metadata && network.metadata.proxyUrl) {
         const [data, error] = await handleRequest(
-          gql(network.metadata.proxyUrl, query, variables)
+          gql(network.metadata.proxyUrl, query, variables),
         );
         if (error || !data || !data.account) return '0';
         return fromWei(data.account.balance.total, asset.decimals);
@@ -203,13 +203,13 @@ export default class WalletAuro extends Wallet {
   async getNativeBalance(
     network: Network,
     userAddr: string,
-    asset: TokenType
+    asset: TokenType,
   ): Promise<string> {
     const query = getAccountInfoQuery;
     const variables = { publicKey: userAddr };
     if ('proxyUrl' in network.metadata && network.metadata.proxyUrl) {
       const [data, error] = await handleRequest(
-        gql(network.metadata.proxyUrl, query, variables)
+        gql(network.metadata.proxyUrl, query, variables),
       );
       if (error || !data || !data.account) return '0';
       return fromWei(data.account.balance.total, asset.decimals);

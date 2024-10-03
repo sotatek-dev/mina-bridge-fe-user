@@ -1,12 +1,12 @@
-import { isEqual } from "lodash";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { isEqual } from 'lodash';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { DesAddrRef } from "../partials/form.desAddress";
+import { DesAddrRef } from '../partials/form.desAddress';
 
-import useETHBridgeContract from "@/hooks/useETHBridgeContract";
-import BridgeContract from "@/models/contract/evm/contract.bridge";
-import { Network } from "@/models/network";
-import { NetworkEVMProviderType } from "@/models/network/network";
+import useETHBridgeContract from '@/hooks/useETHBridgeContract';
+import BridgeContract from '@/models/contract/evm/contract.bridge';
+import { Network } from '@/models/network';
+import { NetworkEVMProviderType } from '@/models/network/network';
 import {
   getPersistSlice,
   getUISlice,
@@ -14,9 +14,9 @@ import {
   getWalletSlice,
   useAppDispatch,
   useAppSelector
-} from "@/store";
-import { TokenType } from "@/store/slices/persistSlice";
-import { walletSliceActions } from "@/store/slices/walletSlice";
+} from '@/store';
+import { TokenType } from '@/store/slices/persistSlice';
+import { walletSliceActions } from '@/store/slices/walletSlice';
 
 export enum FORM_BRIDGE_STATUS {
   DISCONNECTED = 'disconnected',

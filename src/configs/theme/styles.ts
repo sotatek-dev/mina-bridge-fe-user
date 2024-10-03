@@ -1,4 +1,4 @@
-import { StyleProps } from "@chakra-ui/react";
+import { StyleProps } from '@chakra-ui/react';
 
 const styles: Record<string, Record<string, StyleProps>> = {
   global: {

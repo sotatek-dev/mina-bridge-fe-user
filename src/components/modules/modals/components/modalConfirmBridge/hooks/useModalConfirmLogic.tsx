@@ -1,27 +1,36 @@
-import BigNumber from "bignumber.js";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import BigNumber from 'bignumber.js';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { MODAL_NAME } from "@/configs/modal";
-import { IsServer } from "@/constants";
-import { handleRequest } from "@/helpers/asyncHandlers";
-import { formatNumber, formatNumber2, fromWei, toWei, truncateMid } from "@/helpers/common";
-import useETHBridgeContract from "@/hooks/useETHBridgeContract";
-import useNotifier from "@/hooks/useNotifier";
-import { EVMBridgeTXLock } from "@/models/contract/evm/contract.bridge";
-import { NETWORK_NAME, NETWORK_TYPE } from "@/models/network/network";
-import { WALLET_NAME, WalletAuro } from "@/models/wallet";
-import { useZKContractState } from "@/providers/zkBridgeInitalize";
-import usersService from "@/services/usersService";
+import { MODAL_NAME } from '@/configs/modal';
+import { IsServer } from '@/constants';
+import { handleRequest } from '@/helpers/asyncHandlers';
+import {
+  formatNumber,
+  formatNumber2,
+  fromWei,
+  toWei,
+  truncateMid,
+} from '@/helpers/common';
+import useETHBridgeContract from '@/hooks/useETHBridgeContract';
+import useNotifier from '@/hooks/useNotifier';
+import { EVMBridgeTXLock } from '@/models/contract/evm/contract.bridge';
+import { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
+import { WALLET_NAME, WalletAuro } from '@/models/wallet';
+import { useZKContractState } from '@/providers/zkBridgeInitalize';
+import usersService from '@/services/usersService';
 import {
   getPersistSlice,
   getUISlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
-  useAppSelector
-} from "@/store";
-import { TokenType } from "@/store/slices/persistSlice";
-import { ModalConfirmBridgePayload, uiSliceActions } from "@/store/slices/uiSlice";
+  useAppSelector,
+} from '@/store';
+import { TokenType } from '@/store/slices/persistSlice';
+import {
+  ModalConfirmBridgePayload,
+  uiSliceActions,
+} from '@/store/slices/uiSlice';
 
 type BridgePayload = {
   modalPayload: ModalConfirmBridgePayload;
@@ -47,7 +56,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   const { listIcon } = useAppSelector(getPersistSlice);
   const { address, asset } = useAppSelector(getWalletSlice);
   const { networkInstance, walletInstance } = useAppSelector(
-    getWalletInstanceSlice
+    getWalletInstanceSlice,
   );
 
   const zkCtr = useZKContractState().state;
@@ -65,7 +74,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       curModal.payload && 'destAddr' in curModal.payload
         ? curModal.payload
         : null,
-    [curModal]
+    [curModal],
   );
 
   const bridgeEVMCtr = useETHBridgeContract({
@@ -93,7 +102,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     return formatNumber(
       new BigNumber(amount).toString(),
       asset.decimals,
-      BigNumber.ROUND_DOWN
+      BigNumber.ROUND_DOWN,
     );
   }, [modalPayload]);
 
@@ -138,8 +147,8 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       receivedAmount: amountBn.minus(tipFee).toString(),
       transferAmount: amountBn.toString(),
       tipFeeAmount: tipFeeBn.toString(),
-      gasFeeAmount: gasFeeBn.toString()
-    }
+      gasFeeAmount: gasFeeBn.toString(),
+    };
   }
 
   const displayValues = useMemo(() => {
@@ -200,16 +209,19 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         value: `${formatNumber2(
           tipFeeAmount,
           asset.decimals,
-          '~'
+          '~',
         )} ${asset.symbol.toUpperCase()}`,
         affixIcon: assetIcon?.icon || '',
       },
       {
-        label: asset.network === NETWORK_NAME.ETHEREUM ? 'Minting Fee' : 'Unlocking fee:',
+        label:
+          asset.network === NETWORK_NAME.ETHEREUM
+            ? 'Minting Fee'
+            : 'Unlocking fee:',
         value: `${formatNumber2(
           gasFeeAmount,
           asset.decimals,
-          '~'
+          '~',
         )} ${asset.symbol.toUpperCase()}`,
         affixIcon: assetIcon?.icon || '',
       },
@@ -218,7 +230,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         value: `${formatNumber2(
           receivedAmount,
           asset.decimals,
-          '~'
+          '~',
         )} ${asset.symbol.toUpperCase()}`,
         affixIcon: assetIcon?.icon || '',
       },
@@ -262,19 +274,26 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     const [res, error] = await handleRequest(
       usersService.getProtocolFee({
         pairId: modalPayload.asset.pairId,
-      })
+      }),
     );
     if (error || !res) {
-      setGasFee("0");
+      setGasFee('0');
       setTipFee('0');
       return;
     }
-    setGasFee(fromWei(res.gasFee, res.decimal));
-    setTipFee(new BigNumber(modalPayload.amount).times(res.tipRate).div(100).toString())
+    const gasFee = fromWei(res.gasFee, res.decimal);
+    setGasFee(gasFee);
+    setTipFee(
+      new BigNumber(modalPayload.amount)
+        .minus(gasFee)
+        .times(res.tipRate)
+        .div(100)
+        .toString(),
+    );
   }
 
   function buildEVMBridgeTX(
-    params: ModalConfirmBridgePayload
+    params: ModalConfirmBridgePayload,
   ): EVMBridgeTXLock | null {
     if (!bridgeEVMCtr) return null;
     console.log('🚀 ~ useModalConfirmLogic ~ params.amount:', params.amount);
@@ -339,7 +358,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
   async function handleEVMBridge(
     tx: EVMBridgeTXLock,
-    { modalPayload, address }: BridgePayload
+    { modalPayload, address }: BridgePayload,
   ): Promise<boolean> {
     if (!bridgeEVMCtr) return onError();
     const [_, error] = await handleRequest(
@@ -348,7 +367,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         userAddr: address,
         asset: modalPayload.asset,
         isNativeToken: modalPayload.isNativeCurrency,
-      })
+      }),
     );
     if (error) return onError();
     return onSuccess();
@@ -370,12 +389,12 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       // fetch involve into the process accounts
       await zkCtr.erc20Contract.fetchInvolveAccount(
         address,
-        modalPayload.asset.bridgeCtrAddr
+        modalPayload.asset.bridgeCtrAddr,
       );
 
       const update = await AccountUpdate.create(
         zkCtr.bridgeContract.bridgeAddress,
-        zkCtr.erc20Contract.contractInstance?.tokenId
+        zkCtr.erc20Contract.contractInstance?.tokenId,
       );
       const accountIsNew = await update.account.isNew.getAndRequireEquals();
 
@@ -384,7 +403,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         const balance = await (walletInstance as WalletAuro).getNativeBalance(
           networkInstance.src,
           address,
-          asset
+          asset,
         );
         if (new BigNumber(balance).lt(0.1)) {
           sendNotification({
@@ -407,7 +426,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           async () => {
             AccountUpdate.fundNewAccount(PublicKey.fromBase58(address), 1);
             await zkCtr.bridgeContract!!.lock('1', '200000000');
-          }
+          },
         );
 
         await tx1.prove();
@@ -432,7 +451,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         const balance = await (walletInstance as WalletAuro).getNativeBalance(
           networkInstance.src,
           address,
-          asset
+          asset,
         );
         if (new BigNumber(balance).lt(0.1)) {
           sendNotification({
@@ -456,9 +475,9 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         async () => {
           await zkCtr.bridgeContract!!.lock(
             modalPayload.destAddr,
-            toWei(modalPayload.amount, modalPayload.asset.decimals)
+            toWei(modalPayload.amount, modalPayload.asset.decimals),
           );
-        }
+        },
       );
 
       // prove tx
@@ -507,7 +526,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
             amount,
             asset,
             tipFee,
-            gasFee
+            gasFee,
           });
           console.log('🚀 ~ handleConfirm ~ receivedAmount:', transferAmount);
           const emitTx = buildEVMBridgeTX({

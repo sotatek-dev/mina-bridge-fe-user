@@ -1,14 +1,14 @@
-"use client";
-import { FungibleToken } from "mina-fungible-token";
-import type { Mina, PublicKey } from "o1js";
+'use client';
+import { FungibleToken } from 'mina-fungible-token';
+import type { Mina, PublicKey } from 'o1js';
 
-import { Bridge } from "@/configs/ABIs/zk/Bridge";
-import { ZkContractType } from "@/configs/constants";
-import { gql } from "@/grapql";
-import { getAccountInfoTokenQuery } from "@/grapql/queries";
-import { handleRequest } from "@/helpers/asyncHandlers";
-import { fetchFiles, fileSystem } from "@/helpers/common";
-import { Network } from "@/models/network";
+import { Bridge } from '@/configs/ABIs/zk/Bridge';
+import { ZkContractType } from '@/configs/constants';
+import { gql } from '@/grapql';
+import { getAccountInfoTokenQuery } from '@/grapql/queries';
+import { handleRequest } from '@/helpers/asyncHandlers';
+import { fetchFiles, fileSystem } from '@/helpers/common';
+import { Network } from '@/models/network';
 
 export default class ERC20Contract {
   tokenAddress!: PublicKey;

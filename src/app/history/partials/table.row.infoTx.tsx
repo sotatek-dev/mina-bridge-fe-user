@@ -1,9 +1,9 @@
 'use client';
-import { Link, Text } from "@chakra-ui/react";
-import _ from "lodash";
-import React from "react";
+import { Link, Text } from '@chakra-ui/react';
+import _ from 'lodash';
+import React from 'react';
 
-import { fromWei, getDecimal, truncatedNumber, truncateMid } from "@/helpers/common";
+import { fromWei, getDecimal, truncatedNumber, truncateMid } from '@/helpers/common';
 
 type InfoTransactionProps = {
   amount: string;

@@ -178,7 +178,7 @@ const changeNetwork = createAppThunk()(
         const isCurSrcMatchTar = curSrcNetwork === network.name;
         // throw error if src network is equal tar network
         if (isCurSrcMatchTar)
-          throw new Error("Source network couldn't be Target network");
+          throw new Error('Source network couldn\'t be Target network');
         // change tar network
         const payload = { key, value: network.name };
 
@@ -232,7 +232,7 @@ const switchSrcTarNetwork = createAppThunk()(
       return true;
     }
     throw new Error(
-      `Your wallet doesn't support this network. Please change the wallet connected`
+      'Your wallet doesn\'t support this network. Please change the wallet connected'
     );
   }
 );
@@ -261,7 +261,7 @@ const reconnectWallet = createAppThunk()(
 
     if (!walletKey || !WALLETS[walletKey])
       throw new Error(
-        "You haven't connected to any wallet or network just yet"
+        'You haven\'t connected to any wallet or network just yet'
       );
     dispatch(
       walletInstanceSliceActions.initializeInstance({

@@ -22,14 +22,14 @@ import React, {
 
 import { useFormBridgeState } from '../context';
 
-import Loading from "@/components/elements/loading/spinner";
-import ITV from "@/configs/time";
-import { handleRequest } from "@/helpers/asyncHandlers";
-import { formatNumber, fromWei, zeroCutterStart } from "@/helpers/common";
-import { getWeb3Instance } from "@/helpers/evmHandlers";
-import useNotifier from "@/hooks/useNotifier";
-import Network, { NETWORK_TYPE } from "@/models/network/network";
-import { Wallet } from "@/models/wallet";
+import Loading from '@/components/elements/loading/spinner';
+import ITV from '@/configs/time';
+import { handleRequest } from '@/helpers/asyncHandlers';
+import { formatNumber, fromWei, zeroCutterStart } from '@/helpers/common';
+import { getWeb3Instance } from '@/helpers/evmHandlers';
+import useNotifier from '@/hooks/useNotifier';
+import Network, { NETWORK_TYPE } from '@/models/network/network';
+import { Wallet } from '@/models/wallet';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
@@ -85,14 +85,14 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   const ErrorList = useMemo(
     () => ({
       required: 'This field is required',
-      insufficient_fund: `Insufficient balance`,
+      insufficient_fund: 'Insufficient balance',
       reach_min: `You have to bridge at least ${assetRange[0]} ${
         asset?.symbol || ''
       }`,
       reach_max: `You can only bridge maximum ${assetRange[1]} ${
         asset?.symbol || ''
       }`,
-      insufficient_fund_fee: `Transaction can’t be made because of insufficient balance for transfer fee`,
+      insufficient_fund_fee: 'Transaction can’t be made because of insufficient balance for transfer fee',
       insufficient_daily_quota: `You can only bridge ${dailyQuota.max} ${
         asset?.symbol || ''
       } per address daily`,

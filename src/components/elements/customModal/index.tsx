@@ -87,6 +87,8 @@ export default function CustomModal({
             props.closeButton
           ) : (
             <ModalCloseButton
+              zIndex={10}
+              bg={'#fff'}
               _focusVisible={{
                 boxShadow: 'none',
               }}

@@ -1,17 +1,25 @@
 'use client';
-import { Badge, Button, Flex, HStack, Image, Text, VStack } from "@chakra-ui/react";
-import BigNumber from "bignumber.js";
-import { useEffect, useMemo, useRef, useState } from "react";
-import Web3 from "web3";
+import {
+  Badge,
+  Button,
+  Flex,
+  HStack,
+  Image,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import Web3 from 'web3';
 
-import { handleRequest } from "@/helpers/asyncHandlers";
-import { formatNumber, fromWei, truncateMid } from "@/helpers/common";
-import useNotifier from "@/hooks/useNotifier";
-import { Network } from "@/models/network";
-import { NETWORK_NAME, NETWORK_TYPE } from "@/models/network/network";
-import { getEtherAccountScan } from "@/models/network/network.ethereum";
-import { getMinaAccountScan } from "@/models/network/network.mina";
-import { TokenType } from "@/store/slices/persistSlice";
+import { handleRequest } from '@/helpers/asyncHandlers';
+import { formatNumber, fromWei, truncateMid } from '@/helpers/common';
+import useNotifier from '@/hooks/useNotifier';
+import { Network } from '@/models/network';
+import { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
+import { getEtherAccountScan } from '@/models/network/network.ethereum';
+import { getMinaAccountScan } from '@/models/network/network.mina';
+import { TokenType } from '@/store/slices/persistSlice';
 
 type Props = {
   asset: TokenType;
@@ -154,8 +162,7 @@ export default function DisplayBalance({
             {/*  displayType={'text'}*/}
             {/*  renderText={(value) => value + ' '}*/}
             {/*/>*/}
-            {formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)}
-            {asset.symbol}
+            {`${formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)} ${asset.symbol}`}
           </Text>
         )}
 

@@ -144,7 +144,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     const gasFeeBn = new BigNumber(params.gasFee);
 
     return {
-      receivedAmount: amountBn.minus(tipFee).toString(),
+      receivedAmount: amountBn.minus(tipFee).minus(gasFee).toString(),
       transferAmount: amountBn.toString(),
       tipFeeAmount: tipFeeBn.toString(),
       gasFeeAmount: gasFeeBn.toString(),

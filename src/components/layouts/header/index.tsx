@@ -21,6 +21,7 @@ import Logo from '../../elements/logo';
 import useHeaderLogic from './useHeaderLogic';
 
 import ROUTES from '@/configs/routes';
+import { getEnvNetwork } from '@/constants';
 import { useOutsideCheck } from '@/hooks/useOutsideCheck';
 import { getWalletSlice, useAppSelector } from '@/store';
 
@@ -57,11 +58,11 @@ export default function Header({}: Props) {
       py={'18px'}
       bg={'white'}
     >
-      <VStack justifyContent={'center'} gap={0}>
+      <HStack justifyContent={'center'} gap={1}>
         <Link href={ROUTES.HOME}>
           <Logo />
         </Link>
-      </VStack>
+      </HStack>
 
       <HStack ml={'auto'} gap={{ base: '10px', md: '16px' }}>
         {isConnected && isMdSize && (
@@ -110,10 +111,25 @@ export default function Header({}: Props) {
             </Button>
           ) : null}
         </Box>
+
+        {isMdSize && (
+          <HStack gap={1} ml={3}>
+            <Image width={'22px'} src={'/assets/icons/icon.env.network.svg'} />
+            <Text color={'text.500'}>
+              {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
+            </Text>
+          </HStack>
+        )}
       </HStack>
       <Drawer placement={'right'} onClose={closeDrawer} isOpen={isDrawerOpened}>
         <DrawerOverlay bg={'text.900'} opacity={'0.5 !important'} />
         <DrawerContent w={'65% !important'}>
+          <HStack gap={1} mt={'36px'} ml={'30px'}>
+            <Image width={'22px'} src={'/assets/icons/icon.env.network.svg'} />
+            <Text color={'text.500'}>
+              {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
+            </Text>
+          </HStack>
           <DrawerCloseButton top={'25px'} right={'30px'} />
           <DrawerBody pt={'100px'} px={'30px'} pb={'70px'} overflow={'auto'}>
             <VStack
@@ -142,6 +158,7 @@ export default function Header({}: Props) {
                   w={'full'}
                   onClick={toggleDrawerMenu}
                 />
+
                 {isDrawerMenuOpened && (
                   <Button
                     variant={'disconnect.solid'}

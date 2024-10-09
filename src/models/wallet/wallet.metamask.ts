@@ -47,11 +47,11 @@ export default class WalletMetamask extends Wallet {
     WALLET_WRONG_CHAIN: 'You have connected to unsupported chain',
     WALLET_CONNECT_FAILED: 'Fail to connect wallet',
     WALLET_CONNECT_REJECTED: 'User rejected the request.',
-    WALLET_GET_BALANCE_FAIL: 'Can\'t get the current balance',
+    WALLET_GET_BALANCE_FAIL: "Can't get the current balance",
     MINA_UNKNOWN_SEND_ERROR: 'Unknown mina transaction error',
   };
   errorMessageList = {
-    UNKNOWN_MINA_SEND_TX: 'Couldn\'t send zkApp command',
+    UNKNOWN_MINA_SEND_TX: "Couldn't send zkApp command",
   };
 
   constructor() {
@@ -59,7 +59,7 @@ export default class WalletMetamask extends Wallet {
       name: WALLET_NAME.METAMASK,
       metadata: {
         displayName: 'Metamask',
-        supportedNetwork: [NETWORK_NAME.MINA, NETWORK_NAME.ETHEREUM],
+        supportedNetwork: [NETWORK_NAME.ETHEREUM],
         InjectedObject: WALLET_INJECT_OBJ.METAMASK,
         logo: {
           base: '/assets/logos/logo.metamask.png',
@@ -131,7 +131,7 @@ export default class WalletMetamask extends Wallet {
     onStart?: () => void,
     onFinish?: () => void,
     onError?: () => void,
-    whileHandle?: () => void,
+    whileHandle?: () => void
   ) {
     let account: string = '';
     switch (network.type) {
@@ -170,7 +170,7 @@ export default class WalletMetamask extends Wallet {
                   version: `^${version}`,
                 },
               },
-            }),
+            })
           );
           whileHandle && whileHandle();
           if (reqError) throw reqError;
@@ -228,7 +228,7 @@ export default class WalletMetamask extends Wallet {
   async getBalance(
     network: Network,
     userAddr: string,
-    asset: TokenType,
+    asset: TokenType
   ): Promise<string> {
     const isNativeToken = network.nativeCurrency.symbol === asset.symbol;
 
@@ -242,7 +242,7 @@ export default class WalletMetamask extends Wallet {
           };
           const web3 = getWeb3Instance(provider);
           const [blnWei, error] = await handleRequest(
-            web3.eth.getBalance(userAddr),
+            web3.eth.getBalance(userAddr)
           );
           if (error) throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
           return fromWei(blnWei!!.toString(), asset.decimals);
@@ -314,7 +314,7 @@ export default class WalletMetamask extends Wallet {
         await ctr.setInfo(asset.tokenAddr, network);
 
         const [blnWei, reqError] = await handleRequest(
-          ctr.getBalance(userAddr),
+          ctr.getBalance(userAddr)
         );
         if (reqError || !blnWei)
           throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
@@ -339,7 +339,7 @@ export default class WalletMetamask extends Wallet {
                   chainId: network.metadata.chainId,
                 },
               ],
-            }),
+            })
           );
           if (error) return false;
         }
@@ -354,7 +354,7 @@ export default class WalletMetamask extends Wallet {
                 method: 'mina_networkConfig',
               },
             },
-          },
+          }
         );
         if (name !== network.metadata.chainId) {
           await this.sendRequest({

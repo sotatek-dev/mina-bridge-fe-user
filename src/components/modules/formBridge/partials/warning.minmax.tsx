@@ -1,5 +1,6 @@
 'use client';
 import { HStack, Image, StackProps, Text, VStack } from '@chakra-ui/react';
+import { capitalize } from 'lodash';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 
@@ -11,7 +12,12 @@ import { formatNumber, fromWei } from '@/helpers/common';
 import { Network } from '@/models/network';
 import { NETWORK_TYPE } from '@/models/network/network';
 import { useZKContractState } from '@/providers/zkBridgeInitalize';
-import { getPersistSlice, getWalletInstanceSlice, useAppDispatch, useAppSelector } from '@/store';
+import {
+  getPersistSlice,
+  getWalletInstanceSlice,
+  useAppDispatch,
+  useAppSelector,
+} from '@/store';
 import { persistSliceActions, TokenType } from '@/store/slices/persistSlice';
 
 type Props = { isDisplayed: boolean } & Pick<StackProps, ChakraBoxSizeProps>;
@@ -165,7 +171,9 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
       <Image src={'/assets/icons/icon.buzz.circle.purple.svg'} />
       <VStack alignItems={'flex-start'} gap={'5px'}>
         <Text variant={'md_semiBold'} color={'text.700'} pb={'5px'}>
-          I want to swap {asset?.symbol || ''} in this order
+          I want to bridge {asset?.symbol || ''} from{' '}
+          {capitalize(networkInstance.src?.name)} to{' '}
+          {capitalize(networkInstance?.tar?.name)}
         </Text>
         <Text variant={'md'} color={'text.500'}>
           1. Minimum amount is {assetRange[0] || 'unknown'}{' '}

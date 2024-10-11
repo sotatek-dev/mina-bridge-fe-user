@@ -11,17 +11,20 @@ import {
   Flex,
   HStack,
   Image,
+  Switch,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { PropsWithChildren, useRef } from 'react';
+import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 import Logo from '../../elements/logo';
 
 import useHeaderLogic from './useHeaderLogic';
 
+import { Theme } from '@/configs/constants';
 import ROUTES from '@/configs/routes';
 import { getEnvNetwork } from '@/constants';
+import useChakraTheme from '@/hooks/useChakraTheme';
 import { useOutsideCheck } from '@/hooks/useOutsideCheck';
 import { getWalletSlice, useAppSelector } from '@/store';
 
@@ -45,6 +48,7 @@ export default function Header({}: Props) {
   } = useHeaderLogic();
 
   useOutsideCheck(disconnectBtnRef, closeMenu);
+  const { colorMode, onToggleTheme } = useChakraTheme();
 
   return (
     <Flex
@@ -56,7 +60,7 @@ export default function Header({}: Props) {
         xl: '150px',
       }}
       py={'18px'}
-      bg={'white'}
+      bg={'background.0'}
     >
       <HStack justifyContent={'center'} gap={1}>
         <Link href={ROUTES.HOME}>
@@ -113,12 +117,25 @@ export default function Header({}: Props) {
         </Box>
 
         {isMdSize && (
-          <HStack gap={1} ml={3}>
-            <Image width={'22px'} src={'/assets/icons/icon.env.network.svg'} />
-            <Text color={'text.500'}>
-              {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
-            </Text>
-          </HStack>
+          <>
+            <HStack gap={1} ml={3}>
+              <Switch
+                id={'theme'}
+                isChecked={colorMode === Theme.DARK}
+                onChange={onToggleTheme}
+              />
+            </HStack>
+
+            <HStack gap={1} ml={3}>
+              <Image
+                width={'22px'}
+                src={'/assets/icons/icon.env.network.svg'}
+              />
+              <Text color={'text.500'}>
+                {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
+              </Text>
+            </HStack>
+          </>
         )}
       </HStack>
       <Drawer placement={'right'} onClose={closeDrawer} isOpen={isDrawerOpened}>

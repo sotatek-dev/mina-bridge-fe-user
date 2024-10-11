@@ -24,7 +24,6 @@ function WrapperLayout({ children }: Props) {
   useWeb3Injected();
   useLoadWalletInstances();
   useInitPersistData();
-  useChakraTheme();
   useWalletEvents();
   useDeviceCheck();
 

@@ -3,7 +3,12 @@ import { Link, Text } from '@chakra-ui/react';
 import _ from 'lodash';
 import React from 'react';
 
-import { fromWei, getDecimal, truncatedNumber, truncateMid } from '@/helpers/common';
+import {
+  fromWei,
+  getDecimal,
+  truncatedNumber,
+  truncateMid,
+} from '@/helpers/common';
 
 type InfoTransactionProps = {
   amount: string;
@@ -30,7 +35,7 @@ function InfoTransaction({
 
       {txHash && scanUrl && (
         <Link href={`${scanUrl}/tx/${txHash}`} target={'_blank'}>
-          <Text variant={'md'} color={'text.500'}>
+          <Text variant={'md'} color={'text.500'} whiteSpace={'nowrap'}>
             {`${fSlice}...${sSlice} (${networkName.toUpperCase()})`}
           </Text>
         </Link>

@@ -502,6 +502,15 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         default:
           break;
       }
+
+      // tx confirmed
+      sendNotification({
+        toastType: 'warning',
+        options: {
+          title:
+            'Locking WETH transactions can take up to 10 minutes to appear on Bridge History screen',
+        },
+      });
       return onSuccess();
     } catch (error) {
       // console.log('🚀 ~ useModalConfirmLogic ~ error:', error);

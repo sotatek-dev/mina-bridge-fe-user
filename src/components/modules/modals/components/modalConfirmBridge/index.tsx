@@ -23,7 +23,6 @@ import { MODAL_NAME } from '@/configs/modal';
 import ROUTES from '@/configs/routes';
 import useNotifier from '@/hooks/useNotifier';
 
-
 export default function ModalConfirmBridge() {
   const {
     dpAmount,
@@ -275,8 +274,7 @@ export default function ModalConfirmBridge() {
               bg={'rgba(222, 98, 46, 0.10)'}
             >
               <Text variant={'md'} color={'primary.orange'}>
-                Please initiate a single transfer, we will only monitor the
-                first transfer
+                You will receive after about 20 minutes
               </Text>
             </Box>
             <Box w={'full'} mt={'15px'} gap={'12px'}>

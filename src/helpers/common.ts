@@ -148,6 +148,8 @@ export function formatNumber2(
   const minimumNumber =
     decNum > 4 ? new BigNumber(10).pow(-4) : new BigNumber(10).pow(-decNum);
 
+  if (balBN.eq(0)) return '0';
+
   let value = '0';
   if (decNum > 4) {
     value = truncatedNumber(balBN.toFixed(4));

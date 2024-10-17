@@ -56,7 +56,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   const { listIcon } = useAppSelector(getPersistSlice);
   const { address, asset } = useAppSelector(getWalletSlice);
   const { networkInstance, walletInstance } = useAppSelector(
-    getWalletInstanceSlice,
+    getWalletInstanceSlice
   );
 
   const zkCtr = useZKContractState().state;
@@ -74,7 +74,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       curModal.payload && 'destAddr' in curModal.payload
         ? curModal.payload
         : null,
-    [curModal],
+    [curModal]
   );
 
   const bridgeEVMCtr = useETHBridgeContract({
@@ -102,7 +102,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     return formatNumber(
       new BigNumber(amount).toString(),
       asset.decimals,
-      BigNumber.ROUND_DOWN,
+      BigNumber.ROUND_DOWN
     );
   }, [modalPayload]);
 
@@ -143,8 +143,10 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     const tipFeeBn = new BigNumber(params.tipFee);
     const gasFeeBn = new BigNumber(params.gasFee);
 
+    const receiveAmountBn = amountBn.minus(tipFee).minus(gasFee);
+
     return {
-      receivedAmount: amountBn.minus(tipFee).minus(gasFee).toString(),
+      receivedAmount: receiveAmountBn.lte(0) ? '0' : receiveAmountBn.toString(),
       transferAmount: amountBn.toString(),
       tipFeeAmount: tipFeeBn.toString(),
       gasFeeAmount: gasFeeBn.toString(),
@@ -165,12 +167,12 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           affixIcon: '',
         },
         {
-          label: 'Tip fee:',
+          label: 'Bridging Fee:',
           value: '~',
           affixIcon: '',
         },
         {
-          label: 'Unlocking/Minting fee:',
+          label: 'Unlocking/Minting Fee:',
           value: '~',
           affixIcon: '',
         },
@@ -205,23 +207,23 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         affixIcon: assetIcon?.icon || '',
       },
       {
-        label: 'Tip fee:',
+        label: 'Bridging Fee:',
         value: `${formatNumber2(
           tipFeeAmount,
           asset.decimals,
-          '~',
+          '~'
         )} ${asset.symbol.toUpperCase()}`,
         affixIcon: assetIcon?.icon || '',
       },
       {
         label:
           asset.network === NETWORK_NAME.ETHEREUM
-            ? 'Minting Fee'
-            : 'Unlocking fee:',
+            ? 'Minting Fee:'
+            : 'Unlocking Fee:',
         value: `${formatNumber2(
           gasFeeAmount,
           asset.decimals,
-          '~',
+          '~'
         )} ${asset.symbol.toUpperCase()}`,
         affixIcon: assetIcon?.icon || '',
       },
@@ -230,7 +232,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         value: `${formatNumber2(
           receivedAmount,
           asset.decimals,
-          '~',
+          '~'
         )} ${asset.symbol.toUpperCase()}`,
         affixIcon: assetIcon?.icon || '',
       },
@@ -274,7 +276,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     const [res, error] = await handleRequest(
       usersService.getProtocolFee({
         pairId: modalPayload.asset.pairId,
-      }),
+      })
     );
     if (error || !res) {
       setGasFee('0');
@@ -288,12 +290,12 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         .minus(gasFee)
         .times(res.tipRate)
         .div(100)
-        .toString(),
+        .toString()
     );
   }
 
   function buildEVMBridgeTX(
-    params: ModalConfirmBridgePayload,
+    params: ModalConfirmBridgePayload
   ): EVMBridgeTXLock | null {
     if (!bridgeEVMCtr) return null;
     // console.log('🚀 ~ useModalConfirmLogic ~ params.amount:', params.amount);
@@ -358,7 +360,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
   async function handleEVMBridge(
     tx: EVMBridgeTXLock,
-    { modalPayload, address }: BridgePayload,
+    { modalPayload, address }: BridgePayload
   ): Promise<boolean> {
     if (!bridgeEVMCtr) return onError();
     const [_, error] = await handleRequest(
@@ -367,7 +369,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         userAddr: address,
         asset: modalPayload.asset,
         isNativeToken: modalPayload.isNativeCurrency,
-      }),
+      })
     );
     if (error) return onError();
     return onSuccess();
@@ -389,12 +391,12 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       // fetch involve into the process accounts
       await zkCtr.erc20Contract.fetchInvolveAccount(
         address,
-        modalPayload.asset.bridgeCtrAddr,
+        modalPayload.asset.bridgeCtrAddr
       );
 
       const update = await AccountUpdate.create(
         zkCtr.bridgeContract.bridgeAddress,
-        zkCtr.erc20Contract.contractInstance?.tokenId,
+        zkCtr.erc20Contract.contractInstance?.tokenId
       );
       const accountIsNew = await update.account.isNew.getAndRequireEquals();
 
@@ -403,7 +405,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         const balance = await (walletInstance as WalletAuro).getNativeBalance(
           networkInstance.src,
           address,
-          asset,
+          asset
         );
         if (new BigNumber(balance).lt(0.1)) {
           sendNotification({
@@ -426,7 +428,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           async () => {
             AccountUpdate.fundNewAccount(PublicKey.fromBase58(address), 1);
             await zkCtr.bridgeContract!!.lock('1', '200000000');
-          },
+          }
         );
 
         await tx1.prove();
@@ -451,7 +453,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         const balance = await (walletInstance as WalletAuro).getNativeBalance(
           networkInstance.src,
           address,
-          asset,
+          asset
         );
         if (new BigNumber(balance).lt(0.1)) {
           sendNotification({
@@ -475,9 +477,9 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         async () => {
           await zkCtr.bridgeContract!!.lock(
             modalPayload.destAddr,
-            toWei(modalPayload.amount, modalPayload.asset.decimals),
+            toWei(modalPayload.amount, modalPayload.asset.decimals)
           );
-        },
+        }
       );
 
       // prove tx

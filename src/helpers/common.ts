@@ -83,6 +83,14 @@ export const formatDateAndTime = (timestamp: string) => {
   return date.format('YYYY-MM-DD HH:mm:ss');
 };
 
+export const formatDate = (datetime: string | number) => {
+  return moment(datetime).format('YYYY-MM-DD');
+};
+
+export const formatTime = (datetime: string | number) => {
+  return moment(datetime).format('HH:mm:ss');
+};
+
 export const getDecimal = (network: string) => {
   // response from api not match defined enum NETWORK_NAME
   const NETWORK_NAME = {
@@ -139,6 +147,8 @@ export function formatNumber2(
   const decNum = Number(decimals);
   const minimumNumber =
     decNum > 4 ? new BigNumber(10).pow(-4) : new BigNumber(10).pow(-decNum);
+
+  if (balBN.eq(0)) return '0';
 
   let value = '0';
   if (decNum > 4) {
@@ -197,7 +207,9 @@ export function fetchFiles(type: ZkContractType) {
     return Promise.all(
       listFiles.map((file) => {
         return Promise.all([
-          fetch(`${publicStaticUri}/o1js/${file}.header`).then((res) => res.text()),
+          fetch(`${publicStaticUri}/o1js/${file}.header`).then((res) =>
+            res.text()
+          ),
           fetch(`${publicStaticUri}/o1js/${file}`).then((res) => res.text()),
         ]).then(([header, data]) => ({ file, header, data }));
       })

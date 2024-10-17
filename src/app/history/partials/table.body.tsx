@@ -4,10 +4,11 @@ import _ from 'lodash';
 import React from 'react';
 
 import InfoTransaction from './table.row.infoTx';
-import RowStatus from './table.row.status';
+import RowStatus, { STATUS } from './table.row.status';
 
 import {
-  formatDateAndTime,
+  formatDate,
+  formatTime,
   getScanUrl,
   truncatedNumber,
 } from '@/helpers/common';
@@ -59,9 +60,24 @@ function BodyTable({ data }: PropsBodyTable) {
               </Text>
             </Td>
             <Td borderBottom={'solid 1px #E4E4E7'}>
-              <Text variant={'lg'} color={'text.900'}>
-                {formatDateAndTime(item.blockTimeLock)}
+              <Text variant={'lg'} color={'text.900'} whiteSpace={'nowrap'}>
+                {formatDate(Number(item.blockTimeLock) * 1000)}
               </Text>
+              <Text variant={'lg'} color={'text.900'} whiteSpace={'nowrap'}>
+                {formatTime(Number(item.blockTimeLock) * 1000)}
+              </Text>
+            </Td>
+            <Td borderBottom={'solid 1px #E4E4E7'}>
+              {item?.status === STATUS.COMPLETED && item?.updatedAt && (
+                <>
+                  <Text variant={'lg'} color={'text.900'} whiteSpace={'nowrap'}>
+                    {formatDate(item?.updatedAt)}
+                  </Text>
+                  <Text variant={'lg'} color={'text.900'} whiteSpace={'nowrap'}>
+                    {formatTime(item?.updatedAt)}
+                  </Text>
+                </>
+              )}
             </Td>
             <Td borderBottom={'solid 1px #E4E4E7'}>
               <Text variant={'lg'} color={'text.900'}>

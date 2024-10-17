@@ -143,8 +143,10 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     const tipFeeBn = new BigNumber(params.tipFee);
     const gasFeeBn = new BigNumber(params.gasFee);
 
+    const receiveAmountBn = amountBn.minus(tipFee).minus(gasFee);
+
     return {
-      receivedAmount: amountBn.minus(tipFee).minus(gasFee).toString(),
+      receivedAmount: receiveAmountBn.lte(0) ? '0' : receiveAmountBn.toString(),
       transferAmount: amountBn.toString(),
       tipFeeAmount: tipFeeBn.toString(),
       gasFeeAmount: gasFeeBn.toString(),
@@ -216,7 +218,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       {
         label:
           asset.network === NETWORK_NAME.ETHEREUM
-            ? 'Minting Fee'
+            ? 'Minting Fee:'
             : 'Unlocking Fee:',
         value: `${formatNumber2(
           gasFeeAmount,

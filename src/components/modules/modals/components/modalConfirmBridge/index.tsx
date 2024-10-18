@@ -13,7 +13,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import useModalSNLogic, { MODAL_CF_STATUS } from './hooks/useModalConfirmLogic';
 
@@ -28,7 +28,7 @@ export default function ModalConfirmBridge() {
     dpAmount,
     networkInstance,
     modalPayload,
-    displayValues,
+    getDisplayValues,
     isAgreeTerm,
     onDismiss,
     status,
@@ -40,6 +40,14 @@ export default function ModalConfirmBridge() {
   });
   const { sendNotification } = useNotifier();
   const router = useRouter();
+  const [displayValues, setDisplayValues] = useState<
+    | {
+        label: string;
+        value: string;
+        affixIcon: string;
+      }[]
+    | null
+  >();
 
   const isDefault = useMemo(() => status === MODAL_CF_STATUS.IDLE, [status]);
   const isInitializing = useMemo(
@@ -51,6 +59,14 @@ export default function ModalConfirmBridge() {
   const isSuccess = useMemo(() => status === MODAL_CF_STATUS.SUCCESS, [status]);
 
   const isFreezeScreen = isInitializing || isLoading;
+
+  useEffect(() => {
+    const getValues = async () => {
+      const value = await getDisplayValues();
+      setDisplayValues(value);
+    };
+    getValues();
+  }, [getDisplayValues]);
 
   const contentRendered = useMemo(() => {
     switch (true) {
@@ -247,7 +263,7 @@ export default function ModalConfirmBridge() {
               </Box>
             </Grid>
             <VStack w={'full'} gap={'20px'} mt={'15px'}>
-              {displayValues.map((item, index) => (
+              {displayValues?.map((item, index) => (
                 <HStack
                   key={`${item.label}_${item.value}_${index}`}
                   w={'full'}

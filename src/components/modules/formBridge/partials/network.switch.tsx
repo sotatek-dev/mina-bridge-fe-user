@@ -7,10 +7,7 @@ import { useFormBridgeState } from '../context';
 import useNotifier from '@/hooks/useNotifier';
 import NETWORKS, { NETWORK_NAME } from '@/models/network';
 import WALLETS from '@/models/wallet';
-import {
-  WALLET_EVENT_NAME,
-  WALLET_NAME,
-} from '@/models/wallet/wallet.abstract';
+import { WALLET_NAME } from '@/models/wallet/wallet.abstract';
 import {
   getWalletInstanceSlice,
   getWalletSlice,
@@ -35,12 +32,6 @@ export default function NetworkSwitch({ ...props }: Props) {
 
     updateStatus('isLoading', true);
 
-    // TODO: Remove all older event
-    walletInstance!!.removeListener(WALLET_EVENT_NAME.ACCOUNTS_CHANGED);
-    walletInstance!!.removeListener(WALLET_EVENT_NAME.CHAIN_CHANGED);
-    walletInstance!!.removeListener(WALLET_EVENT_NAME.DISCONNECT);
-    walletInstance!!.removeListener(WALLET_EVENT_NAME.MESSAGE);
-
     // retry get wallet account
     const res = await dispatch(
       walletSliceActions.connectWallet({
@@ -51,7 +42,7 @@ export default function NetworkSwitch({ ...props }: Props) {
               : WALLET_NAME.AURO
           ]!,
         network: NETWORKS[networkName.tar!],
-      })
+      }),
     );
     //  when fail to connect
     if (walletSliceActions.connectWallet.rejected.match(res)) {

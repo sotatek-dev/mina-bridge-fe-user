@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import WrapperLayout from '@/components/layouts/wrapper-layout';
 import ClientProviders from '@/components/providers/ClientProviders';
 import ReduxProvider from '@/components/providers/ReduxProvider';
+import './global.css';
 
 export const metadata: Metadata = {
   title: 'Mina Bridge',

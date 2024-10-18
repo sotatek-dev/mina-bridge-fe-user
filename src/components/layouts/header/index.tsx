@@ -1,7 +1,6 @@
 'use client';
 import { Link } from '@chakra-ui/next-js';
 import {
-  Box,
   Button,
   Drawer,
   DrawerBody,
@@ -33,8 +32,6 @@ export default function Header({}: Props) {
   const {
     isMdSize,
     isDrawerOpened,
-    isMenuOpened,
-    isDrawerMenuOpened,
     disconnectWallet,
     btnConnectWalletProps,
     btnSelectNetworkProps,
@@ -58,7 +55,7 @@ export default function Header({}: Props) {
       py={'18px'}
       bg={'white'}
     >
-      <HStack justifyContent={'center'} gap={1}>
+      <HStack justifyContent={'center'} gap={1} mr={2}>
         <Link href={ROUTES.HOME}>
           <Logo />
         </Link>
@@ -78,47 +75,34 @@ export default function Header({}: Props) {
           {...(isMdSize ? {} : { children: null })}
         />
 
-        <Box position={'relative'} ref={disconnectBtnRef}>
-          <Button
-            {...btnConnectWalletProps}
-            {...(isMdSize || (!isMdSize && !isConnected)
-              ? {}
-              : { children: null })}
-          />
-          {isMenuOpened ? (
-            <Button
-              variant={'disconnect.solid'}
-              position={'absolute'}
-              h={'42px'}
-              minW={'130px'}
-              bottom={'-120%'}
-              right={0}
-              onClick={disconnectWallet}
-              zIndex={'10'}
-              leftIcon={
-                <Image
-                  src={'/assets/icons/icon.link-broken.svg'}
-                  w={'24px'}
-                  h={'24px'}
-                />
-              }
-              gap={'0'}
-              alignItems={'center'}
-            >
-              <Text as={'span'} variant={'md_medium'} lineHeight={1} pt={'3px'}>
-                Disconnect
-              </Text>
-            </Button>
-          ) : null}
-        </Box>
+        <Button
+          {...btnConnectWalletProps}
+          {...(isMdSize || (!isMdSize && !isConnected)
+            ? {}
+            : { children: null })}
+        />
 
         {isMdSize && (
-          <HStack gap={1} ml={3}>
-            <Image width={'22px'} src={'/assets/icons/icon.env.network.svg'} />
-            <Text color={'text.500'}>
-              {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
-            </Text>
-          </HStack>
+          <>
+            <Button w={10} p={'10px'}>
+              <Image width={'22px'} src={'/assets/icons/icon.sun.svg'} />
+            </Button>
+
+            {isConnected && (
+              <Button w={10} p={'10px'} onClick={disconnectWallet}>
+                <Image width={'22px'} src={'/assets/icons/icon.log-out.svg'} />
+              </Button>
+            )}
+            <HStack gap={1}>
+              <Image
+                width={'22px'}
+                src={'/assets/icons/icon.env.network.svg'}
+              />
+              <Text color={'text.500'}>
+                {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
+              </Text>
+            </HStack>
+          </>
         )}
       </HStack>
       <Drawer placement={'right'} onClose={closeDrawer} isOpen={isDrawerOpened}>
@@ -159,7 +143,31 @@ export default function Header({}: Props) {
                   onClick={toggleDrawerMenu}
                 />
 
-                {isDrawerMenuOpened && (
+                <Button
+                  w={'100%'}
+                  leftIcon={
+                    <Image width={'22px'} src={'/assets/icons/icon.sun.svg'} />
+                  }
+                >
+                  Light Mode
+                </Button>
+
+                {isConnected && (
+                  <Button
+                    w={'100%'}
+                    onClick={disconnectWallet}
+                    leftIcon={
+                      <Image
+                        width={'22px'}
+                        src={'/assets/icons/icon.log-out.svg'}
+                      />
+                    }
+                  >
+                    Disconnect
+                  </Button>
+                )}
+
+                {/* {isDrawerMenuOpened && (
                   <Button
                     variant={'disconnect.solid'}
                     position={'absolute'}
@@ -192,7 +200,7 @@ export default function Header({}: Props) {
                       Disconnect
                     </Text>
                   </Button>
-                )}
+                )} */}
               </VStack>
             </VStack>
           </DrawerBody>

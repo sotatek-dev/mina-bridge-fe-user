@@ -14,8 +14,10 @@ import { useModalSNState } from '../context';
 import useNotifier from '@/hooks/useNotifier';
 import NETWORKS, { NETWORK_NAME } from '@/models/network';
 import WALLETS, { WALLET_NAME } from '@/models/wallet';
+import { WALLET_EVENT_NAME } from '@/models/wallet/wallet.abstract';
 import {
   getPersistSlice,
+  getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
   useAppSelector,
@@ -29,6 +31,7 @@ export default function Card({ nwKey }: CardProps) {
   const dispatch = useAppDispatch();
   const { lastNetworkName } = useAppSelector(getPersistSlice);
   const { networkName, isConnected } = useAppSelector(getWalletSlice);
+  const { walletInstance } = useAppSelector(getWalletInstanceSlice);
 
   const { curNetworkKey } = useModalSNState().constants;
   const { hasSupportedNetwork, handleCloseCurModal, handleCloseLoadingModal } =
@@ -58,7 +61,12 @@ export default function Card({ nwKey }: CardProps) {
     }
 
     handleCloseCurModal();
-    await dispatch(walletSliceActions.disconnect());
+
+    // TODO: Remove all older event
+    // walletInstance!!.removeListener(WALLET_EVENT_NAME.ACCOUNTS_CHANGED);
+    // walletInstance!!.removeListener(WALLET_EVENT_NAME.CHAIN_CHANGED);
+    // walletInstance!!.removeListener(WALLET_EVENT_NAME.DISCONNECT);
+    // walletInstance!!.removeListener(WALLET_EVENT_NAME.MESSAGE);
 
     // retry get wallet account
     const res = await dispatch(

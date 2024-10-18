@@ -27,6 +27,7 @@ enum USERS_ENDPOINT {
   DAILY_QUOTA = 'daily-quota',
   BRIDGE = 'bridge',
   PROTOCOL_FEE = 'protocol-fee',
+  PRICE_USD = 'price-usd',
 }
 
 export { CoinGeckoSV, PairDetailSV, PairSV, USERS_ENDPOINT };

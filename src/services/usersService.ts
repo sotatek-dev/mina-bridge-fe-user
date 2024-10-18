@@ -79,6 +79,11 @@ export type GetDailyQuotaResponse = {
   totalAmountOfToDay: number;
 };
 
+export type GetPriceUsdResponse = {
+  ethPriceInUsd: string;
+  minaPriceInUsd: string;
+};
+
 class UsersService {
   readonly service: AxiosService;
   readonly baseURL: string = '/users';
@@ -89,7 +94,7 @@ class UsersService {
 
   async getListSupportedPairs() {
     const res = await this.service.get<GetListSpPairsResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.SP_PAIRS}`,
+      `${this.baseURL}/${USERS_ENDPOINT.SP_PAIRS}`
     );
     return res;
   }
@@ -99,13 +104,13 @@ class UsersService {
       `${this.baseURL}/${USERS_ENDPOINT.HISTORY}/${query.address}`,
       {
         params: { limit: query.limit, page: query.page },
-      },
+      }
     );
   }
 
   getDailyQuota(query: { address: string }) {
     return this.service.get<GetDailyQuotaResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.address}`,
+      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.address}`
     );
   }
 
@@ -118,7 +123,13 @@ class UsersService {
       `${this.baseURL}/${USERS_ENDPOINT.BRIDGE}/${USERS_ENDPOINT.PROTOCOL_FEE}`,
       {
         pairId: Number(payload.pairId),
-      },
+      }
+    );
+  }
+
+  getPriceUsd() {
+    return this.service.get<GetPriceUsdResponse>(
+      `${this.baseURL}/token/${USERS_ENDPOINT.PRICE_USD}`
     );
   }
 }

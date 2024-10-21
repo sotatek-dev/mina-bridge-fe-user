@@ -9,11 +9,14 @@ import {
   DrawerOverlay,
   Flex,
   HStack,
-  Image,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { PropsWithChildren, useState } from 'react';
+import EnvIcon from '@public/assets/icons/icon.env.network.svg';
+import LogoutIcon from '@public/assets/icons/icon.log-out.svg';
+import MoonIcon from '@public/assets/icons/icon.moon.svg';
+import SunIcon from '@public/assets/icons/icon.sun.svg';
+import { PropsWithChildren } from 'react';
 
 import Logo from '../../elements/logo';
 
@@ -23,7 +26,6 @@ import { Theme } from '@/configs/constants';
 import ROUTES from '@/configs/routes';
 import { getEnvNetwork } from '@/constants';
 import useChakraTheme from '@/hooks/useChakraTheme';
-import { useOutsideCheck } from '@/hooks/useOutsideCheck';
 import { getWalletSlice, useAppSelector } from '@/store';
 
 type Props = PropsWithChildren<{}>;
@@ -39,10 +41,9 @@ export default function Header({}: Props) {
     btnBurgerMenuProps,
     toggleDrawerMenu,
     closeDrawer,
-    closeMenu,
   } = useHeaderLogic();
 
-  const { colorMode, onToggleTheme } = useChakraTheme();
+  const { colorMode, toggleTheme } = useChakraTheme();
 
   return (
     <Flex
@@ -85,23 +86,22 @@ export default function Header({}: Props) {
 
         {isMdSize && (
           <>
-            <Button w={10} p={'10px'} onClick={onToggleTheme}>
-              <Image
-                width={'22px'}
-                src={`/assets/icons/${colorMode === Theme.DARK ? 'icon.moon.svg' : 'icon.sun.svg'}`}
-              />
+            <Button w={10} p={'10px'} bg={'background.1'} onClick={toggleTheme}>
+              {colorMode === Theme.DARK ? <MoonIcon /> : <SunIcon />}
             </Button>
 
             {isConnected && (
-              <Button w={10} p={'10px'} onClick={disconnectWallet}>
-                <Image width={'22px'} src={'/assets/icons/icon.log-out.svg'} />
+              <Button
+                w={10}
+                p={'10px'}
+                bg={'background.1'}
+                onClick={disconnectWallet}
+              >
+                <LogoutIcon color={'var(--logo-color)'} />
               </Button>
             )}
             <HStack gap={1}>
-              <Image
-                width={'22px'}
-                src={'/assets/icons/icon.env.network.svg'}
-              />
+              <EnvIcon />
               <Text color={'text.500'}>
                 {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
               </Text>
@@ -113,7 +113,7 @@ export default function Header({}: Props) {
         <DrawerOverlay bg={'text.900'} opacity={'0.5 !important'} />
         <DrawerContent w={'65% !important'}>
           <HStack gap={1} mt={'36px'} ml={'30px'}>
-            <Image width={'22px'} src={'/assets/icons/icon.env.network.svg'} />
+            <EnvIcon />
             <Text color={'text.500'}>
               {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
             </Text>
@@ -146,16 +146,17 @@ export default function Header({}: Props) {
                   w={'full'}
                   onClick={toggleDrawerMenu}
                 />
-
                 <Button
                   w={'100%'}
+                  bg={'background.1'}
                   leftIcon={
-                    <Image
-                      width={'22px'}
-                      src={`/assets/icons/${colorMode === Theme.DARK ? 'icon.moon.svg' : 'icon.sun.svg'}`}
-                    />
+                    colorMode === Theme.DARK ? (
+                      <MoonIcon width={'22px'} />
+                    ) : (
+                      <SunIcon width={'22px'} />
+                    )
                   }
-                  onClick={onToggleTheme}
+                  onClick={toggleTheme}
                 >
                   Light Mode
                 </Button>
@@ -163,52 +164,15 @@ export default function Header({}: Props) {
                 {isConnected && (
                   <Button
                     w={'100%'}
+                    bg={'background.1'}
                     onClick={disconnectWallet}
                     leftIcon={
-                      <Image
-                        width={'22px'}
-                        src={'/assets/icons/icon.log-out.svg'}
-                      />
+                      <LogoutIcon color={'var(--logo-color)'} width={'22px'} />
                     }
                   >
                     Disconnect
                   </Button>
                 )}
-
-                {/* {isDrawerMenuOpened && (
-                  <Button
-                    variant={'disconnect.solid'}
-                    position={'absolute'}
-                    h={'42px'}
-                    minW={'130px'}
-                    top={'110%'}
-                    right={0}
-                    onClick={() => {
-                      closeDrawer();
-                      disconnectWallet();
-                    }}
-                    zIndex={'10'}
-                    leftIcon={
-                      <Image
-                        src={'/assets/icons/icon.link-broken.svg'}
-                        alt={'icon.link-broken'}
-                        w={'24px'}
-                        h={'24px'}
-                      />
-                    }
-                    gap={'0'}
-                    alignItems={'center'}
-                  >
-                    <Text
-                      as={'span'}
-                      variant={'md_medium'}
-                      lineHeight={1}
-                      pt={'3px'}
-                    >
-                      Disconnect
-                    </Text>
-                  </Button>
-                )} */}
               </VStack>
             </VStack>
           </DrawerBody>

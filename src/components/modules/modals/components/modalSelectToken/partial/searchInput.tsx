@@ -59,6 +59,7 @@ export default function SearchInput({}: Props) {
         m={'1px'}
         maxLength={255}
         pr={'40px'}
+        bg={'background.0'}
         placeholder={'Search name or paste address'}
         value={value}
         onChange={handleChangeValue}

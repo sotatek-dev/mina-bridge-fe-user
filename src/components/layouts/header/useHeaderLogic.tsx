@@ -12,6 +12,7 @@ import { MODAL_NAME } from '@/configs/modal';
 import { truncateMid } from '@/helpers/common';
 import useWindowSize from '@/hooks/useWindowSize';
 import NETWORKS from '@/models/network';
+import MenuIcon from '@public/assets/icons/icon.burger-menu.right.svg';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
@@ -95,7 +96,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
       iconSpacing: 0,
       py: '10px',
       px: '12px',
-      leftIcon: <Image src={'/assets/icons/icon.burger-menu.right.svg'} />,
+      leftIcon: <MenuIcon />,
       onClick: openDrawer,
       border: 'none',
       bg: 'rgba(244, 111, 78, 0.15)',
@@ -116,6 +117,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
       textOverflow: 'ellipsis',
       py: '10px',
       px: '12px',
+      bg: 'background.0',
       onClick: openSelectNetworkModal,
       children: (
         <>
@@ -161,6 +163,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
           <Image src={walletInstance?.metadata.logo.base} />
         </AspectRatio>
       ),
+      bg: 'background.0',
       onClick: toggleMenu,
       iconSpacing: 0,
       children: fSlice + '...' + sSlice,

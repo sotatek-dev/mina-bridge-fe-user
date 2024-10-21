@@ -3,6 +3,7 @@ const colors = {
     600: 'var(--neutrals-600)',
   },
   text: {
+    0: 'var(--text-0)',
     25: 'var(--text-25)',
     50: 'var(--text-50)',
     100: 'var(--text-100)',
@@ -18,6 +19,9 @@ const colors = {
 
   background: {
     0: 'var(--background-0)',
+    1: 'var(--background-1)',
+    modal: 'var(--background-modal)',
+    token: 'var(--background-token)',
   },
 
   primary: {

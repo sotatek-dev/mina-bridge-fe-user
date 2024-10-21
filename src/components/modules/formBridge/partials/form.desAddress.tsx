@@ -57,14 +57,14 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
         // not_address: `Invalid ${networkName.tar} network address`,
         not_address: 'Invalid address',
       }),
-      [networkName.tar],
+      [networkName.tar]
     );
 
     function getSupportedWallet(nwkKey: NETWORK_NAME | null): Wallet | null {
       if (!nwkKey) return null;
       return (
         Object.values(WALLETS).find((wallet) =>
-          wallet?.metadata?.supportedNetwork?.includes(nwkKey),
+          wallet?.metadata?.supportedNetwork?.includes(nwkKey)
         ) || null
       );
     }
@@ -85,7 +85,7 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
           case NETWORK_TYPE.EVM:
             const [emitVal, evmError] = handleException(
               value,
-              Web3.utils.toChecksumAddress,
+              Web3.utils.toChecksumAddress
             );
             if (evmError) return dpError('not_address');
             setError(null);
@@ -154,7 +154,7 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
           setError(null);
         },
       }),
-      [setValue, setError],
+      [setValue, setError]
     );
 
     return (
@@ -172,6 +172,7 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
             // pl="44px"
             pl={'12px'}
             value={value}
+            bg={'background.0'}
             onChange={handleChangeValue}
             onKeyUp={handleKeyUp}
             onKeyDown={handleKeyDown}
@@ -189,7 +190,7 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
         </Text>
       </VStack>
     );
-  },
+  }
 );
 
 const FormDesAddress = ({ isDisplayed, ...props }: Props) => {

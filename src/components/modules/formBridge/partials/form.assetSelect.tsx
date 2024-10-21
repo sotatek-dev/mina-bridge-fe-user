@@ -81,6 +81,7 @@ function FormAssetSelector({ buttonProps, ...sizingProps }: Props) {
         justifyContent={'flex-start'}
         gap={'0'}
         onClick={openSelectAssetsModal}
+        bg={'background.0'}
         leftIcon={<Image h={'24px'} src={assetIcon?.icon || ''} />}
         rightIcon={
           <Image

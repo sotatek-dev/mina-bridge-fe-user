@@ -174,8 +174,8 @@ export default function ModalConfirmBridge() {
                   >
                     <VStack
                       w={'full'}
-                      bg={'white'}
                       borderRadius={'9px'}
+                      bg={'background.0'}
                       py={'25'}
                       px={'10px'}
                     >
@@ -221,7 +221,7 @@ export default function ModalConfirmBridge() {
                   >
                     <VStack
                       w={'full'}
-                      bg={'white'}
+                      bg={'background.0'}
                       borderRadius={'9px'}
                       py={'25'}
                       px={'10px'}

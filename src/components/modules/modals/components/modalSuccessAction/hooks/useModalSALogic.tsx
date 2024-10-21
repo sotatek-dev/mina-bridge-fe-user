@@ -10,6 +10,7 @@ import {
 import { useCallback, useMemo } from 'react';
 
 import { MODAL_NAME } from '@/configs/modal';
+import SuccesIcon from '@public/assets/logos/logo.success.svg';
 import { getUISlice, useAppDispatch, useAppSelector } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
 
@@ -48,7 +49,7 @@ export default function useModalSALogic() {
     if ('title' in payload)
       return (
         <Box {...boxContentProps}>
-          <Image src={'/assets/logos/logo.success.svg'} />
+          <SuccesIcon />
           <Heading as={'h3'} variant={'h3'} mt={'20px'} textAlign={'center'}>
             {payload?.title}
           </Heading>

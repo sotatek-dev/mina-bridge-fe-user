@@ -66,6 +66,7 @@
     ],
     "react/jsx-closing-bracket-location": [2, "tag-aligned"],
     "react/jsx-closing-tag-location": [2, "tag-aligned"],
-    "jsx-quotes": ["error", "prefer-double"]
+    "jsx-quotes": ["error", "prefer-double"],
+    "comma-dangle": ["warn", "always-multiline"]
   }
 }

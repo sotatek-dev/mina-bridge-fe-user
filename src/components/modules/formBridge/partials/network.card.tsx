@@ -23,7 +23,6 @@ import {
 import { uiSliceActions } from '@/store/slices/uiSlice';
 import { NETWORK_KEY } from '@/store/slices/walletSlice';
 
-
 type Props = { label: string; networkKey: NETWORK_KEY };
 
 export default function NetworkCard({ label, networkKey }: Props) {
@@ -88,7 +87,7 @@ export default function NetworkCard({ label, networkKey }: Props) {
         borderRadius={'14px'}
         alignItems={'flex-start'}
         userSelect={'none'}
-        bgColor={'white'}
+        bgColor={'background.0'}
         zIndex={2}
       >
         <Text variant={'xl_medium'} color={'text.700'}>

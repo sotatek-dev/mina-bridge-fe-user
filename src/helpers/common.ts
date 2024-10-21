@@ -83,8 +83,12 @@ export const formatDateAndTime = (timestamp: string) => {
   return date.format('YYYY-MM-DD HH:mm:ss');
 };
 
-export const formatDateTime = (datetime: string) => {
-  return moment(datetime).format('YYYY-MM-DD HH:mm:ss');
+export const formatDate = (datetime: string | number) => {
+  return moment(datetime).format('YYYY-MM-DD');
+};
+
+export const formatTime = (datetime: string | number) => {
+  return moment(datetime).format('HH:mm:ss');
 };
 
 export const getDecimal = (network: string) => {
@@ -143,6 +147,8 @@ export function formatNumber2(
   const decNum = Number(decimals);
   const minimumNumber =
     decNum > 4 ? new BigNumber(10).pow(-4) : new BigNumber(10).pow(-decNum);
+
+  if (balBN.eq(0)) return '0';
 
   let value = '0';
   if (decNum > 4) {

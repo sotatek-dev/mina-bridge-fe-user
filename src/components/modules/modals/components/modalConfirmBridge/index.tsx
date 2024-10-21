@@ -13,7 +13,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import useModalSNLogic, { MODAL_CF_STATUS } from './hooks/useModalConfirmLogic';
 
@@ -23,13 +23,12 @@ import { MODAL_NAME } from '@/configs/modal';
 import ROUTES from '@/configs/routes';
 import useNotifier from '@/hooks/useNotifier';
 
-
 export default function ModalConfirmBridge() {
   const {
     dpAmount,
     networkInstance,
     modalPayload,
-    displayValues,
+    getDisplayValues,
     isAgreeTerm,
     onDismiss,
     status,
@@ -41,6 +40,14 @@ export default function ModalConfirmBridge() {
   });
   const { sendNotification } = useNotifier();
   const router = useRouter();
+  const [displayValues, setDisplayValues] = useState<
+    | {
+        label: string;
+        value: string;
+        affixIcon: string;
+      }[]
+    | null
+  >();
 
   const isDefault = useMemo(() => status === MODAL_CF_STATUS.IDLE, [status]);
   const isInitializing = useMemo(
@@ -52,6 +59,14 @@ export default function ModalConfirmBridge() {
   const isSuccess = useMemo(() => status === MODAL_CF_STATUS.SUCCESS, [status]);
 
   const isFreezeScreen = isInitializing || isLoading;
+
+  useEffect(() => {
+    const getValues = async () => {
+      const value = await getDisplayValues();
+      setDisplayValues(value);
+    };
+    getValues();
+  }, [getDisplayValues]);
 
   const contentRendered = useMemo(() => {
     switch (true) {
@@ -248,7 +263,7 @@ export default function ModalConfirmBridge() {
               </Box>
             </Grid>
             <VStack w={'full'} gap={'20px'} mt={'15px'}>
-              {displayValues.map((item, index) => (
+              {displayValues?.map((item, index) => (
                 <HStack
                   key={`${item.label}_${item.value}_${index}`}
                   w={'full'}
@@ -275,8 +290,7 @@ export default function ModalConfirmBridge() {
               bg={'rgba(222, 98, 46, 0.10)'}
             >
               <Text variant={'md'} color={'primary.orange'}>
-                Please initiate a single transfer, we will only monitor the
-                first transfer
+                You will receive after about 20 minutes
               </Text>
             </Box>
             <Box w={'full'} mt={'15px'} gap={'12px'}>

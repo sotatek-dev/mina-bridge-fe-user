@@ -139,19 +139,22 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     // };
 
     const amountBn = new BigNumber(params.amount);
-    const balanceBn = new BigNumber(params.balance);
     const tipFeeBn = new BigNumber(params.tipFee);
     const gasFeeBn = new BigNumber(params.gasFee);
+    const totalFee = gasFeeBn.plus(tipFeeBn);
+
+    const receiveAmountBn = amountBn.minus(tipFee).minus(gasFee);
 
     return {
-      receivedAmount: amountBn.minus(tipFee).minus(gasFee).toString(),
-      transferAmount: amountBn.toString(),
-      tipFeeAmount: tipFeeBn.toString(),
-      gasFeeAmount: gasFeeBn.toString(),
+      receivedAmount: receiveAmountBn.lte(0) ? '0' : receiveAmountBn.toString(),
+      transferAmount: amountBn.eq(0) ? '0' : amountBn.toString(),
+      tipFeeAmount: tipFeeBn.eq(0) ? '0' : tipFeeBn.toString(),
+      gasFeeAmount: gasFeeBn.eq(0) ? '0' : gasFeeBn.toString(),
+      totalFeeAmount: totalFee.eq(0) ? '0' : totalFee.toString(),
     };
   }
 
-  const displayValues = useMemo(() => {
+  const getDisplayValues = useCallback(async () => {
     if (!modalPayload)
       return [
         {
@@ -185,13 +188,20 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     const [addrStart, addrEnd] = truncateMid(destAddr, 4, 4);
     const assetIcon = listIcon.find((e) => e.symbol === asset.symbol);
 
-    const { receivedAmount, tipFeeAmount, gasFeeAmount } = getReceivedAmount({
-      balance,
-      amount,
-      asset,
-      tipFee,
-      gasFee,
-    });
+    const { receivedAmount, tipFeeAmount, gasFeeAmount, totalFeeAmount } =
+      getReceivedAmount({
+        balance,
+        amount,
+        asset,
+        tipFee,
+        gasFee,
+      });
+
+    let totalFee = 0;
+    const [res] = await handleRequest(usersService.getPriceUsd());
+    if (res?.ethPriceInUsd) {
+      totalFee = Number(totalFeeAmount) * Number(res.ethPriceInUsd);
+    }
 
     return [
       {
@@ -216,7 +226,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       {
         label:
           asset.network === NETWORK_NAME.ETHEREUM
-            ? 'Minting Fee'
+            ? 'Minting Fee:'
             : 'Unlocking Fee:',
         value: `${formatNumber2(
           gasFeeAmount,
@@ -224,6 +234,11 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           '~'
         )} ${asset.symbol.toUpperCase()}`,
         affixIcon: assetIcon?.icon || '',
+      },
+      {
+        label: 'Total Fee:',
+        value: `${formatNumber2(totalFee.toString(), asset.decimals, '~')} USD`,
+        affixIcon: '',
       },
       {
         label: 'You will receive:',
@@ -500,6 +515,15 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         default:
           break;
       }
+
+      // tx confirmed
+      sendNotification({
+        toastType: 'warning',
+        options: {
+          title:
+            'Locking WETH transactions can take up to 10 minutes to appear on Bridge History screen',
+        },
+      });
       return onSuccess();
     } catch (error) {
       // console.log('🚀 ~ useModalConfirmLogic ~ error:', error);
@@ -579,11 +603,11 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     status,
     modalPayload,
     networkInstance,
-    displayValues,
     isAgreeTerm,
     toggleAgreeTerm,
     handleConfirm,
     onDismiss,
     handleCloseModal,
+    getDisplayValues,
   };
 }

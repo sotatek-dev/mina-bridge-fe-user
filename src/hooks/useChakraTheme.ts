@@ -8,8 +8,8 @@ import { Theme } from '@/configs/constants';
 export default function useChakraTheme() {
   const { colorMode, setColorMode } = useColorMode();
 
-  const onToggleTheme = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const currentTheme = event.target.checked ? Theme.DARK : Theme.LIGHT;
+  const onToggleTheme = () => {
+    const currentTheme = colorMode === Theme.DARK ? Theme.LIGHT : Theme.DARK;
     setColorMode(currentTheme);
     Cookie.set('theme', currentTheme, {
       expires: Infinity,

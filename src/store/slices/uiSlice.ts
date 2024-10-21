@@ -20,6 +20,7 @@ export type ModalCWErrorPayload = {
 export type ModalSNPayload = {
   networkKey: NETWORK_KEY;
   isValidate?: boolean;
+  isDisable?: boolean;
 };
 
 export type ModalSuccessActionPayload = {

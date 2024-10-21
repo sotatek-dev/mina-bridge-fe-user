@@ -14,15 +14,15 @@ import { useModalSNState } from '../context';
 import useNotifier from '@/hooks/useNotifier';
 import NETWORKS, { NETWORK_NAME } from '@/models/network';
 import WALLETS, { WALLET_NAME } from '@/models/wallet';
-import { WALLET_EVENT_NAME } from '@/models/wallet/wallet.abstract';
 import {
   getPersistSlice,
-  getWalletInstanceSlice,
+  getUISlice,
   getWalletSlice,
   useAppDispatch,
   useAppSelector,
 } from '@/store';
 import { persistSliceActions } from '@/store/slices/persistSlice';
+import { ModalSNPayload } from '@/store/slices/uiSlice';
 import { NETWORK_KEY, walletSliceActions } from '@/store/slices/walletSlice';
 
 type CardProps = { nwKey: NETWORK_NAME };
@@ -31,7 +31,11 @@ export default function Card({ nwKey }: CardProps) {
   const dispatch = useAppDispatch();
   const { lastNetworkName } = useAppSelector(getPersistSlice);
   const { networkName, isConnected } = useAppSelector(getWalletSlice);
-  const { walletInstance } = useAppSelector(getWalletInstanceSlice);
+  const {
+    modals: {
+      select_network: { payload },
+    },
+  } = useAppSelector(getUISlice);
 
   const { curNetworkKey } = useModalSNState().constants;
   const { hasSupportedNetwork, handleCloseCurModal, handleCloseLoadingModal } =
@@ -52,6 +56,7 @@ export default function Card({ nwKey }: CardProps) {
   }, [nwKey]);
 
   async function handleSelectNetwork() {
+    if ((payload as ModalSNPayload)?.isDisable && !isSelected) return;
     if (isSelected) return handleCloseCurModal();
 
     if (!isConnected) {
@@ -103,6 +108,10 @@ export default function Card({ nwKey }: CardProps) {
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: '10px',
+    cursor:
+      !isSelected && (payload as ModalSNPayload)?.isDisable
+        ? 'not-allowed'
+        : 'pointer',
     bg: !isSelected
       ? 'text.500'
       : 'linear-gradient(270deg, #DE622E 0%, #8271F0 100%)',

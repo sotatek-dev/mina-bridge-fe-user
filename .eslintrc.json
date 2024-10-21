@@ -16,6 +16,7 @@
         "allowTemplateLiterals": true
       }
     ],
+    "comma-dangle": ["warn", "always-multiline"],
     "import/order": [
       "error",
       {

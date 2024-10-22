@@ -26,10 +26,11 @@ export default function UserGuide() {
             fontSize={{ base: '32px', md: '40px' }}
             mb={'30px'}
             mt={'40px'}
+            color={'text.900'}
           >
             Introduction
           </Heading>
-          <Box bg={'background.0'} p={{ base: '20px', md: '24px 40px' }}>
+          <Box bg={'background.modal'} p={{ base: '20px', md: '24px 40px' }}>
             <Introduction />
           </Box>
         </Box>
@@ -40,10 +41,11 @@ export default function UserGuide() {
             fontSize={{ base: '32px', md: '40px' }}
             mb={'30px'}
             mt={'40px'}
+            color={'text.900'}
           >
             Guideline For Users
           </Heading>
-          <Box bg={'background.0'} p={{ base: '20px', md: '24px 40px' }}>
+          <Box bg={'background.modal'} p={{ base: '20px', md: '24px 40px' }}>
             <UserGuideContent />
           </Box>
         </Box>

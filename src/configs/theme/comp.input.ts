@@ -7,6 +7,9 @@ const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(inputAnatomy.keys);
 
 const baseStyle = definePartsStyle({
+  group: {
+    borderColor: 'text.200',
+  },
   field: {
     h: '48px',
     p: '12px',

@@ -162,7 +162,7 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
   return (
     <HStack
       alignItems={'flex-start'}
-      bg={'primary.purple.01'}
+      bg={'primary.purple.06'}
       gap={'10px'}
       p={'15px 20px'}
       borderRadius={'8px'}

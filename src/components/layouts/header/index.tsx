@@ -111,7 +111,7 @@ export default function Header({}: Props) {
       </HStack>
       <Drawer placement={'right'} onClose={closeDrawer} isOpen={isDrawerOpened}>
         <DrawerOverlay bg={'text.900'} opacity={'0.5 !important'} />
-        <DrawerContent w={'65% !important'}>
+        <DrawerContent w={'65% !important'} bg={'background.0'}>
           <HStack gap={1} mt={'36px'} ml={'30px'}>
             <EnvIcon />
             <Text color={'text.500'}>

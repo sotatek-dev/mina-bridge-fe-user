@@ -12,10 +12,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import EnvIcon from '@public/assets/icons/icon.env.network.svg';
-import LogoutIcon from '@public/assets/icons/icon.log-out.svg';
-import MoonIcon from '@public/assets/icons/icon.moon.svg';
-import SunIcon from '@public/assets/icons/icon.sun.svg';
 import { PropsWithChildren } from 'react';
 
 import Logo from '../../elements/logo';
@@ -27,6 +23,10 @@ import ROUTES from '@/configs/routes';
 import { getEnvNetwork } from '@/constants';
 import useChakraTheme from '@/hooks/useChakraTheme';
 import { getWalletSlice, useAppSelector } from '@/store';
+import EnvIcon from '@public/assets/icons/icon.env.network.svg';
+import LogoutIcon from '@public/assets/icons/icon.log-out.svg';
+import MoonIcon from '@public/assets/icons/icon.moon.svg';
+import SunIcon from '@public/assets/icons/icon.sun.svg';
 
 type Props = PropsWithChildren<{}>;
 

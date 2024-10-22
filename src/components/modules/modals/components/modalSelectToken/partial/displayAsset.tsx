@@ -9,7 +9,12 @@ import { useModalSTState } from '../context';
 import { formatNumber } from '@/helpers/common';
 import { Network } from '@/models/network';
 import { Wallet } from '@/models/wallet';
-import { getPersistSlice, getWalletInstanceSlice, getWalletSlice, useAppSelector } from '@/store';
+import {
+  getPersistSlice,
+  getWalletInstanceSlice,
+  getWalletSlice,
+  useAppSelector,
+} from '@/store';
 import { TokenType } from '@/store/slices/persistSlice';
 
 type Props = { data: TokenType };
@@ -79,7 +84,7 @@ export default function DisplayAsset({ data }: Props) {
         px={'20px'}
         py={'17px'}
         borderRadius={'9px'}
-        bg={'green.25'}
+        bg={'background.token'}
         cursor={'pointer'}
         position={'relative'}
       >

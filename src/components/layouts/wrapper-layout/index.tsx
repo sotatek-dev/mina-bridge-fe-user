@@ -8,6 +8,7 @@ import UnmatchedChain from '@/components/layouts/banners/unmatchedChain';
 import Header from '@/components/layouts/header';
 import Modals from '@/components/modules/modals';
 import NotiReporter from '@/components/modules/notiReporter';
+import { Theme } from '@/configs/constants';
 import ROUTES, { PROTECTED_ROUTES } from '@/configs/routes';
 import useChakraTheme from '@/hooks/useChakraTheme';
 import useDeviceCheck from '@/hooks/useDeviceCheck';
@@ -24,7 +25,6 @@ function WrapperLayout({ children }: Props) {
   useWeb3Injected();
   useLoadWalletInstances();
   useInitPersistData();
-  useChakraTheme();
   useWalletEvents();
   useDeviceCheck();
 
@@ -36,6 +36,7 @@ function WrapperLayout({ children }: Props) {
   const isNotHistoryScreen = pathname !== ROUTES.HISTORY;
   const isNotUserGuide = pathname !== ROUTES.USER_GUIDE;
   const isNotHomeScreen = pathname !== ROUTES.HOME;
+  const { colorMode } = useChakraTheme();
 
   const [isClient, setIsClient] = useState(false);
 
@@ -66,7 +67,7 @@ function WrapperLayout({ children }: Props) {
             bgColor={'text.100'}
             bgImage={
               isNotPOAScreen && isNotHistoryScreen && isNotUserGuide
-                ? 'url("/assets/images/image.main-bg.jpg")'
+                ? `url("/assets/images/image.main-${colorMode === Theme.DARK ? 'dark' : 'light'}.jpg")`
                 : ''
             }
             bgSize={'cover'}

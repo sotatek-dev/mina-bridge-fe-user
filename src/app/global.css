@@ -47,3 +47,77 @@
   font-display: swap;
   src: url(/assets/fonts/IBMPlexSans-Thin.ttf) format('truetype');
 }
+[data-theme='light'] {
+  --neutrals-600: #e6e8ec;
+
+  --text-0: #fff;
+  --text-25: #fcfcfd;
+  --text-50: #fafafa;
+  --text-100: #f4f4f5;
+  --text-200: #e4e4e7;
+  --text-300: #d1d1d6;
+  --text-400: #a0a0ab;
+  --text-500: #70707b;
+  --text-600: #51525c;
+  --text-700: #3f3f46;
+  --text-800: #26272b;
+  --text-900: #18181b;
+
+  --logo-color: #2d2d2d;
+  --background-0: #fff;
+  --background-1: #fff;
+  --background-modal: #fcfcfd;
+  --background-token: #f0faf5;
+
+  --primary-purple: #8271f0;
+  --primary-purple-01: #8271f01a;
+  --primary-purple-05: #8271f080;
+  --primary-orange: #f46f4e;
+  --primary-orange-01: #f46f4e1a;
+
+  --yellow-500: #ffbb46;
+  --red-500: #f04438;
+  --green-25: #f0faf5;
+  --green-500: #16b364;
+  --blue-500: #2e90fa;
+}
+
+[data-theme='dark'] {
+  --neutrals-600: #e6e8ec;
+
+  --text-0: #000;
+  --text-25: #18181b;
+  --text-50: #26272b;
+  --text-100: #3f3f46;
+  --text-200: #51525c;
+  --text-300: #70707b;
+  --text-400: #a0a0ab;
+  --text-500: #d1d1d6;
+  --text-600: #e4e4e7;
+  --text-700: #f4f4f5;
+  --text-800: #fafafa;
+  --text-900: #fcfcfd;
+
+  --logo-color: #fff;
+  --background-0: #000;
+  --background-1: #18181b;
+  --background-modal: #22222f;
+  --background-token: #0b281f;
+
+  --primary-purple: #8271f0;
+  --primary-purple-01: #8271f01a;
+  --primary-purple-05: #8271f080;
+  --primary-orange: #f46f4e;
+  --primary-orange-01: #f46f4e1a;
+
+  --yellow-500: #ffbb46;
+  --red-500: #f04438;
+  --green-25: #f0faf5;
+  --green-500: #16b364;
+  --blue-500: #2e90fa;
+}
+
+input.chakra-input:focus-visible {
+  border-color: var(--blue-500) !important;
+  box-shadow: 0 0 0 1px var(--blue-500) !important;
+}

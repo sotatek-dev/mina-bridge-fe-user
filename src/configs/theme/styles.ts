@@ -16,7 +16,7 @@ const styles: Record<string, Record<string, StyleProps>> = {
     },
     '::-webkit-scrollbar-track': {
       w: '0',
-    }
+    },
   },
 };
 

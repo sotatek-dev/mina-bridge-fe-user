@@ -27,7 +27,8 @@ export default function LoadingWithText({
       h={h}
       alignItems={'center'}
       justifyContent={'center'}
-      bg={`rgba(0,0,0,${bgOpacity})`}
+      // bg={`rgba(0,0,0,${bgOpacity})`}
+      bg={'background.modal'}
       gap={'20px'}
     >
       <Spinner
@@ -38,7 +39,13 @@ export default function LoadingWithText({
         bgOpacity={0}
       />
       {label && (
-        <Heading as={'h3'} w={'full'} variant={'h3'} color={'black'} textAlign={'center'}>
+        <Heading
+          as={'h3'}
+          w={'full'}
+          variant={'h3'}
+          color={'text.900'}
+          textAlign={'center'}
+        >
           {label}
         </Heading>
       )}

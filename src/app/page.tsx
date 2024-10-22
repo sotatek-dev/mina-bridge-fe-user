@@ -29,7 +29,7 @@ export default function Home() {
         px={'50px'}
         py={'15px'}
         gap={0}
-        bg={'white'}
+        bg={'background.0'}
         borderRadius={'12px'}
         boxShadow={'0px 4px 50px 0px rgba(0, 0, 0, 0.05)'}
       >

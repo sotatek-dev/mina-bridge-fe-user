@@ -1,5 +1,6 @@
 'use client';
 import { Box, Center, Container } from '@chakra-ui/react';
+import cookie from 'cookiejs';
 import { usePathname, useRouter } from 'next/navigation';
 import { PropsWithChildren, useEffect, useState } from 'react';
 
@@ -17,7 +18,8 @@ import useLoadWalletInstances from '@/hooks/useLoadWalletInstances';
 import useWalletEvents from '@/hooks/useWalletEvents';
 import useWeb3Injected from '@/hooks/useWeb3Injected';
 import { useZKContractState } from '@/providers/zkBridgeInitalize';
-import { getWalletSlice, useAppSelector } from '@/store';
+import { getWalletSlice, useAppDispatch, useAppSelector } from '@/store';
+import { walletSliceActions } from '@/store/slices/walletSlice';
 
 type Props = PropsWithChildren<{}>;
 
@@ -30,6 +32,7 @@ function WrapperLayout({ children }: Props) {
 
   const pathname = usePathname();
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { isConnected } = useAppSelector(getWalletSlice);
   const { isInitializing } = useZKContractState().state;
   const isNotPOAScreen = pathname !== ROUTES.PROOF_OF_ASSETS;
@@ -45,8 +48,13 @@ function WrapperLayout({ children }: Props) {
   }, []);
 
   useEffect(() => {
-    if (!isConnected && PROTECTED_ROUTES.includes(pathname as ROUTES))
-      router.replace(ROUTES.HOME);
+    const isCookie = cookie.get('address');
+    if (!isCookie || !isConnected) {
+      dispatch(walletSliceActions.disconnect());
+      if (PROTECTED_ROUTES.includes(pathname as ROUTES))
+        router.replace(ROUTES.HOME);
+      return;
+    }
   }, [isConnected, pathname]);
 
   return (

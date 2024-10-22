@@ -86,7 +86,13 @@ export default function Header({}: Props) {
 
         {isMdSize && (
           <>
-            <Button w={10} p={'10px'} bg={'background.1'} onClick={toggleTheme}>
+            <Button
+              w={10}
+              p={'10px'}
+              bg={'background.1'}
+              onClick={toggleTheme}
+              title={colorMode === Theme.DARK ? 'Dark Mode' : 'Light Mode'}
+            >
               {colorMode === Theme.DARK ? <MoonIcon /> : <SunIcon />}
             </Button>
 
@@ -96,6 +102,7 @@ export default function Header({}: Props) {
                 p={'10px'}
                 bg={'background.1'}
                 onClick={disconnectWallet}
+                title={'Disconnect'}
               >
                 <LogoutIcon color={'var(--logo-color)'} />
               </Button>
@@ -158,7 +165,7 @@ export default function Header({}: Props) {
                   }
                   onClick={toggleTheme}
                 >
-                  Light Mode
+                  {colorMode === Theme.DARK ? 'Dark' : 'Light'} Mode
                 </Button>
 
                 {isConnected && (

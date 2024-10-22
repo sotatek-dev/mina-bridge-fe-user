@@ -25,6 +25,7 @@ import useNotifier from '@/hooks/useNotifier';
 import { NETWORK_NAME } from '@/models/network';
 import { useAppDispatch } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
+import BridgeIcon from '@public/assets/icons/icon.bridge.next.svg';
 import QuestionIcon from '@public/assets/icons/icon.question.square.svg';
 
 export default function ModalConfirmBridge() {
@@ -267,11 +268,7 @@ export default function ModalConfirmBridge() {
                 left={'50%'}
                 transform={'translate(-50%,-50%)'}
               >
-                <Image
-                  src={'/assets/icons/icon.bridge.next.svg'}
-                  w={'40px'}
-                  h={'40px'}
-                />
+                <BridgeIcon color={'var(--background-0)'} />
               </Box>
             </Grid>
             <VStack w={'full'} gap={'20px'} mt={'15px'}>

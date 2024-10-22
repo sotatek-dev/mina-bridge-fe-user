@@ -4,15 +4,14 @@ import {
   Button,
   ButtonProps,
   Heading,
-  Image,
   Text,
 } from '@chakra-ui/react';
 import { useCallback, useMemo } from 'react';
 
 import { MODAL_NAME } from '@/configs/modal';
-import SuccesIcon from '@public/assets/logos/logo.success.svg';
 import { getUISlice, useAppDispatch, useAppSelector } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
+import SuccesIcon from '@public/assets/icons/icon.success.circle.svg';
 
 export default function useModalSALogic() {
   const { modals } = useAppSelector(getUISlice);

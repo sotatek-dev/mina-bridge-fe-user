@@ -94,7 +94,7 @@ export default function CustomModal({
               }}
             />
           ))}
-        <ModalBody>{props.children && props.children}</ModalBody>
+        <ModalBody mt={2}>{props.children && props.children}</ModalBody>
         {props.footerElements && (
           <ModalFooter {...props.footerProps}>
             {isFnc<ModalFooterCreateFn>(props.footerElements)

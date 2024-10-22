@@ -12,7 +12,6 @@ import { MODAL_NAME } from '@/configs/modal';
 import { truncateMid } from '@/helpers/common';
 import useWindowSize from '@/hooks/useWindowSize';
 import NETWORKS from '@/models/network';
-import MenuIcon from '@public/assets/icons/icon.burger-menu.right.svg';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
@@ -22,6 +21,7 @@ import {
 } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
 import { NETWORK_KEY, walletSliceActions } from '@/store/slices/walletSlice';
+import MenuIcon from '@public/assets/icons/icon.burger-menu.right.svg';
 
 export default function useHeaderLogic(extractFnc: boolean = false) {
   const dispatch = useAppDispatch();

@@ -7,6 +7,7 @@ import ReactPaginateWithChakra from '@/components/elements/pagination';
 
 const btnNavigateStyles: FlexProps = {
   border: '1px solid rgba(28, 34, 55, 0.10)',
+  bg: 'background.0',
   borderRadius: '4px',
   w: '35px',
   h: '35px',
@@ -68,6 +69,7 @@ function Pagination() {
             lineHeight: '35px',
             textAlign: 'center',
             border: 'solid 1px #1c22371a',
+            bg: 'background.0',
             borderRadius: '4px',
             color: 'text.700',
             a: {

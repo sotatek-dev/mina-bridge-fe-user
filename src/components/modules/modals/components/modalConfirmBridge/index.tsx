@@ -22,6 +22,10 @@ import Loading from '@/components/elements/loading/spinner';
 import { MODAL_NAME } from '@/configs/modal';
 import ROUTES from '@/configs/routes';
 import useNotifier from '@/hooks/useNotifier';
+import { NETWORK_NAME } from '@/models/network';
+import { useAppDispatch } from '@/store';
+import { uiSliceActions } from '@/store/slices/uiSlice';
+import QuestionIcon from '@public/assets/icons/icon.question.square.svg';
 
 export default function ModalConfirmBridge() {
   const {
@@ -40,6 +44,7 @@ export default function ModalConfirmBridge() {
   });
   const { sendNotification } = useNotifier();
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [displayValues, setDisplayValues] = useState<
     | {
         label: string;
@@ -68,6 +73,13 @@ export default function ModalConfirmBridge() {
     getValues();
   }, [getDisplayValues]);
 
+  const handleReadMore = () => {
+    dispatch(
+      uiSliceActions.closeModal({ modalName: MODAL_NAME.CONFIRM_BRIDGE })
+    );
+    router.push(`${ROUTES.USER_GUIDE}#about-fee`);
+  };
+
   const contentRendered = useMemo(() => {
     switch (true) {
       case isLoading:
@@ -80,7 +92,7 @@ export default function ModalConfirmBridge() {
               spinnerSize={100}
               bgOpacity={0}
             />
-            <Heading as={'h3'} variant={'h3'} color={'black'} mt={'20px'}>
+            <Heading as={'h3'} variant={'h3'} color={'text.900'} mt={'20px'}>
               Waiting for confirmation
             </Heading>
             <Text variant={'md'} color={'text.500'} mt={'5px'}>
@@ -96,7 +108,7 @@ export default function ModalConfirmBridge() {
               w={'80px'}
               h={'80px'}
             />
-            <Heading as={'h3'} variant={'h3'} color={'black'} mt={'20px'}>
+            <Heading as={'h3'} variant={'h3'} color={'text.900'} mt={'20px'}>
               Error
             </Heading>
             <Text variant={'md'} color={'text.500'} mt={'5px'}>
@@ -112,7 +124,7 @@ export default function ModalConfirmBridge() {
               w={'80px'}
               h={'80px'}
             />
-            <Heading as={'h3'} variant={'h3'} color={'black'} mt={'20px'}>
+            <Heading as={'h3'} variant={'h3'} color={'text.900'} mt={'20px'}>
               Transaction Submitted
             </Heading>
             <Text
@@ -290,9 +302,25 @@ export default function ModalConfirmBridge() {
               bg={'rgba(222, 98, 46, 0.10)'}
             >
               <Text variant={'md'} color={'primary.orange'}>
-                You will receive after about 20 minutes
+                You will receive after about 20 minutes.{' '}
+                {networkInstance.src?.name === NETWORK_NAME.MINA &&
+                  'Please ensure you have enough Mina in your account to covers Mina Network fee.'}
               </Text>
             </Box>
+            <HStack w={'full'} mt={'15px'} gap={'12px'}>
+              <QuestionIcon color={'var(--text-300)'} />
+              <Text display={'flex'} gap={1}>
+                Read more
+                <Text
+                  cursor={'pointer'}
+                  onClick={handleReadMore}
+                  color={'primary.purple'}
+                  _hover={{ textDecor: 'underline' }}
+                >
+                  About Fee
+                </Text>
+              </Text>
+            </HStack>
             <Box w={'full'} mt={'15px'} gap={'12px'}>
               <Checkbox
                 fontSize={'14px'}

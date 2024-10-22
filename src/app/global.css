@@ -100,7 +100,7 @@
 
   --logo-color: #fff;
   --background-0: #000;
-  --background-0: #18181b;
+  --background-1: #18181b;
   --background-modal: #22222f;
   --background-token: #0b281f;
 
@@ -115,4 +115,9 @@
   --green-25: #f0faf5;
   --green-500: #16b364;
   --blue-500: #2e90fa;
+}
+
+input.chakra-input:focus-visible {
+  border-color: var(--blue-500) !important;
+  box-shadow: 0 0 0 1px var(--blue-500) !important;
 }

@@ -1,25 +1,11 @@
 'use client';
-import {
-  AspectRatio,
-  Box,
-  Flex,
-  HStack,
-  Image,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Flex, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 
 import { useFormBridgeState } from '../context';
 
 import { MODAL_NAME } from '@/configs/modal';
-import NETWORKS from '@/models/network';
-import {
-  getWalletInstanceSlice,
-  getWalletSlice,
-  useAppDispatch,
-  useAppSelector,
-} from '@/store';
+import { useAppDispatch } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
 import { NETWORK_KEY } from '@/store/slices/walletSlice';
 
@@ -41,6 +27,7 @@ export default function NetworkCard({ label, networkKey }: Props) {
         payload: {
           networkKey,
           isValidate: networkKey === NETWORK_KEY.SRC ? true : false,
+          isDisable: networkKey === NETWORK_KEY.TAR,
         },
       })
     );

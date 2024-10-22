@@ -145,7 +145,7 @@ export default function DisplayBalance({
       {...(!isLastItem
         ? {
             borderBottom: '1px solid',
-            borderColor: 'rgba(0,0,0,0.1)',
+            borderColor: 'text.200',
             pb: '20px',
             mb: '20px',
           }

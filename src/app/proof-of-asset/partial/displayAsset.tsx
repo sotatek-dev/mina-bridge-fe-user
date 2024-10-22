@@ -34,7 +34,7 @@ export default function DisplayAsset({ assetSymbol, data }: Props) {
       templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }}
       gap={'0'}
       w={'full'}
-      bg={'background.0'}
+      bg={'background.modal'}
       px={'35px'}
       py={'26px'}
     >

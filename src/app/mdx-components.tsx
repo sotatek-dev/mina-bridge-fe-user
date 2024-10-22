@@ -6,11 +6,21 @@ import { getPxFromUrl } from '@/helpers/common';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
-    h4: ({ children }) => (
-      <Heading as={'h4'} variant={'h4'}>
-        {children}
-      </Heading>
-    ),
+    h4: ({ children }) => {
+      const id =
+        typeof children === 'string'
+          ? children
+              .replace(/^\d+\.\s*/, '')
+              .trim()
+              .toLowerCase()
+              .replace(/\s+/g, '-')
+          : undefined;
+      return (
+        <Heading id={id} as={'h4'} variant={'h4'}>
+          {children}
+        </Heading>
+      );
+    },
     p: ({ children }) => (
       <Text py={'10px'} variant={'xl'}>
         {children}

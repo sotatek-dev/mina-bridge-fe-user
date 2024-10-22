@@ -85,3 +85,8 @@ export const ListFileName = {
   [ZkContractType.HOOK]: HOOK_CACHE_FILE_NAMES,
   [ZkContractType.TOKEN]: TOKEN_CACHE_FILE_NAMES,
 };
+
+export enum Theme {
+  LIGHT = 'light',
+  DARK = 'dark',
+}

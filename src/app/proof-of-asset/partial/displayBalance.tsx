@@ -180,6 +180,7 @@ export default function DisplayBalance({
               variant={'sm_semiBold'}
               textTransform={'capitalize'}
               lineHeight={1}
+              color={'text.0'}
             >
               {isNativeCurrency ? 'Native' : network.name}
             </Text>

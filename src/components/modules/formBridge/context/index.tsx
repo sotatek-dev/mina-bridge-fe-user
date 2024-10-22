@@ -13,7 +13,7 @@ import {
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
-  useAppSelector
+  useAppSelector,
 } from '@/store';
 import { TokenType } from '@/store/slices/persistSlice';
 import { walletSliceActions } from '@/store/slices/walletSlice';

@@ -29,7 +29,7 @@ export default function UserGuide() {
           >
             Introduction
           </Heading>
-          <Box bg={'white'} p={{ base: '20px', md: '24px 40px' }}>
+          <Box bg={'background.0'} p={{ base: '20px', md: '24px 40px' }}>
             <Introduction />
           </Box>
         </Box>
@@ -43,7 +43,7 @@ export default function UserGuide() {
           >
             Guideline For Users
           </Heading>
-          <Box bg={'white'} p={{ base: '20px', md: '24px 40px' }}>
+          <Box bg={'background.0'} p={{ base: '20px', md: '24px 40px' }}>
             <UserGuideContent />
           </Box>
         </Box>

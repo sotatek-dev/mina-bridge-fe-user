@@ -1,10 +1,7 @@
 import { inputAnatomy } from '@chakra-ui/anatomy';
-import {
-  SystemStyleObject,
-  createMultiStyleConfigHelpers,
-} from '@chakra-ui/react';
+import { createMultiStyleConfigHelpers } from '@chakra-ui/react';
 
-import { textBaseVariants, textFW, typoVariantsGenerator } from './comp.typo';
+import { textBaseVariants, typoVariantsGenerator } from './comp.typo';
 
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(inputAnatomy.keys);
@@ -16,9 +13,8 @@ const baseStyle = definePartsStyle({
     border: '1px solid',
     borderColor: 'text.200',
     borderRadius: '8px',
-    bg: 'white',
-    bgColor: 'white',
-    boxShadow: '0px 1px 2px 0px rgba(16, 24, 40, 0.05)',
+    bg: 'background.0',
+    bgColor: 'background.0',
   },
 });
 

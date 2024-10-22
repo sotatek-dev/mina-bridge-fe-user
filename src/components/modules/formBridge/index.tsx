@@ -18,7 +18,7 @@ export default function FormBridge({}: FormBridgeProps) {
         mt={{ base: '15px', md: '20px' }}
         px={{ base: '20px', md: '50px' }}
         py={'32px'}
-        bg={'white'}
+        bg={'background.0'}
         borderRadius={'20px'}
         boxShadow={'0px 4px 50px 0px rgba(0, 0, 0, 0.05)'}
       >

@@ -40,7 +40,7 @@ import {
 import { persistSliceActions, TokenType } from '@/store/slices/persistSlice';
 
 const numberRegex = new RegExp(
-  /^([0-9]{1,100}\.[0-9]{1,100})$|^([0-9]{1,100})\.?$|^\.([0-9]{1,100})?$/
+  /^([0-9]{1,100}\.[0-9]{1,100})$|^([0-9]{1,100})\.?$|^\.([0-9]{1,100})?$/,
 );
 
 export type FormBridgeAmountRef = null | { resetValue: () => void };
@@ -52,7 +52,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   const dispatch = useAppDispatch();
   const { address, isConnected } = useAppSelector(getWalletSlice);
   const { walletInstance, networkInstance } = useAppSelector(
-    getWalletInstanceSlice
+    getWalletInstanceSlice,
   );
 
   const {
@@ -98,7 +98,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
         asset?.symbol || ''
       } per address daily`,
     }),
-    [asset, assetRange, dailyQuota]
+    [asset, assetRange, dailyQuota],
   );
 
   async function estimateFee() {
@@ -118,11 +118,11 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     updateStatus('isLoading', true);
 
     const [gasPrice, error] = await handleRequest(
-      getWeb3Instance(nwProvider).eth.getGasPrice()
+      getWeb3Instance(nwProvider).eth.getGasPrice(),
     );
     if (error || !gasPrice) return '0';
     const priceBN = new BigNumber(gasPrice?.toString() || '0').multipliedBy(
-      process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10
+      process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10,
     );
     const amountBN = new BigNumber(gasAmount.toString());
     updateStatus('isLoading', false);
@@ -132,11 +132,11 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
         data: {
           value: fromWei(
             amountBN.multipliedBy(priceBN).toString(),
-            asset.decimals
+            asset.decimals,
           ),
           timestamp: moment.now(),
         },
-      })
+      }),
     );
     return;
   }
@@ -145,14 +145,14 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     address: string,
     asset: TokenType,
     srcNetwork: Network,
-    walletInstance: Wallet
+    walletInstance: Wallet,
   ) {
     if (isFetching) return;
     if (srcNetwork.name !== asset.network) return;
 
     setIsFetching(true);
     const [res, error] = await handleRequest(
-      walletInstance.getBalance(srcNetwork, address, asset)
+      walletInstance.getBalance(srcNetwork, address, asset),
     );
     // console.log('🚀 ~ checkBalance ~ res, error:', res, error);
     if (error || res === null) {
@@ -185,7 +185,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       console.log('🚀 ~ throttleInput.current=setTimeout ~ value:', value);
       const balanceBN = new BigNumber(balance);
       const availQuota = new BigNumber(dailyQuota.max).minus(
-        new BigNumber(dailyQuota.current)
+        new BigNumber(dailyQuota.current),
       );
       // return error
       if (bn.isNaN()) return dpError('required');
@@ -303,21 +303,21 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
           formatNumber(
             maxAmount.toString(10),
             asset.decimals,
-            BigNumber.ROUND_DOWN
-          )
+            BigNumber.ROUND_DOWN,
+          ),
         );
         throttleActions(
           formatNumber(
             maxAmount.toString(10),
             asset.decimals,
-            BigNumber.ROUND_DOWN
-          )
+            BigNumber.ROUND_DOWN,
+          ),
         );
       }
     } else {
       setValue(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
       throttleActions(
-        formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)
+        formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN),
       );
     }
   }
@@ -330,7 +330,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
         setError(null);
       },
     }),
-    [setValue, setError]
+    [setValue, setError],
   );
 
   useEffect(() => {
@@ -355,19 +355,13 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       () => {
         checkBalance(address, asset, srcNetwork, walletInstance);
       },
-      ITV.M5 // 5min
+      ITV.M5, // 5min
     );
     return () => {
       clearInterval(itvCheckBalance.current);
       itvCheckBalance.current = null;
     };
   }, [address, asset, walletInstance, srcNetwork, txEmitCount]);
-
-  useEffect(() => {
-    if (value) {
-      throttleActions(value);
-    }
-  }, [address, balance]);
 
   // frequently get gas price
   useEffect(() => {

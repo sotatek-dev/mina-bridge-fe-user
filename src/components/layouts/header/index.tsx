@@ -109,7 +109,7 @@ export default function Header({}: Props) {
             )}
             <HStack gap={1}>
               <EnvIcon />
-              <Text color={'text.500'}>
+              <Text color={'text.700'}>
                 {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
               </Text>
             </HStack>
@@ -121,7 +121,7 @@ export default function Header({}: Props) {
         <DrawerContent w={'65% !important'} bg={'background.0'}>
           <HStack gap={1} mt={'36px'} ml={'30px'}>
             <EnvIcon />
-            <Text color={'text.500'}>
+            <Text color={'text.700'}>
               {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
             </Text>
           </HStack>

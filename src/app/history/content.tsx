@@ -44,7 +44,19 @@ function HistoryContent() {
       <VStack w={'full'} bg={'background.modal'} pb={'33px'} mt={'12px'}>
         <Box
           width={'full'}
+          overflowY={'hidden'}
           overflowX={state.data.length > 0 ? 'auto' : 'hidden'}
+          css={{
+            '&::-webkit-scrollbar': {
+              height: '6px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: 'transparent',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: 'var(--text-300)',
+            },
+          }}
         >
           <Table minW={'1140px'}>
             <HeaderTable />

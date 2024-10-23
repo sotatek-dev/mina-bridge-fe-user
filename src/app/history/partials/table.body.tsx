@@ -1,5 +1,5 @@
 'use client';
-import { Tbody, Td, Text, Tr } from '@chakra-ui/react';
+import { Box, Tbody, Td, Text, Tr } from '@chakra-ui/react';
 import _ from 'lodash';
 import React from 'react';
 
@@ -24,10 +24,22 @@ function BodyTable({ data }: PropsBodyTable) {
       {data.map((item) => {
         return (
           <Tr key={item.id}>
-            <Td borderBottom={'solid 1px #E4E4E7'}>
+            <Td
+              borderBottom={'solid 1px'}
+              borderColor={'text.200'}
+              position={'relative'}
+            >
+              <Box
+                h={1}
+                w={6}
+                bg={'background.modal'}
+                position={'absolute'}
+                left={0}
+                bottom={'-2px'}
+              />
               <RowStatus status={item.status} networkName={item.networkFrom} />
             </Td>
-            <Td borderBottom={'solid 1px #E4E4E7'}>
+            <Td borderBottom={'solid 1px'} borderColor={'text.200'}>
               <InfoTransaction
                 amount={item.amountFrom}
                 tokenName={item.tokenFromName}
@@ -36,7 +48,7 @@ function BodyTable({ data }: PropsBodyTable) {
                 scanUrl={getScanUrl(item.networkFrom)}
               />
             </Td>
-            <Td borderBottom={'solid 1px #E4E4E7'}>
+            <Td borderBottom={'solid 1px'} borderColor={'text.200'}>
               <InfoTransaction
                 amount={item.amountReceived!!}
                 tokenName={item.tokenReceivedName!!}
@@ -45,21 +57,21 @@ function BodyTable({ data }: PropsBodyTable) {
                 scanUrl={getScanUrl(item.networkReceived)}
               />
             </Td>
-            <Td borderBottom={'solid 1px #E4E4E7'}>
+            <Td borderBottom={'solid 1px'} borderColor={'text.200'}>
               <Text variant={'lg'} color={'text.900'} whiteSpace={'nowrap'}>
                 {`${truncatedNumber(
                   item.tip ? item.tip : '0.00'
                 )} ${!item.tip || _.isEmpty(item.tokenFromName) ? '' : item.tokenFromName}`}
               </Text>
             </Td>
-            <Td borderBottom={'solid 1px #E4E4E7'}>
+            <Td borderBottom={'solid 1px'} borderColor={'text.200'}>
               <Text variant={'lg'} color={'text.900'} whiteSpace={'nowrap'}>
                 {`${truncatedNumber(
                   item.gasFee ? item.gasFee : '0.00'
                 )} ${!item.gasFee || _.isEmpty(item.tokenFromName) ? '' : item.tokenFromName}`}
               </Text>
             </Td>
-            <Td borderBottom={'solid 1px #E4E4E7'}>
+            <Td borderBottom={'solid 1px'} borderColor={'text.200'}>
               <Text variant={'lg'} color={'text.900'} whiteSpace={'nowrap'}>
                 {formatDate(Number(item.blockTimeLock) * 1000)}
               </Text>
@@ -67,7 +79,7 @@ function BodyTable({ data }: PropsBodyTable) {
                 {formatTime(Number(item.blockTimeLock) * 1000)}
               </Text>
             </Td>
-            <Td borderBottom={'solid 1px #E4E4E7'}>
+            <Td borderBottom={'solid 1px'} borderColor={'text.200'}>
               {item?.status === STATUS.COMPLETED && item?.updatedAt && (
                 <>
                   <Text variant={'lg'} color={'text.900'} whiteSpace={'nowrap'}>
@@ -79,7 +91,19 @@ function BodyTable({ data }: PropsBodyTable) {
                 </>
               )}
             </Td>
-            <Td borderBottom={'solid 1px #E4E4E7'}>
+            <Td
+              borderBottom={'solid 1px'}
+              borderColor={'text.200'}
+              position={'relative'}
+            >
+              <Box
+                h={1}
+                w={6}
+                bg={'background.modal'}
+                position={'absolute'}
+                right={0}
+                bottom={'-2px'}
+              />
               <Text variant={'lg'} color={'text.900'}>
                 {item.id}
               </Text>

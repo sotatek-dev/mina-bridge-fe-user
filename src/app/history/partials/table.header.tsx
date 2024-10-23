@@ -16,10 +16,10 @@ const header = [
 function HeaderTable() {
   return (
     <Thead>
-      <Tr borderBottom={'solid 1px'}>
+      <Tr>
         {header.map((item: string, index: number) => {
           return (
-            <Th key={index}>
+            <Th key={index} borderBottom={'solid 1px'} borderColor={'text.300'}>
               <Text
                 textTransform={'capitalize'}
                 variant={'md_bold'}

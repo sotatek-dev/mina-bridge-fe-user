@@ -1,5 +1,11 @@
 import { isEqual } from 'lodash';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { DesAddrRef } from '../partials/form.desAddress';
 
@@ -37,6 +43,7 @@ export type FormBridgeState = {
     isValidData: boolean;
     isMatchedNetwork: boolean;
     isLoading: boolean;
+    isFetchingBalance: boolean;
     // willRefetchBln: boolean;
   };
   dailyQuota: DailyQuota;
@@ -65,7 +72,7 @@ export type FormBridgeCtxValueType = {
     updateAmount: (val: string) => void;
     updateStatus: (
       key: keyof FormBridgeState['status'],
-      value: boolean
+      value: boolean,
     ) => void;
     updateAsset: (asset: TokenType) => void;
     updateAssetRage: (assetRange: string[]) => void;
@@ -83,6 +90,7 @@ export const initModalCWState: FormBridgeState = {
     isValidData: false,
     isMatchedNetwork: true,
     isLoading: false,
+    isFetchingBalance: false,
     // willRefetchBln: false,
   },
   dailyQuota: {
@@ -111,7 +119,7 @@ export default function FormBridgeProvider({
   children,
 }: FormBridgeProviderProps) {
   const dispatch = useAppDispatch();
-  const { isConnected, asset } = useAppSelector(getWalletSlice);
+  const { address, isConnected, asset } = useAppSelector(getWalletSlice);
   const { isLoading } = useAppSelector(getUISlice);
   const { networkInstance } = useAppSelector(getWalletInstanceSlice);
   const { listAsset } = useAppSelector(getPersistSlice);
@@ -126,12 +134,12 @@ export default function FormBridgeProvider({
       'provider' in networkInstance.src?.metadata
         ? networkInstance.src.metadata.provider
         : undefined,
-    [networkInstance.src]
+    [networkInstance.src],
   );
   const bridgeCtrAsset = useMemo(
     () =>
       asset ? { addr: asset.bridgeCtrAddr, network: asset.network } : null,
-    [asset]
+    [asset],
   );
   const bridgeCtr = useETHBridgeContract({
     network: networkInstance.src,
@@ -143,7 +151,7 @@ export default function FormBridgeProvider({
     () =>
       networkInstance.src?.nativeCurrency.symbol.toLowerCase() ===
       state.asset?.symbol.toLowerCase(),
-    [state.asset, networkInstance.src]
+    [state.asset, networkInstance.src],
   );
 
   // update partial state
@@ -155,7 +163,7 @@ export default function FormBridgeProvider({
         tarNetwork,
       }));
     },
-    [setState]
+    [setState],
   );
 
   // update partial state
@@ -170,10 +178,10 @@ export default function FormBridgeProvider({
                 [key]: value,
               },
             }
-          : prev
+          : prev,
       );
     },
-    [setState]
+    [setState],
   );
 
   // const refetchBalance = useCallback(() => {
@@ -198,10 +206,10 @@ export default function FormBridgeProvider({
               ...prev,
               desAddr: address,
             }
-          : prev
+          : prev,
       );
     },
-    [setState]
+    [setState],
   );
 
   // update partial state
@@ -213,10 +221,10 @@ export default function FormBridgeProvider({
               ...prev,
               amount,
             }
-          : prev
+          : prev,
       );
     },
-    [setState]
+    [setState],
   );
 
   // update partial state
@@ -228,10 +236,10 @@ export default function FormBridgeProvider({
               ...prev,
               asset,
             }
-          : prev
+          : prev,
       );
     },
-    [setState]
+    [setState],
   );
 
   // update min max
@@ -243,10 +251,10 @@ export default function FormBridgeProvider({
               ...prev,
               assetRange,
             }
-          : prev
+          : prev,
       );
     },
-    [setState]
+    [setState],
   );
 
   // update balance
@@ -257,7 +265,7 @@ export default function FormBridgeProvider({
             ...prev,
             balance,
           }
-        : prev
+        : prev,
     );
   }, []);
 
@@ -269,7 +277,7 @@ export default function FormBridgeProvider({
             ...prev,
             dailyQuota,
           }
-        : prev
+        : prev,
     );
   }, []);
 
@@ -287,7 +295,7 @@ export default function FormBridgeProvider({
       isConnected: boolean,
       isGlobalLoading: boolean,
       desAddr: string,
-      amount: string
+      amount: string,
     ) => {
       // check connected
       updateStatus('isConnected', isConnected);
@@ -298,7 +306,7 @@ export default function FormBridgeProvider({
       // sync loading with global loadin
       updateStatus('isLoading', isGlobalLoading);
     },
-    [updateStatus]
+    [updateStatus],
   );
 
   // init assets
@@ -306,13 +314,13 @@ export default function FormBridgeProvider({
     if (!networkInstance.src || listAsset[networkInstance.src.name].length < 1)
       return;
     const assets = listAsset[networkInstance.src.name].filter(
-      (asset) => asset.des === 'src'
+      (asset) => asset.des === 'src',
     );
     if (!asset || asset.network !== networkInstance.src.name) {
       dispatch(
         walletSliceActions.changeAsset(
-          assets.length > 0 ? assets[0] : undefined
-        )
+          assets.length > 0 ? assets[0] : undefined,
+        ),
       );
       return;
     }
@@ -323,7 +331,7 @@ export default function FormBridgeProvider({
   // reset form values each time change app status or change from network
   useEffect(() => {
     resetFormValues();
-  }, [isConnected, state.srcNetwork]);
+  }, [isConnected, state.srcNetwork, address]);
 
   // update form status when sth change
   useEffect(() => {
@@ -384,7 +392,7 @@ export default function FormBridgeProvider({
       updateTxEmitCount,
       resetFormValues,
       bridgeCtr,
-    ]
+    ],
   );
 
   // return statement

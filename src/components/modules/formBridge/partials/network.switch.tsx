@@ -28,7 +28,8 @@ export default function NetworkSwitch({ ...props }: Props) {
   const notifyRef = useRef<any>(null);
 
   async function handleClick() {
-    if (status.isLoading || !status.isConnected) return;
+    if (status.isLoading || !status.isConnected || status.isFetchingBalance)
+      return;
 
     updateStatus('isLoading', true);
 
@@ -42,7 +43,7 @@ export default function NetworkSwitch({ ...props }: Props) {
               : WALLET_NAME.AURO
           ]!,
         network: NETWORKS[networkName.tar!],
-      })
+      }),
     );
     //  when fail to connect
     if (walletSliceActions.connectWallet.rejected.match(res)) {
@@ -117,7 +118,10 @@ export default function NetworkSwitch({ ...props }: Props) {
           </linearGradient>
         </defs>
       </svg>
-      {status.isLoading && <Spinner position={'absolute'} color={'white'} />}
+      {status.isLoading ||
+        (status.isFetchingBalance && (
+          <Spinner position={'absolute'} color={'white'} />
+        ))}
     </Button>
   );
 }

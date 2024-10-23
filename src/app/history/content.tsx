@@ -25,7 +25,7 @@ function HistoryContent() {
       alignItems={'flex-start'}
       padding={{ base: ' 40px 0 ', md: '40px 54px' }}
     >
-      <Heading as={'h1'} variant={'h1'} mb={'12px'}>
+      <Heading as={'h1'} variant={'h1'} mb={'12px'} color={'text.900'}>
         History
       </Heading>
       {address && (

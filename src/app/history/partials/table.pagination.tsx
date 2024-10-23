@@ -4,6 +4,8 @@ import { Flex, FlexProps, Image } from '@chakra-ui/react';
 import { useHistoryState } from '../context';
 
 import ReactPaginateWithChakra from '@/components/elements/pagination';
+import LeftIcon from '@public/assets/icons/icon.arrow.left.pagination.svg';
+import RightIcon from '@public/assets/icons/icon.arrow.right.pagination.svg';
 
 const btnNavigateStyles: FlexProps = {
   border: '1px solid rgba(28, 34, 55, 0.10)',
@@ -12,6 +14,7 @@ const btnNavigateStyles: FlexProps = {
   w: '35px',
   h: '35px',
   justify: 'center',
+  alignItems: 'center',
   margin: '4px',
 };
 
@@ -44,7 +47,7 @@ function Pagination() {
         breakLabel={'...'}
         previousLabel={
           <Flex {...btnNavigateStyles} {...btnPrevStyle}>
-            <Image src={'/assets/icons/icon.arrow.left.pagination.svg'} />
+            <LeftIcon color={'var(--text-500)'} />
           </Flex>
         }
         onPageChange={(selectedItem) => handlePageClick(selectedItem.selected)}
@@ -52,7 +55,7 @@ function Pagination() {
         pageCount={state.pagingData.totalOfPages}
         nextLabel={
           <Flex {...btnNavigateStyles} {...btnNextStyle}>
-            <Image src={'/assets/icons/icon.arrow.right.pagination.svg'} />
+            <RightIcon color={'var(--text-500)'} />
           </Flex>
         }
         renderOnZeroPageCount={null}
@@ -78,7 +81,7 @@ function Pagination() {
             },
             '&-active': {
               bg: 'primary.purple',
-              color: 'white',
+              color: 'text.0',
             },
           },
         }}

@@ -28,8 +28,8 @@ const Button: ComponentStyleConfig = {
       color: 'text.0',
     },
     'primary.purple.solid.15': {
-      bg: 'rgba(130, 113, 240, 0.15)',
-      backgroundColor: 'rgba(130, 113, 240, 0.15)',
+      bg: 'primary.purple.02',
+      backgroundColor: 'primary.purple.02',
       border: 'none',
       boxShadow: 'none',
       color: 'primary.purple',

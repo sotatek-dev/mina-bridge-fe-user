@@ -169,6 +169,7 @@ const DesAddrContent = forwardRef<DesAddrRef, Omit<Props, 'isDisplayed'>>(
           <Input
             size={'md_medium'}
             isDisabled={!isConnected}
+            isInvalid={isConnected && !!error}
             // pl="44px"
             pl={'12px'}
             value={value}

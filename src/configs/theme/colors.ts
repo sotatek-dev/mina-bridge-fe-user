@@ -27,6 +27,7 @@ const colors = {
   primary: {
     purple: 'var(--primary-purple)',
     'purple.01': 'var(--primary-purple-01)',
+    'purple.02': 'var(--primary-purple-02)',
     'purple.05': 'var(--primary-purple-05)',
     'purple.06': 'var(--primary-purple-06)',
     orange: 'var(--primary-orange)',

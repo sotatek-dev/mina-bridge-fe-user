@@ -1,10 +1,15 @@
-﻿**Please note:**
+﻿import BridgeFeeTable from '@/components/elements/bridgeFeeMdx';
+import { MDX_REDIRECT } from '@/configs/routes';
+
+**Please note:**
+
 - It can take up to 20 minutes for WETH to be available on Auro once the bridging transaction is confirmed on Metamask
 - There are two distinct stages in the process
   - Locking Ethereum on the Eth side
   - Minting WETH on the MIna side
 - For a breakdown of fees please see here
-___
+
+---
 
 #### 1. Wallet extension
 
@@ -18,7 +23,7 @@ After installing the wallet successfully, visit [here.](/)
 
 Click on **Connect to Wallet**.
 
-- Step 1: Click on a specific network (Ethereum), this indicates that Ethereum is their source network  for tokens to be bridged.
+- Step 1: Click on a specific network (Ethereum), this indicates that Ethereum is their source network for tokens to be bridged.
 - Step 2: Choose Wallet (Metamask).
 - Step 3: After clicking Choose Wallet, the system will trigger your wallet to Connect Wallet. Click Confirm to Connect to our web3 application.
 
@@ -28,7 +33,7 @@ Click on **Connect to Wallet**.
 
 ![Connect wallet success](/user-guide/header-full.png)
 
-- To disconnect from the bridge application, Click on Wallet address and then click Disconnect.
+- To disconnect from the bridge application, Click on Disconnect Button.
 - To change source account, you can do this through Metamask.
 
 #### 3. Bridge
@@ -73,20 +78,7 @@ _List of statuses:_
 
 As the crypto token vault and exchange, Mina Bridge will issue and bind more token assets on Mina Network, and guarantee the conversion from and to the original tokens with credibility and infrastructure.
 
+<div id={MDX_REDIRECT}></div>
 #### 6. Bridging Fees
 
-[//]: # (| Eth > Mina | Amount | How is it calculated | Fee source |)
-
-[//]: # (| ------ | ------ | ------ | ------ |)
-
-[//]: # (| ETH Lock | variable | Eth network gas fee | Eth Account &#40;Metamask&#41; - Taken from transaction total on Metamask when txn confirmed. Charge for lock transaction's gas fee |)
-
-[//]: # (| Bridge Fee | 0.00% | By Bridge Operator | ------ |)
-
-[//]: # (| | | ------ | ------ |)
-
-[//]: # (| | | ------ | ------ |)
-
-[//]: # (| | | ------ | ------ |)
-
-[//]: # (| | | ------ | ------ |)
+<BridgeFeeTable />

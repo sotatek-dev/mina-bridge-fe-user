@@ -47,7 +47,7 @@ export const initModalCWState: ModalCWState = {
 };
 
 export const ModalCWContext = React.createContext<ModalCWCtxValueType | null>(
-  null,
+  null
 );
 
 export function useModalCWState() {
@@ -83,7 +83,7 @@ export default function ModalCWProvider({
         selectedNetwork: net,
       }));
     },
-    [setState],
+    [setState]
   );
 
   const switchNetwork = useCallback(
@@ -94,7 +94,7 @@ export default function ModalCWProvider({
         return;
       }
     },
-    [],
+    []
   );
 
   const openConnectWalletErrorModal = useCallback(
@@ -103,10 +103,10 @@ export default function ModalCWProvider({
         uiSliceActions.openModal({
           modalName: MODAL_NAME.CONNECT_WALLET_ERROR,
           payload: { walletName },
-        }),
+        })
       );
     },
-    [dispatch],
+    [dispatch]
   );
 
   const openCWSuccessModal = useCallback(() => {
@@ -116,7 +116,7 @@ export default function ModalCWProvider({
         payload: {
           title: TITLE.CONNECT_WALLET_SUCCESS,
         },
-      }),
+      })
     );
   }, [dispatch]);
 
@@ -129,7 +129,7 @@ export default function ModalCWProvider({
           isScreenLoading: value,
         },
       })),
-    [setState],
+    [setState]
   );
 
   const updateSnapLoading = useCallback(
@@ -141,7 +141,7 @@ export default function ModalCWProvider({
           isSnapInstalling: value,
         },
       })),
-    [setState],
+    [setState]
   );
 
   const onSelectWallet = useCallback(
@@ -180,7 +180,7 @@ export default function ModalCWProvider({
               updateSnapLoading(false);
             }
           },
-        }),
+        })
       );
       await switchNetwork(WALLETS[wallet], NETWORKS[state.selectedNetwork]);
 
@@ -194,7 +194,7 @@ export default function ModalCWProvider({
         sendNotification({
           toastType: 'error',
           options: {
-            title: 'Signature rejected',
+            title: 'User rejected',
           },
         });
       }
@@ -211,7 +211,7 @@ export default function ModalCWProvider({
       sendNotification,
       updateScreenLoading,
       updateSnapLoading,
-    ],
+    ]
   );
 
   // default network must follow global state and reset state on close
@@ -232,7 +232,7 @@ export default function ModalCWProvider({
       state,
       methods: { onSelectNetwork, onSelectWallet, onToggleAcceptTerm },
     }),
-    [state, onSelectNetwork, onSelectWallet, onToggleAcceptTerm],
+    [state, onSelectNetwork, onSelectWallet, onToggleAcceptTerm]
   );
 
   return (

@@ -34,7 +34,7 @@ const baseStyle = definePartsStyle((props) => {
       h: '40px',
       borderRadius: '50%',
       border: '2px solid',
-      borderColor: 'neutrals.600',
+      borderColor: 'text.200',
       fontSize: '14px',
     },
   };

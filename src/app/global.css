@@ -78,6 +78,7 @@
   --primary-orange-01: #f46f4e1a;
 
   --yellow-500: #ffbb46;
+  --yellow-600: #c05621;
   --red-500: #f04438;
   --green-25: #f0faf5;
   --green-500: #16b364;
@@ -115,12 +116,17 @@
   --primary-orange-01: #f46f4e33;
 
   --yellow-500: #ffbb46;
+  --yellow-600: #c05621;
   --red-500: #f04438;
   --green-25: #f0faf5;
   --green-500: #16b364;
   --blue-500: #2e90fa;
 
   --border-color-0: #e4e4e7;
+}
+
+input.chakra-input {
+  border-color: var(--text-200) !important;
 }
 
 input.chakra-input:focus-visible {
@@ -131,4 +137,24 @@ input.chakra-input:focus-visible {
 input.chakra-input[aria-invalid='true'] {
   border-color: var(--red-500) !important;
   box-shadow: 0 0 0 1px var(--red-500) !important;
+}
+
+/* Toast message custome style */
+.chakra-alert {
+  --alert-fg: white !important;
+}
+.chakra-alert[data-status='error'] {
+  --alert-bg: var(--red-500) !important;
+}
+
+.chakra-alert[data-status='success'] {
+  --alert-bg: var(--green-500) !important;
+}
+
+.chakra-alert[data-status='warning'] {
+  --alert-bg: var(--yellow-600) !important;
+}
+
+.chakra-alert[data-status='info'] {
+  --alert-bg: var(--blue-500) !important;
 }

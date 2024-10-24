@@ -35,6 +35,7 @@ const colors = {
   },
   yellow: {
     500: 'var(--yellow-500)',
+    600: 'var(--yellow-600)',
   },
   red: {
     500: 'var(--red-500)',

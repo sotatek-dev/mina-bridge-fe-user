@@ -80,7 +80,7 @@ export default function CustomModal({
       onClose={handleCloseModal}
     >
       <ModalOverlay bg={'rgba(0, 0, 0, 0.40)'} />
-      <ModalContent bg={'text.25'}>
+      <ModalContent bg={'background.modal'}>
         {props.title && <ModalHeader>{props.title}</ModalHeader>}
         {!props.hiddenCloseButton &&
           (props.closeButton ? (
@@ -88,13 +88,13 @@ export default function CustomModal({
           ) : (
             <ModalCloseButton
               zIndex={10}
-              bg={'#fff'}
+              bg={'transparent'}
               _focusVisible={{
                 boxShadow: 'none',
               }}
             />
           ))}
-        <ModalBody>{props.children && props.children}</ModalBody>
+        <ModalBody mt={2}>{props.children && props.children}</ModalBody>
         {props.footerElements && (
           <ModalFooter {...props.footerProps}>
             {isFnc<ModalFooterCreateFn>(props.footerElements)

@@ -1,16 +1,22 @@
 'use client';
-import { Flex, FlexProps, Image } from '@chakra-ui/react';
+import { Flex, FlexProps, useToken } from '@chakra-ui/react';
+import { useMemo } from 'react';
 
 import { useHistoryState } from '../context';
 
 import ReactPaginateWithChakra from '@/components/elements/pagination';
+import useWindowSize from '@/hooks/useWindowSize';
+import LeftIcon from '@public/assets/icons/icon.arrow.left.pagination.svg';
+import RightIcon from '@public/assets/icons/icon.arrow.right.pagination.svg';
 
 const btnNavigateStyles: FlexProps = {
   border: '1px solid rgba(28, 34, 55, 0.10)',
+  bg: 'background.0',
   borderRadius: '4px',
   w: '35px',
   h: '35px',
   justify: 'center',
+  alignItems: 'center',
   margin: '4px',
 };
 
@@ -37,21 +43,46 @@ function Pagination() {
         : 1,
   };
 
+  const [md] = useToken('breakpoints', ['md']);
+
+  const { width } = useWindowSize();
+  const isMdSize = useMemo(
+    () => width / 16 >= Number(md.replace('em', '')),
+    [width, md]
+  );
+
+  const showMarginPage = useMemo(() => {
+    if (isMdSize) return 2;
+    // Fix mobile paginate overflowed resposive
+    const specialPages = [
+      1,
+      2,
+      state.pagingData?.totalOfPages,
+      state.pagingData?.totalOfPages,
+    ];
+    if (
+      state.pagingData?.currentPage &&
+      specialPages.includes(state.pagingData?.currentPage)
+    )
+      return 1;
+    return 0;
+  }, [state.pagingData, isMdSize]);
+
   return (
     <Flex flexDirection={'row'} mt={'16px'}>
       <ReactPaginateWithChakra
         breakLabel={'...'}
+        marginPagesDisplayed={showMarginPage}
         previousLabel={
           <Flex {...btnNavigateStyles} {...btnPrevStyle}>
-            <Image src={'/assets/icons/icon.arrow.left.pagination.svg'} />
+            <LeftIcon color={'var(--text-500)'} />
           </Flex>
         }
         onPageChange={(selectedItem) => handlePageClick(selectedItem.selected)}
-        pageRangeDisplayed={2}
         pageCount={state.pagingData.totalOfPages}
         nextLabel={
           <Flex {...btnNavigateStyles} {...btnNextStyle}>
-            <Image src={'/assets/icons/icon.arrow.right.pagination.svg'} />
+            <RightIcon color={'var(--text-500)'} />
           </Flex>
         }
         renderOnZeroPageCount={null}
@@ -68,6 +99,7 @@ function Pagination() {
             lineHeight: '35px',
             textAlign: 'center',
             border: 'solid 1px #1c22371a',
+            bg: 'background.0',
             borderRadius: '4px',
             color: 'text.700',
             a: {
@@ -76,7 +108,7 @@ function Pagination() {
             },
             '&-active': {
               bg: 'primary.purple',
-              color: 'white',
+              color: 'text.0',
             },
           },
         }}

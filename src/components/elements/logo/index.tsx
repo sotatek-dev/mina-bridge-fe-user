@@ -1,15 +1,5 @@
-import { Image, ImageProps } from '@chakra-ui/react';
-import React from 'react';
+import LogoIcon from '@public/assets/logos/logo.mina.text.svg';
 
-type Props = ImageProps;
-
-export default function Logo(props: Props) {
-  return (
-    <Image
-      width={'88px'}
-      height={'25px'}
-      {...props}
-      src={'/assets/logos/logo.mina.text.svg'}
-    />
-  );
+export default function Logo() {
+  return <LogoIcon color={'var(--logo-color)'} />;
 }

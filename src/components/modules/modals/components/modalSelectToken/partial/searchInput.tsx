@@ -5,6 +5,7 @@ import React, { useRef, useState } from 'react';
 import { useModalSTState } from '../context';
 
 import ITV from '@/configs/time';
+import SearchIcon from '@public/assets/icons/icon.search.svg';
 
 type Props = {};
 
@@ -52,13 +53,14 @@ export default function SearchInput({}: Props) {
   return (
     <InputGroup>
       <InputRightElement h={'48px'} pr={'12px'}>
-        <Image w={'22px'} h={'22px'} src={'/assets/icons/icon.search.svg'} />
+        <SearchIcon color={'var(--text-600)'} />
       </InputRightElement>
       <Input
         size={'md'}
         m={'1px'}
         maxLength={255}
         pr={'40px'}
+        bg={'background.0'}
         placeholder={'Search name or paste address'}
         value={value}
         onChange={handleChangeValue}

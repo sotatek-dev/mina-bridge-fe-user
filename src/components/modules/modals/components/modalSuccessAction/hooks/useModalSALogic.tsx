@@ -4,7 +4,6 @@ import {
   Button,
   ButtonProps,
   Heading,
-  Image,
   Text,
 } from '@chakra-ui/react';
 import { useCallback, useMemo } from 'react';
@@ -12,6 +11,7 @@ import { useCallback, useMemo } from 'react';
 import { MODAL_NAME } from '@/configs/modal';
 import { getUISlice, useAppDispatch, useAppSelector } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
+import SuccesIcon from '@public/assets/icons/icon.success.circle.svg';
 
 export default function useModalSALogic() {
   const { modals } = useAppSelector(getUISlice);
@@ -48,7 +48,7 @@ export default function useModalSALogic() {
     if ('title' in payload)
       return (
         <Box {...boxContentProps}>
-          <Image src={'/assets/logos/logo.success.svg'} />
+          <SuccesIcon />
           <Heading as={'h3'} variant={'h3'} mt={'20px'} textAlign={'center'}>
             {payload?.title}
           </Heading>

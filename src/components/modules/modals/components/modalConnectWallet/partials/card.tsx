@@ -53,11 +53,11 @@ export default function Card(props: CardProps) {
   function getContentCtnStyleByStatus(): FlexProps {
     switch (props.status) {
       case CARD_STATUS.CHECKED:
-        return { background: 'white' };
+        return { background: 'background.0' };
       case CARD_STATUS.UNSUPPORTED:
         return { background: 'text.100' };
       default:
-        return { background: 'white' };
+        return { background: 'background.0' };
     }
   }
 

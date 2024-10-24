@@ -72,7 +72,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
 
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState<ErrorType>(null);
-  const [isFetching, setIsFetching] = useState<boolean>(false);
+  // const [isFetchingBalance, setIsFetchingBalance] = useState<boolean>(false);
 
   // timeout
   const throttleInput = useRef<any>(null);
@@ -81,6 +81,11 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   const itvFetchEVMFee = useRef<any>(null);
 
   const { sendNotification } = useNotifier();
+
+  const isFetchingBalance = status.isFetchingBalance;
+  const setIsFetchingBalance = (isFetching: boolean) => {
+    updateStatus('isFetchingBalance', isFetching);
+  };
 
   const ErrorList = useMemo(
     () => ({
@@ -147,10 +152,10 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     srcNetwork: Network,
     walletInstance: Wallet,
   ) {
-    if (isFetching) return;
+    if (isFetchingBalance) return;
     if (srcNetwork.name !== asset.network) return;
 
-    setIsFetching(true);
+    setIsFetchingBalance(true);
     const [res, error] = await handleRequest(
       walletInstance.getBalance(srcNetwork, address, asset),
     );
@@ -164,11 +169,9 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
           },
         });
       }
-      setIsFetching(false);
-      return;
     }
-    updateBalance(res);
-    setIsFetching(false);
+    updateBalance(res || '0');
+    setIsFetchingBalance(false);
   }
 
   function dpError(e: ErrorType) {
@@ -229,7 +232,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   }
 
   function handleChangeValue(e: React.ChangeEvent<HTMLInputElement>) {
-    if (status.isLoading || isFetching || !asset || !isConnected) {
+    if (status.isLoading || isFetchingBalance || !asset || !isConnected) {
       e.preventDefault();
       return;
     }
@@ -248,7 +251,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (status.isLoading || isFetching || !asset || !isConnected) {
+    if (status.isLoading || isFetchingBalance || !asset || !isConnected) {
       e.preventDefault();
       return;
     }
@@ -256,7 +259,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   }
 
   function handlePaste(e: React.ClipboardEvent<HTMLInputElement>) {
-    if (status.isLoading || isFetching || !asset || !isConnected) {
+    if (status.isLoading || isFetchingBalance || !asset || !isConnected) {
       e.preventDefault();
       return;
     }
@@ -273,7 +276,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   }
 
   function handleKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (status.isLoading || isFetching || !asset || !isConnected) {
+    if (status.isLoading || isFetchingBalance || !asset || !isConnected) {
       e.preventDefault();
       return;
     }
@@ -281,7 +284,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   }
 
   function updateValueToMax() {
-    if (status.isLoading || isFetching || !asset || !isConnected) {
+    if (status.isLoading || isFetchingBalance || !asset || !isConnected) {
       return;
     }
     if (srcNetwork && srcNetwork.type === NETWORK_TYPE.EVM && lastNetworkFee) {
@@ -363,12 +366,6 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     };
   }, [address, asset, walletInstance, srcNetwork, txEmitCount]);
 
-  useEffect(() => {
-    if (value) {
-      throttleActions(value);
-    }
-  }, [address, balance]);
-
   // frequently get gas price
   useEffect(() => {
     if (!srcNetwork) return;
@@ -397,6 +394,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       </Text>
       <InputGroup>
         <Input
+          bg={'background.0'}
           isDisabled={!isConnected}
           maxLength={79}
           isInvalid={isConnected && !!error}
@@ -439,7 +437,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
             {(asset?.symbol.toUpperCase() || '') + ' '}
             Tokens
           </Text>
-          {isFetching && (
+          {isFetchingBalance && (
             <Loading
               id={'bridge-amount-loading'}
               bgOpacity={0}

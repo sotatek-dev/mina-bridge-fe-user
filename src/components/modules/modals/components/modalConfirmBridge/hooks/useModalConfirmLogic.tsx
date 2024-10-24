@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { MODAL_NAME } from '@/configs/modal';
 import { IsServer } from '@/constants';
@@ -66,6 +66,9 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   // const [transferFee, setTransferFee] = useState<string>('0');
   const [gasFee, setGasFee] = useState<string>('0');
   const [tipFee, setTipFee] = useState<string>('0');
+  const [ethPriceInUsd, setEthPriceInUsd] = useState<string>('');
+
+  const priceUsdInterval = useRef<null | NodeJS.Timeout>(null);
 
   const curModal = useMemo(() => modals[modalName], [modalName, modals]);
 
@@ -139,9 +142,9 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     // };
 
     const amountBn = new BigNumber(params.amount);
-    const balanceBn = new BigNumber(params.balance);
     const tipFeeBn = new BigNumber(params.tipFee);
     const gasFeeBn = new BigNumber(params.gasFee);
+    const totalFee = gasFeeBn.plus(tipFeeBn);
 
     const receiveAmountBn = amountBn.minus(tipFee).minus(gasFee);
 
@@ -150,10 +153,11 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       transferAmount: amountBn.eq(0) ? '0' : amountBn.toString(),
       tipFeeAmount: tipFeeBn.eq(0) ? '0' : tipFeeBn.toString(),
       gasFeeAmount: gasFeeBn.eq(0) ? '0' : gasFeeBn.toString(),
+      totalFeeAmount: totalFee.eq(0) ? '0' : totalFee.toString(),
     };
   }
 
-  const displayValues = useMemo(() => {
+  const getDisplayValues = useCallback(async () => {
     if (!modalPayload)
       return [
         {
@@ -187,13 +191,19 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     const [addrStart, addrEnd] = truncateMid(destAddr, 4, 4);
     const assetIcon = listIcon.find((e) => e.symbol === asset.symbol);
 
-    const { receivedAmount, tipFeeAmount, gasFeeAmount } = getReceivedAmount({
-      balance,
-      amount,
-      asset,
-      tipFee,
-      gasFee,
-    });
+    const { receivedAmount, tipFeeAmount, gasFeeAmount, totalFeeAmount } =
+      getReceivedAmount({
+        balance,
+        amount,
+        asset,
+        tipFee,
+        gasFee,
+      });
+
+    let totalFee = '0';
+    if (ethPriceInUsd) {
+      totalFee = new BigNumber(totalFeeAmount).times(ethPriceInUsd).toString();
+    }
 
     return [
       {
@@ -228,6 +238,11 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         affixIcon: assetIcon?.icon || '',
       },
       {
+        label: 'Total Fee:',
+        value: `${formatNumber2(totalFee.toString(), asset.decimals, '~')} USD`,
+        affixIcon: '',
+      },
+      {
         label: 'You will receive:',
         value: `${formatNumber2(
           receivedAmount,
@@ -237,7 +252,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         affixIcon: assetIcon?.icon || '',
       },
     ];
-  }, [modalPayload, listIcon, gasFee]);
+  }, [modalPayload, listIcon, gasFee, ethPriceInUsd]);
 
   function toggleAgreeTerm() {
     setIsAgreeTerm((prev) => !prev);
@@ -502,6 +517,15 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         default:
           break;
       }
+
+      // tx confirmed
+      sendNotification({
+        toastType: 'warning',
+        options: {
+          title:
+            'Locking WETH transactions can take up to 10 minutes to appear on Bridge History screen',
+        },
+      });
       return onSuccess();
     } catch (error) {
       // console.log('🚀 ~ useModalConfirmLogic ~ error:', error);
@@ -575,17 +599,42 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     getProtocolFee(modalPayload);
   }, [curModal.isOpen, modalPayload]);
 
+  const fetchEthPriceInUsd = async () => {
+    const [res] = await handleRequest(usersService.getPriceUsd());
+    setEthPriceInUsd(res?.ethPriceInUsd || '');
+  };
+
+  useEffect(() => {
+    if (priceUsdInterval.current) {
+      clearInterval(priceUsdInterval.current);
+    }
+
+    fetchEthPriceInUsd();
+    priceUsdInterval.current = setInterval(
+      () => {
+        fetchEthPriceInUsd();
+      },
+      Number(process.env.NEXT_PUBLIC_INTERVAL_HISTORY || 60000),
+    );
+
+    return () => {
+      if (priceUsdInterval.current) {
+        clearInterval(priceUsdInterval.current);
+      }
+    };
+  }, []);
+
   return {
     // transferFee,
     dpAmount,
     status,
     modalPayload,
     networkInstance,
-    displayValues,
     isAgreeTerm,
     toggleAgreeTerm,
     handleConfirm,
     onDismiss,
     handleCloseModal,
+    getDisplayValues,
   };
 }

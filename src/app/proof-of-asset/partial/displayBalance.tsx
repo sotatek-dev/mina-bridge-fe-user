@@ -145,7 +145,7 @@ export default function DisplayBalance({
       {...(!isLastItem
         ? {
             borderBottom: '1px solid',
-            borderColor: 'rgba(0,0,0,0.1)',
+            borderColor: 'text.200',
             pb: '20px',
             mb: '20px',
           }
@@ -180,6 +180,7 @@ export default function DisplayBalance({
               variant={'sm_semiBold'}
               textTransform={'capitalize'}
               lineHeight={1}
+              color={'text.0'}
             >
               {isNativeCurrency ? 'Native' : network.name}
             </Text>

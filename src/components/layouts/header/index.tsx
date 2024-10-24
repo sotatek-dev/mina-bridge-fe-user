@@ -1,7 +1,6 @@
 'use client';
 import { Link } from '@chakra-ui/next-js';
 import {
-  Box,
   Button,
   Drawer,
   DrawerBody,
@@ -10,41 +9,41 @@ import {
   DrawerOverlay,
   Flex,
   HStack,
-  Image,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { PropsWithChildren, useRef } from 'react';
+import { PropsWithChildren } from 'react';
 
 import Logo from '../../elements/logo';
 
 import useHeaderLogic from './useHeaderLogic';
 
+import { Theme } from '@/configs/constants';
 import ROUTES from '@/configs/routes';
 import { getEnvNetwork } from '@/constants';
-import { useOutsideCheck } from '@/hooks/useOutsideCheck';
+import useChakraTheme from '@/hooks/useChakraTheme';
 import { getWalletSlice, useAppSelector } from '@/store';
+import EnvIcon from '@public/assets/icons/icon.env.network.svg';
+import LogoutIcon from '@public/assets/icons/icon.log-out.svg';
+import MoonIcon from '@public/assets/icons/icon.moon.svg';
+import SunIcon from '@public/assets/icons/icon.sun.svg';
 
 type Props = PropsWithChildren<{}>;
 
 export default function Header({}: Props) {
   const { isConnected } = useAppSelector(getWalletSlice);
-  const disconnectBtnRef = useRef<any>(null);
   const {
     isMdSize,
     isDrawerOpened,
-    isMenuOpened,
-    isDrawerMenuOpened,
     disconnectWallet,
     btnConnectWalletProps,
     btnSelectNetworkProps,
     btnBurgerMenuProps,
     toggleDrawerMenu,
     closeDrawer,
-    closeMenu,
   } = useHeaderLogic();
 
-  useOutsideCheck(disconnectBtnRef, closeMenu);
+  const { colorMode, toggleTheme } = useChakraTheme();
 
   return (
     <Flex
@@ -56,9 +55,9 @@ export default function Header({}: Props) {
         xl: '150px',
       }}
       py={'18px'}
-      bg={'white'}
+      bg={'background.0'}
     >
-      <HStack justifyContent={'center'} gap={1}>
+      <HStack justifyContent={'center'} gap={1} mr={2}>
         <Link href={ROUTES.HOME}>
           <Logo />
         </Link>
@@ -78,55 +77,51 @@ export default function Header({}: Props) {
           {...(isMdSize ? {} : { children: null })}
         />
 
-        <Box position={'relative'} ref={disconnectBtnRef}>
-          <Button
-            {...btnConnectWalletProps}
-            {...(isMdSize || (!isMdSize && !isConnected)
-              ? {}
-              : { children: null })}
-          />
-          {isMenuOpened ? (
-            <Button
-              variant={'disconnect.solid'}
-              position={'absolute'}
-              h={'42px'}
-              minW={'130px'}
-              bottom={'-120%'}
-              right={0}
-              onClick={disconnectWallet}
-              zIndex={'10'}
-              leftIcon={
-                <Image
-                  src={'/assets/icons/icon.link-broken.svg'}
-                  w={'24px'}
-                  h={'24px'}
-                />
-              }
-              gap={'0'}
-              alignItems={'center'}
-            >
-              <Text as={'span'} variant={'md_medium'} lineHeight={1} pt={'3px'}>
-                Disconnect
-              </Text>
-            </Button>
-          ) : null}
-        </Box>
+        <Button
+          {...btnConnectWalletProps}
+          {...(isMdSize || (!isMdSize && !isConnected)
+            ? {}
+            : { children: null })}
+        />
 
         {isMdSize && (
-          <HStack gap={1} ml={3}>
-            <Image width={'22px'} src={'/assets/icons/icon.env.network.svg'} />
-            <Text color={'text.500'}>
-              {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
-            </Text>
-          </HStack>
+          <>
+            <Button
+              w={10}
+              p={'10px'}
+              bg={'background.1'}
+              onClick={toggleTheme}
+              title={colorMode === Theme.DARK ? 'Dark Mode' : 'Light Mode'}
+            >
+              {colorMode === Theme.DARK ? <MoonIcon /> : <SunIcon />}
+            </Button>
+
+            {isConnected && (
+              <Button
+                w={10}
+                p={'10px'}
+                bg={'background.1'}
+                onClick={disconnectWallet}
+                title={'Disconnect'}
+              >
+                <LogoutIcon color={'var(--logo-color)'} />
+              </Button>
+            )}
+            <HStack gap={1}>
+              <EnvIcon />
+              <Text color={'text.700'}>
+                {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
+              </Text>
+            </HStack>
+          </>
         )}
       </HStack>
       <Drawer placement={'right'} onClose={closeDrawer} isOpen={isDrawerOpened}>
         <DrawerOverlay bg={'text.900'} opacity={'0.5 !important'} />
-        <DrawerContent w={'65% !important'}>
+        <DrawerContent w={'65% !important'} bg={'background.0'}>
           <HStack gap={1} mt={'36px'} ml={'30px'}>
-            <Image width={'22px'} src={'/assets/icons/icon.env.network.svg'} />
-            <Text color={'text.500'}>
+            <EnvIcon />
+            <Text color={'text.700'}>
               {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
             </Text>
           </HStack>
@@ -158,39 +153,31 @@ export default function Header({}: Props) {
                   w={'full'}
                   onClick={toggleDrawerMenu}
                 />
+                <Button
+                  w={'100%'}
+                  bg={'background.1'}
+                  leftIcon={
+                    colorMode === Theme.DARK ? (
+                      <MoonIcon width={'22px'} />
+                    ) : (
+                      <SunIcon width={'22px'} />
+                    )
+                  }
+                  onClick={toggleTheme}
+                >
+                  {colorMode === Theme.DARK ? 'Dark' : 'Light'} Mode
+                </Button>
 
-                {isDrawerMenuOpened && (
+                {isConnected && (
                   <Button
-                    variant={'disconnect.solid'}
-                    position={'absolute'}
-                    h={'42px'}
-                    minW={'130px'}
-                    top={'110%'}
-                    right={0}
-                    onClick={() => {
-                      closeDrawer();
-                      disconnectWallet();
-                    }}
-                    zIndex={'10'}
+                    w={'100%'}
+                    bg={'background.1'}
+                    onClick={disconnectWallet}
                     leftIcon={
-                      <Image
-                        src={'/assets/icons/icon.link-broken.svg'}
-                        alt={'icon.link-broken'}
-                        w={'24px'}
-                        h={'24px'}
-                      />
+                      <LogoutIcon color={'var(--logo-color)'} width={'22px'} />
                     }
-                    gap={'0'}
-                    alignItems={'center'}
                   >
-                    <Text
-                      as={'span'}
-                      variant={'md_medium'}
-                      lineHeight={1}
-                      pt={'3px'}
-                    >
-                      Disconnect
-                    </Text>
+                    Disconnect
                   </Button>
                 )}
               </VStack>

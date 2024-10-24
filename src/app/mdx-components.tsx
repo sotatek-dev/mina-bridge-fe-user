@@ -7,19 +7,20 @@ import { getPxFromUrl } from '@/helpers/common';
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     h4: ({ children }) => (
-      <Heading as={'h4'} variant={'h4'}>
+      <Heading as={'h4'} variant={'h4'} color={'text.700'}>
         {children}
       </Heading>
     ),
     p: ({ children }) => (
-      <Text py={'10px'} variant={'xl'}>
+      <Text py={'10px'} variant={'xl'} color={'text.700'}>
         {children}
       </Text>
     ),
     img: (props) => (
       <Flex w={'full'} justifyContent={'center'}>
         <Image
-          style={{ border: 'solid 1px #000' }}
+          style={{ border: 'solid 1px' }}
+          borderColor={'background.0'}
           width={getPxFromUrl(props.src)}
           {...props}
         />

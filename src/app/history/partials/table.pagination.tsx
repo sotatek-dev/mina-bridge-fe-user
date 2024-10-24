@@ -1,9 +1,11 @@
 'use client';
-import { Flex, FlexProps, Image } from '@chakra-ui/react';
+import { Flex, FlexProps, useToken } from '@chakra-ui/react';
+import { useMemo } from 'react';
 
 import { useHistoryState } from '../context';
 
 import ReactPaginateWithChakra from '@/components/elements/pagination';
+import useWindowSize from '@/hooks/useWindowSize';
 import LeftIcon from '@public/assets/icons/icon.arrow.left.pagination.svg';
 import RightIcon from '@public/assets/icons/icon.arrow.right.pagination.svg';
 
@@ -41,17 +43,42 @@ function Pagination() {
         : 1,
   };
 
+  const [md] = useToken('breakpoints', ['md']);
+
+  const { width } = useWindowSize();
+  const isMdSize = useMemo(
+    () => width / 16 >= Number(md.replace('em', '')),
+    [width, md]
+  );
+
+  const showMarginPage = useMemo(() => {
+    if (isMdSize) return 2;
+    // Fix mobile paginate overflowed resposive
+    const specialPages = [
+      1,
+      2,
+      state.pagingData?.totalOfPages,
+      state.pagingData?.totalOfPages,
+    ];
+    if (
+      state.pagingData?.currentPage &&
+      specialPages.includes(state.pagingData?.currentPage)
+    )
+      return 1;
+    return 0;
+  }, [state.pagingData, isMdSize]);
+
   return (
     <Flex flexDirection={'row'} mt={'16px'}>
       <ReactPaginateWithChakra
         breakLabel={'...'}
+        marginPagesDisplayed={showMarginPage}
         previousLabel={
           <Flex {...btnNavigateStyles} {...btnPrevStyle}>
             <LeftIcon color={'var(--text-500)'} />
           </Flex>
         }
         onPageChange={(selectedItem) => handlePageClick(selectedItem.selected)}
-        pageRangeDisplayed={2}
         pageCount={state.pagingData.totalOfPages}
         nextLabel={
           <Flex {...btnNavigateStyles} {...btnNextStyle}>

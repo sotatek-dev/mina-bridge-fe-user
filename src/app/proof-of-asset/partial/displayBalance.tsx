@@ -41,7 +41,7 @@ export default function DisplayBalance({
 
   const isNativeCurrency = useMemo(
     () => network.nativeCurrency.symbol === asset.symbol,
-    [network, asset]
+    [network, asset],
   );
 
   const dpAddress = useMemo(() => {
@@ -53,11 +53,11 @@ export default function DisplayBalance({
     switch (network.type) {
       case NETWORK_TYPE.EVM:
         const web3Instance = new Web3(
-          new Web3.providers.HttpProvider(network.metadata.provider.uri)
+          new Web3.providers.HttpProvider(network.metadata.provider.uri),
         );
 
         const [res, error] = await handleRequest(
-          web3Instance.eth.getBalance(addr)
+          web3Instance.eth.getBalance(addr),
         );
         if (error || !res) {
           return setBalance('0');
@@ -84,7 +84,14 @@ export default function DisplayBalance({
       case NETWORK_TYPE.EVM:
         return setBalance('0');
       case NETWORK_TYPE.ZK:
-        return setBalance('0');
+        const ERC20Module = await import('@/models/contract/zk/contract.ERC20');
+        const ERC20Contract = ERC20Module.default;
+        const ctr = new ERC20Contract();
+        await ctr.setInfo(asset.tokenAddr, network);
+        const circulating = await ctr.getCirculatingAmount();
+        return setBalance(fromWei(circulating, asset.decimals));
+
+      // return setBalance('0');
       // const tokenCtr = new ERC20Contract(asset.tokenAddr);
       // const [blnWei, fetchError] = await handleRequest(
       //   tokenCtr.getBalance(addr)
@@ -92,7 +99,6 @@ export default function DisplayBalance({
       // if (fetchError || !blnWei) {
       //   return setBalance('0');
       // }
-      // return setBalance(formWei(blnWei, asset.decimals));
       default:
         break;
     }
@@ -152,7 +158,7 @@ export default function DisplayBalance({
         : {})}
     >
       <VStack alignItems={'flex-start'} mr={'auto'} gap={'4px'}>
-        {balance !== '0' && (
+        {balance && (
           <Text variant={'xl_semiBold'} color={'text.900'}>
             {/*<NumericFormat*/}
             {/*  value={balance}*/}

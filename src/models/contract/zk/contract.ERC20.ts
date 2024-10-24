@@ -138,4 +138,39 @@ export default class ERC20Contract {
   //     UInt64.from(amount)
   //   );
   // }
+
+  async getCirculatingAmount() {
+    // const { PublicKey, fetchAccount } = await import('o1js');
+    // const token = new FungibleToken(this.tokenAddress);
+    //
+    // console.log('-----fetch token account', this.tokenAddress.toBase58());
+    // await fetchAccount({ publicKey: this.tokenAddress });
+    //
+    // console.log('-----getCirculating');
+    // const circulatingSupply = await token.getCirculating();
+    //
+    // console.log(
+    //   `test Circulating supply of WETH: ${circulatingSupply.toString()}`,
+    // );
+    //
+    // return circulatingSupply.toString();
+
+    const { TokenId, PublicKey } = await import('o1js');
+
+    const query = getAccountInfoTokenQuery;
+    const params = {
+      publicKey: this.tokenAddress,
+      token: TokenId.toBase58(TokenId.derive(this.tokenAddress)),
+    };
+
+    if ('proxyUrl' in this.network.metadata && this.network.metadata.proxyUrl) {
+      const [data, error] = await handleRequest(
+        gql(this.network.metadata.proxyUrl, query, params),
+      );
+      if (error || !data || !data.account) return '0';
+      return data.account.balance.total;
+    }
+
+    return '0';
+  }
 }

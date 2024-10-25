@@ -4,16 +4,22 @@ import { VStack } from '@chakra-ui/layout';
 import { Text } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 
 // import FormBridge from '@/components/modules/formBridge';
-import ROUTES from '@/configs/routes';
+import ROUTES, { MDX_REDIRECT } from '@/configs/routes';
 
 const FormBridge = dynamic(() => import('@/components/modules/formBridge'), {
   ssr: false,
 });
 
 export default function Home() {
+  const router = useRouter();
+  useEffect(() => {
+    router.prefetch(`${ROUTES.USER_GUIDE}#${MDX_REDIRECT}`);
+  }, []);
+
   return (
     <VStack
       w={'full'}

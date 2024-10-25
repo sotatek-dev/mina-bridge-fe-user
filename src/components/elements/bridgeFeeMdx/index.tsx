@@ -2,7 +2,6 @@
 import { Table, Thead, Tbody, Tr, Th, Td, Box, Text } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
-import { MDX_REDIRECT } from '@/configs/routes';
 import useWindowSize from '@/hooks/useWindowSize';
 
 const TableEthToMinaRows = [
@@ -13,7 +12,7 @@ const TableEthToMinaRows = [
   },
   {
     label: 'Bridge Fee',
-    amount: '0%',
+    amount: '0.00%',
     calculation: 'By Bridge Operator',
   },
   {
@@ -34,7 +33,7 @@ const TableMinaToEthRows = [
   },
   {
     label: 'Bridge Fee',
-    amount: '0%',
+    amount: '0.00%',
     calculation: 'By Bridge Operator',
   },
   {
@@ -64,6 +63,7 @@ const BridgeTable = ({ title, rows, feeSource }: TableProps) => (
           borderColor={'text.300'}
           color={'text.900'}
           fontSize={14}
+          textTransform={'unset'}
           w={'10%'}
         >
           {title}
@@ -73,6 +73,7 @@ const BridgeTable = ({ title, rows, feeSource }: TableProps) => (
           borderColor={'text.300'}
           color={'text.900'}
           fontSize={14}
+          textTransform={'unset'}
           w={'15%'}
         >
           Amount (ETH)
@@ -82,6 +83,7 @@ const BridgeTable = ({ title, rows, feeSource }: TableProps) => (
           borderColor={'text.300'}
           color={'text.900'}
           fontSize={14}
+          textTransform={'unset'}
           w={'20%'}
         >
           How is it calculated
@@ -91,6 +93,7 @@ const BridgeTable = ({ title, rows, feeSource }: TableProps) => (
           borderColor={'text.300'}
           color={'text.900'}
           fontSize={14}
+          textTransform={'unset'}
           w={'55%'}
         >
           Fee source

@@ -71,8 +71,8 @@ export default function Home() {
         </Link>
       </VStack>
       <Text variant={'md'} color={'text.500'} m={'0'} mt={'16px'}>
-        The safe, fast and most secure way to bring cross-chain assets to Mina
-        chains
+        The safest, fastest and most secure way to bring cross-chain assets to
+        Mina chains
       </Text>
     </VStack>
   );

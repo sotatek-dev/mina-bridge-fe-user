@@ -78,7 +78,7 @@ export default function ModalConfirmBridge() {
     dispatch(
       uiSliceActions.closeModal({ modalName: MODAL_NAME.CONFIRM_BRIDGE })
     );
-    router.push(`${ROUTES.USER_GUIDE}#${MDX_REDIRECT}`);
+    window.open(`${ROUTES.USER_GUIDE}#${MDX_REDIRECT}`, '_blank');
   };
 
   const contentRendered = useMemo(() => {

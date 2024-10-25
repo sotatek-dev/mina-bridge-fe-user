@@ -20,7 +20,7 @@ import useModalSNLogic, { MODAL_CF_STATUS } from './hooks/useModalConfirmLogic';
 import CustomModal, { ModalTitle } from '@/components/elements/customModal';
 import Loading from '@/components/elements/loading/spinner';
 import { MODAL_NAME } from '@/configs/modal';
-import ROUTES from '@/configs/routes';
+import ROUTES, { MDX_REDIRECT } from '@/configs/routes';
 import useNotifier from '@/hooks/useNotifier';
 import { NETWORK_NAME } from '@/models/network';
 import { useAppDispatch } from '@/store';
@@ -78,7 +78,7 @@ export default function ModalConfirmBridge() {
     dispatch(
       uiSliceActions.closeModal({ modalName: MODAL_NAME.CONFIRM_BRIDGE })
     );
-    router.push(`${ROUTES.USER_GUIDE}#about-fee`);
+    window.open(`${ROUTES.USER_GUIDE}#${MDX_REDIRECT}`, '_blank');
   };
 
   const contentRendered = useMemo(() => {

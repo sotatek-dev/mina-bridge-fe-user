@@ -1,12 +1,15 @@
 'use client';
 import { Heading } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
+import web3 from 'web3';
 
+import NetworkEthereum from '../../../../models/network/network.ethereum';
 import { DailyQuota, useFormBridgeState } from '../context';
 
 import ITV from '@/configs/time';
 import { handleRequest } from '@/helpers/asyncHandlers';
 import { formatNumber, fromWei } from '@/helpers/common';
+import NetworkMina from '@/models/network/network.mina';
 import usersService from '@/services/usersService';
 import { getWalletSlice, useAppSelector } from '@/store';
 
@@ -26,15 +29,27 @@ export default function FormDailyQuota() {
   const interval = useRef<any>(null);
 
   async function getDailyQuota(address: string) {
+    let decimal = asset!!.decimals;
+
+    if (web3.utils.isAddress(address)) {
+      decimal = NetworkEthereum.nativeCurrency.decimals;
+    } else {
+      try {
+        const { PublicKey } = await import('o1js');
+        PublicKey.fromBase58(address).toBase58();
+        decimal = NetworkMina.nativeCurrency.decimals;
+      } catch (e) {}
+    }
+
     const [res, error] = await handleRequest(
-      usersService.getDailyQuota({ address })
+      usersService.getDailyQuota({ address }),
     );
     if (error || !res) return updateQuota({ ...initialData });
     return updateQuota({
       max: formatNumber(res.dailyQuota.dailyQuota, 4),
       current: formatNumber(
-        fromWei(`${res.totalAmountOfToDay}`, asset!!.decimals),
-        asset!!.decimals
+        fromWei(`${res.totalAmountOfToDay}`, decimal),
+        asset!!.decimals,
       ),
       asset: res.dailyQuota.asset,
     });

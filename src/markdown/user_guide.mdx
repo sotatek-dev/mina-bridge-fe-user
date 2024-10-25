@@ -1,71 +1,86 @@
-﻿#### 1. Wallet extension
+﻿import BridgeFeeTable from '@/components/elements/bridgeFeeMdx';
+import { MDX_REDIRECT } from '@/configs/routes';
 
-Install your wallet extension, it can be Auro Wallet or Metamask Snaps (If you want to bridge assets from Mina network to other blockchain) or Metamask only (If you want to bridge assets from EVM blockchains to Mina network)
+**Please note:**
+
+- It can take up to 20 minutes for WETH to be available on Auro once the bridging transaction is confirmed on Metamask
+- There are two distinct stages in the process
+  - Locking Ethereum on the Eth side
+  - Minting WETH on the MIna side
+- For a breakdown of [fees](/user-guide#bridging-fee) please see here
+
+---
+
+#### 1. Wallet extension
+
+Ensure you have Metamask installed
 
 #### 2. Connect wallet
 
 After installing the wallet successfully, visit [here.](/)
 
-![Home page](/user-guide/home-432px.png)
+![Home page](/user-guide/home-full.png)
 
 Click on **Connect to Wallet**.
 
-- Step 1: Click on the checkbox to accept the Terms of Service and Privacy Policy.
-- Step 2: Step 2: Click on a specific network (for example Ethereum), this indicates that Ethereum is their network of choice.
-- Step 3: Step 3: Choose Wallet (for example Metamask).
-- Step 4: After clicking Choose Wallet, the system will trigger your wallet to Connect Wallet. Click Confirm to Connect to our web3 application.
+- Step 1: Click on a specific network (Ethereum), this indicates that Ethereum is their source network for tokens to be bridged.
+- Step 2: Choose Wallet (Metamask).
+- Step 3: After clicking Choose Wallet, the system will trigger your wallet to Connect Wallet. Click Confirm to Connect to our web3 application.
 
-![Connect wallet modal](/user-guide/connect-wallet-235px.png)
+![Connect wallet modal](/user-guide/connect-wallet-390px.png)
 
 - Mina Bridge has been connected to the wallet on Metamask with Ethereum network.
 
 ![Connect wallet success](/user-guide/header-full.png)
 
-- If user want to disconnect from application, Click on Wallet address then click Disconnect.
+- To disconnect from the bridge application, Click on Disconnect Button.
+- To change source account, you can do this through Metamask.
 
 #### 3. Bridge
 
 - _**Step 1**: Choose Assets_
 
-![Choose Assets](/user-guide/select-token-275px.png)
+![Choose Assets](/user-guide/select-token-390px.png)
 
-Mina Bridge supports Ethereum (Other tokens will be added in the next phase). Users can select by clicking on the token from the list or search by typing the name of the cryptocurrency.
+The Mina Bridge supports only Ethereum at present though other tokens are planned to be added in the near future; the select asset feature will be more relevant at this stage.
 
-- _**Step 2**: Choose “From” and “To” network types. The FromNetwork must be the current network. Network support:_
+You can select by clicking on the token from the list or search by typing the name of the cryptocurrency.
 
-  - _Ethereum Network_
-  - _Mina Network_
+- _**Step 2**: Choose “From” and “To” network types. The FromNetwork must be the source network, in this case Ethereum:_
 
-![Form Bridge](/user-guide/form-bridge-404px.png)
+![Form Bridge](/user-guide/form-bridge-390px.png)
 
-- **Destination Address:** The user can input receiver address here.
+- **Destination Address:** This is where the receiving address will be input, in this case your Mina Address.
 
-- _**Step 3**: Enter swap amount and click on button Next._
+- _**Step 3**: Enter the amount of Ethereum you wish to bridge and click Next._
 
-- _**Step 4**: Review the order details. Click ‘Confirm’ to confirm your Swap._
+- _**Step 4**: Review the order details and ensure you have read the terms and conditions of the Bridge. If you are happy to proceed, Click ‘Confirm’._
 
   ![Confirm popup](/user-guide/confirm-bridge-390px.png)
 
-- _**Step 5**: Click on "Confirm" on the MetaMask (or Auro Wallet) notification._
+- _**Step 5**: Metamask will pop up to allow you to sign the locking transaction on Ethereum and review the Ethereum Network fees. If you are happy to proceed, hit “confirm” on Metamask - the transaction will appear on Metamask as processing and then confirmed._
 
-- _**Step 6**: After the transaction has been processed, users will receive a popup from the system to inform them that they swapped successfully._
+- _**Step 6**: After the transaction has been confirmed, you will be able to track its progress via the Bridge’s history screen. This allows you to drill into the source and destination transactions via EtherScan and MinaScan._
 
-_The user can also verify the swap process from the History board by clicking on “View on History”._
+![Order History](/user-guide/history-full.png)
 
 #### 4. History Page
 
-![Order History](/user-guide/history-839px.png)
-
 _List of statuses:_
 
-- **Processing**: Transaction is in process on the destination network.
+- **ETH Locked**: Your source funds have been locked on Ethereum allowing for minting of WETH on Mina.
 
-- **Completed**: The order was completed and the assets were transferred into the wallet successfully.
+- **Minting WETH in Mina network**: You WETH is now being minted on the Mina Network.
 
-- **NoTokenPair**: Customers send a token that we have not handled yet.
+- **Success**: Bridging transaction is complete and your WETH is available on Auro.
 
 #### 5. Proof of Asset
 
 [Proof of Asset](/proof-of-asset)
 
 As the crypto token vault and exchange, Mina Bridge will issue and bind more token assets on Mina Network, and guarantee the conversion from and to the original tokens with credibility and infrastructure.
+
+<div id={MDX_REDIRECT}></div>
+#### 6. Bridging Fees
+
+<BridgeFeeTable />

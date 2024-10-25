@@ -19,9 +19,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     img: (props) => (
       <Flex w={'full'} justifyContent={'center'}>
         <Image
-          style={{ border: 'solid 1px' }}
-          borderColor={'background.0'}
           width={getPxFromUrl(props.src)}
+          border={'1px solid'}
+          borderColor={'text.200'}
           {...props}
         />
       </Flex>
@@ -32,6 +32,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </Link>
     ),
+    hr: ({}) => <hr style={{ margin: '30px 0' }} />,
 
     ...components,
   };

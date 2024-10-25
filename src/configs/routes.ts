@@ -8,4 +8,6 @@ enum ROUTES {
 
 export const PROTECTED_ROUTES = [ROUTES.HISTORY];
 
+export const MDX_REDIRECT = 'bridging-fee';
+
 export default ROUTES;

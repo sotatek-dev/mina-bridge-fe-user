@@ -29,7 +29,6 @@ export default function UserGuide() {
         const hash = window.location.hash;
         if (hash === `#${MDX_REDIRECT}`) {
           const element = document.getElementById(MDX_REDIRECT);
-          console.log({ element });
           if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
           }

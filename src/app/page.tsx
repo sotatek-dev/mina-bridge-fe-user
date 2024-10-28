@@ -15,7 +15,6 @@ const FormBridge = dynamic(() => import('@/components/modules/formBridge'), {
 });
 
 export default function Home() {
-  console.log('Build log UAT');
   const router = useRouter();
   useEffect(() => {
     router.prefetch(`${ROUTES.USER_GUIDE}#${MDX_REDIRECT}`);

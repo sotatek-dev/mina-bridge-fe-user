@@ -28,6 +28,7 @@ enum USERS_ENDPOINT {
   BRIDGE = 'bridge',
   PROTOCOL_FEE = 'protocol-fee',
   PRICE_USD = 'price-usd',
+  PROOF_OF_ASSETS = 'proof-of-assets',
 }
 
 export { CoinGeckoSV, PairDetailSV, PairSV, USERS_ENDPOINT };

@@ -19,6 +19,7 @@ import { Network } from '@/models/network';
 import { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
 import { getEtherAccountScan } from '@/models/network/network.ethereum';
 import { getMinaAccountScan } from '@/models/network/network.mina';
+import usersService from '@/services/usersService';
 import { TokenType } from '@/store/slices/persistSlice';
 
 type Props = {
@@ -84,7 +85,8 @@ export default function DisplayBalance({
       case NETWORK_TYPE.EVM:
         return setBalance('0');
       case NETWORK_TYPE.ZK:
-        return setBalance('0');
+        const [res] = await handleRequest(usersService.getProofOfAsset());
+        return setBalance(res?.totalWethInCirculation || '0');
 
       // const ERC20Module = await import('@/models/contract/zk/contract.ERC20');
       // const ERC20Contract = ERC20Module.default;
@@ -159,19 +161,17 @@ export default function DisplayBalance({
         : {})}
     >
       <VStack alignItems={'flex-start'} mr={'auto'} gap={'4px'}>
-        {balance !== '0' && (
-          <Text variant={'xl_semiBold'} color={'text.900'}>
-            {/*<NumericFormat*/}
-            {/*  value={balance}*/}
-            {/*  thousandSeparator={','}*/}
-            {/*  decimalScale={4}*/}
-            {/*  decimalSeparator={'.'}*/}
-            {/*  displayType={'text'}*/}
-            {/*  renderText={(value) => value + ' '}*/}
-            {/*/>*/}
-            {`${formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)} ${asset.symbol}`}
-          </Text>
-        )}
+        <Text variant={'xl_semiBold'} color={'text.900'}>
+          {/*<NumericFormat*/}
+          {/*  value={balance}*/}
+          {/*  thousandSeparator={','}*/}
+          {/*  decimalScale={4}*/}
+          {/*  decimalSeparator={'.'}*/}
+          {/*  displayType={'text'}*/}
+          {/*  renderText={(value) => value + ' '}*/}
+          {/*/>*/}
+          {`${formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)} ${asset.symbol}`}
+        </Text>
 
         <Flex
           flexDir={{ base: 'column', md: 'row' }}

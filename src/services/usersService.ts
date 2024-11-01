@@ -84,6 +84,10 @@ export type GetPriceUsdResponse = {
   minaPriceInUsd: string;
 };
 
+export type GetPoAResponse = {
+  totalWethInCirculation: string;
+};
+
 class UsersService {
   readonly service: AxiosService;
   readonly baseURL: string = '/users';
@@ -130,6 +134,12 @@ class UsersService {
   getPriceUsd() {
     return this.service.get<GetPriceUsdResponse>(
       `${this.baseURL}/token/${USERS_ENDPOINT.PRICE_USD}`
+    );
+  }
+
+  getProofOfAsset() {
+    return this.service.get<GetPoAResponse>(
+      `${this.baseURL}/${USERS_ENDPOINT.PROOF_OF_ASSETS}`
     );
   }
 }

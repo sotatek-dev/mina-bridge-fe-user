@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js';
+import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { MODAL_NAME } from '@/configs/modal';
+import ROUTES from '@/configs/routes';
 import { IsServer } from '@/constants';
 import { handleRequest } from '@/helpers/asyncHandlers';
 import {
@@ -54,13 +56,13 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   const { sendNotification } = useNotifier();
   const { modals } = useAppSelector(getUISlice);
   const { listIcon } = useAppSelector(getPersistSlice);
-  const { address, asset } = useAppSelector(getWalletSlice);
+  const { address, asset, isConnected } = useAppSelector(getWalletSlice);
   const { networkInstance, walletInstance } = useAppSelector(
     getWalletInstanceSlice,
   );
 
   const zkCtr = useZKContractState().state;
-
+  const pathname = usePathname();
   const [isAgreeTerm, setIsAgreeTerm] = useState<boolean>(false);
   const [status, setStatus] = useState<MODAL_CF_STATUS>(MODAL_CF_STATUS.IDLE);
   // const [transferFee, setTransferFee] = useState<string>('0');
@@ -605,6 +607,13 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   };
 
   useEffect(() => {
+    if (
+      (!isConnected || pathname !== ROUTES.HOME) &&
+      priceUsdInterval.current
+    ) {
+      clearInterval(priceUsdInterval.current);
+      return;
+    }
     if (priceUsdInterval.current) {
       clearInterval(priceUsdInterval.current);
     }
@@ -614,7 +623,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       () => {
         fetchEthPriceInUsd();
       },
-      Number(process.env.NEXT_PUBLIC_INTERVAL_HISTORY || 60000),
+      Number(process.env.NEXT_PUBLIC_INTERVAL_FETCH_ETH_PRICE_IN_USD || 60000),
     );
 
     return () => {
@@ -622,7 +631,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         clearInterval(priceUsdInterval.current);
       }
     };
-  }, []);
+  }, [pathname, isConnected]);
 
   return {
     // transferFee,

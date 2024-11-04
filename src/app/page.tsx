@@ -72,7 +72,7 @@ export default function Home() {
       </VStack>
       <Text variant={'md'} color={'text.500'} m={'0'} mt={'16px'}>
         The safest, fastest and most secure way to bring cross-chain assets to
-        Mina chains
+        Mina
       </Text>
     </VStack>
   );

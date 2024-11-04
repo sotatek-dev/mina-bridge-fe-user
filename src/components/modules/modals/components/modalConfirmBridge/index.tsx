@@ -298,7 +298,7 @@ export default function ModalConfirmBridge() {
               bg={'rgba(222, 98, 46, 0.10)'}
             >
               <Text variant={'md'} color={'primary.orange'}>
-                You will receive after about 20 minutes.{' '}
+                ~20 minutes.{' '}
                 {networkInstance.src?.name === NETWORK_NAME.MINA &&
                   'Please ensure you have enough Mina in your account to covers Mina Network fee.'}
               </Text>

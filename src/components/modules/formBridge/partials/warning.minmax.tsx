@@ -2,16 +2,17 @@
 import { HStack, Image, StackProps, Text, VStack } from '@chakra-ui/react';
 import { capitalize } from 'lodash';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useFormBridgeState } from '../context';
 
 import ITV from '@/configs/time';
-import { handleAsync } from '@/helpers/asyncHandlers';
+import { handleAsync, handleRequest } from '@/helpers/asyncHandlers';
 import { formatNumber, fromWei } from '@/helpers/common';
-import { Network } from '@/models/network';
+import { Network, NETWORK_NAME } from '@/models/network';
 import { NETWORK_TYPE } from '@/models/network/network';
 import { useZKContractState } from '@/providers/zkBridgeInitalize';
+import usersService, { GetListSpPairsResponse } from '@/services/usersService';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
@@ -29,9 +30,40 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
   const { updateAssetRage, updateStatus } = useFormBridgeState().methods;
   const zkCtr = useZKContractState().state;
   const { networkInstance } = useAppSelector(getWalletInstanceSlice);
+  const [supportedPairs, setSupportedPairs] =
+    useState<GetListSpPairsResponse | null>(null);
 
   const { lastAsset } = useAppSelector(getPersistSlice);
   const [runCount, setRunCount] = useState<number>(0);
+
+  const tarAsset = useMemo<TokenType | null>(() => {
+    if (!supportedPairs || !networkInstance.src) {
+      return null;
+    }
+
+    const pair = supportedPairs?.find(
+      (v) => `${v.id}` === `${asset?.pairId || ''}`,
+    );
+    if (!pair) return null;
+
+    const targetAsset: TokenType = {
+      pairId: `${pair.id}`,
+      bridgeCtrAddr: pair.toScAddress,
+      tokenAddr: pair.toAddress,
+      des: 'tar',
+      symbol: pair.toSymbol.toUpperCase(),
+      name: '',
+      decimals: pair.toDecimal,
+      network:
+        pair.toChain === 'eth'
+          ? NETWORK_NAME.ETHEREUM
+          : pair.toChain === NETWORK_NAME.MINA
+            ? NETWORK_NAME.MINA
+            : NETWORK_NAME.MINA,
+    };
+
+    return targetAsset;
+  }, [supportedPairs, networkInstance, asset]);
 
   function cacheAssetMaxMin(asset: TokenType, range: string[]) {
     dispatch(
@@ -39,7 +71,7 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
         asset,
         range,
         timestamp: moment.now(),
-      })
+      }),
     );
   }
 
@@ -53,14 +85,14 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
         (e) =>
           e.asset.pairId === asset.pairId &&
           e.asset.symbol === asset.symbol &&
-          e.asset.network === asset.network
+          e.asset.network === asset.network,
       );
       if (persistedAsset) {
         if (
           persistedAsset.timestamp &&
           moment(moment.now()).diff(
             moment(persistedAsset.timestamp),
-            'minute'
+            'minute',
           ) <= 5
         ) {
           updateStatus('isLoading', false);
@@ -80,7 +112,7 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
           async () => ({
             min: await bridgeCtr.getMinAmount(),
             max: await bridgeCtr.getMaxAmount(),
-          })
+          }),
         );
 
         // handle if have error
@@ -159,6 +191,15 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
     getAssetMaxMin(networkInstance.src, asset);
   }, [networkInstance.src, asset, zkCtr.isInitialized]);
 
+  useEffect(() => {
+    (async () => {
+      const [listPair, error] = await handleRequest(
+        usersService.getListSupportedPairs(),
+      );
+      setSupportedPairs(listPair);
+    })();
+  }, []);
+
   return (
     <HStack
       alignItems={'flex-start'}
@@ -173,7 +214,8 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
         <Text variant={'md_semiBold'} color={'text.700'} pb={'5px'}>
           I want to bridge {asset?.symbol || ''} from{' '}
           {capitalize(networkInstance.src?.name)} to{' '}
-          {capitalize(networkInstance?.tar?.name)}
+          {capitalize(networkInstance?.tar?.name)} and receive{' '}
+          {tarAsset?.symbol}
         </Text>
         <Text variant={'md'} color={'text.500'}>
           1. Minimum amount is {assetRange[0] || 'unknown'}{' '}

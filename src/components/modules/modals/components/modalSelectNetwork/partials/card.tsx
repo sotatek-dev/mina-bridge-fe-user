@@ -67,7 +67,6 @@ export default function Card({ nwKey }: CardProps) {
 
     handleCloseCurModal();
 
-    // TODO: Remove all older event
     // walletInstance!!.removeListener(WALLET_EVENT_NAME.ACCOUNTS_CHANGED);
     // walletInstance!!.removeListener(WALLET_EVENT_NAME.CHAIN_CHANGED);
     // walletInstance!!.removeListener(WALLET_EVENT_NAME.DISCONNECT);
@@ -83,7 +82,7 @@ export default function Card({ nwKey }: CardProps) {
               : WALLET_NAME.AURO
           ]!,
         network: network,
-      })
+      }),
     );
     //  when fail to connect
     if (walletSliceActions.connectWallet.rejected.match(res)) {

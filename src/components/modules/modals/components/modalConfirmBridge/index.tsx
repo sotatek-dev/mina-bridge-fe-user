@@ -25,7 +25,6 @@ import useNotifier from '@/hooks/useNotifier';
 import { NETWORK_NAME } from '@/models/network';
 import { useAppDispatch } from '@/store';
 import BridgeIcon from '@public/assets/icons/icon.bridge.next.svg';
-import QuestionIcon from '@public/assets/icons/icon.question.square.svg';
 
 export default function ModalConfirmBridge() {
   const {
@@ -298,25 +297,25 @@ export default function ModalConfirmBridge() {
               bg={'rgba(222, 98, 46, 0.10)'}
             >
               <Text variant={'md'} color={'primary.orange'}>
-                ~20 minutes.{' '}
+                ~30 minutes.{' '}
                 {networkInstance.src?.name === NETWORK_NAME.MINA &&
                   'Please ensure you have enough Mina in your account to covers Mina Network fee.'}
               </Text>
             </Box>
-            <HStack w={'full'} mt={'15px'} gap={'12px'}>
-              <QuestionIcon visibility={'hidden'} color={'var(--text-300)'} />
-              <Text display={'flex'} gap={1}>
-                Read more
-                <Text
-                  cursor={'pointer'}
-                  onClick={handleReadMore}
-                  color={'primary.purple'}
-                  _hover={{ textDecor: 'underline' }}
-                >
-                  Fee information
-                </Text>
-              </Text>
-            </HStack>
+            {/*<HStack w={'full'} mt={'15px'} gap={'12px'}>*/}
+            {/*  <QuestionIcon visibility={'hidden'} color={'var(--text-300)'} />*/}
+            {/*  <Text display={'flex'} gap={1}>*/}
+            {/*    Read more*/}
+            {/*    <Text*/}
+            {/*      cursor={'pointer'}*/}
+            {/*      onClick={handleReadMore}*/}
+            {/*      color={'primary.purple'}*/}
+            {/*      _hover={{ textDecor: 'underline' }}*/}
+            {/*    >*/}
+            {/*      Fee information*/}
+            {/*    </Text>*/}
+            {/*  </Text>*/}
+            {/*</HStack>*/}
             <Box w={'full'} mt={'15px'} gap={'12px'}>
               <Checkbox
                 fontSize={'14px'}

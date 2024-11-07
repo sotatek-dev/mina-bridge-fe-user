@@ -16,6 +16,11 @@ const FormBridge = dynamic(() => import('@/components/modules/formBridge'), {
 
 export default function Home() {
   const router = useRouter();
+
+  const handleReadMore = () => {
+    window.open(`${ROUTES.USER_GUIDE}#${MDX_REDIRECT}`, '_blank');
+  };
+
   useEffect(() => {
     router.prefetch(`${ROUTES.USER_GUIDE}#${MDX_REDIRECT}`);
   }, []);
@@ -69,6 +74,16 @@ export default function Home() {
             User guide
           </Text>
         </Link>
+        <Text
+          cursor={'pointer'}
+          onClick={handleReadMore}
+          as={'span'}
+          variant={'md_bold'}
+          color={'primary.purple'}
+          _hover={{ textDecor: 'underline', color: 'primary.purple.05' }}
+        >
+          Fee information
+        </Text>
       </VStack>
       <Text variant={'md'} color={'text.500'} m={'0'} mt={'16px'}>
         The safest, fastest and most secure way to bring cross-chain assets to

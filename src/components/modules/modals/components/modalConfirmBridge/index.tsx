@@ -6,8 +6,8 @@ import {
   Checkbox,
   Grid,
   GridItem,
-  HStack,
   Heading,
+  HStack,
   Image,
   Text,
   VStack,
@@ -24,9 +24,7 @@ import ROUTES, { MDX_REDIRECT } from '@/configs/routes';
 import useNotifier from '@/hooks/useNotifier';
 import { NETWORK_NAME } from '@/models/network';
 import { useAppDispatch } from '@/store';
-import { uiSliceActions } from '@/store/slices/uiSlice';
 import BridgeIcon from '@public/assets/icons/icon.bridge.next.svg';
-import QuestionIcon from '@public/assets/icons/icon.question.square.svg';
 
 export default function ModalConfirmBridge() {
   const {
@@ -58,7 +56,7 @@ export default function ModalConfirmBridge() {
   const isDefault = useMemo(() => status === MODAL_CF_STATUS.IDLE, [status]);
   const isInitializing = useMemo(
     () => status === MODAL_CF_STATUS.INITIALIZE,
-    [status]
+    [status],
   );
   const isLoading = useMemo(() => status === MODAL_CF_STATUS.LOADING, [status]);
   const hasError = useMemo(() => status === MODAL_CF_STATUS.ERROR, [status]);
@@ -75,9 +73,9 @@ export default function ModalConfirmBridge() {
   }, [getDisplayValues]);
 
   const handleReadMore = () => {
-    dispatch(
-      uiSliceActions.closeModal({ modalName: MODAL_NAME.CONFIRM_BRIDGE })
-    );
+    // dispatch(
+    //   uiSliceActions.closeModal({ modalName: MODAL_NAME.CONFIRM_BRIDGE }),
+    // );
     window.open(`${ROUTES.USER_GUIDE}#${MDX_REDIRECT}`, '_blank');
   };
 
@@ -299,25 +297,25 @@ export default function ModalConfirmBridge() {
               bg={'rgba(222, 98, 46, 0.10)'}
             >
               <Text variant={'md'} color={'primary.orange'}>
-                You will receive after about 20 minutes.{' '}
+                ~30 minutes.{' '}
                 {networkInstance.src?.name === NETWORK_NAME.MINA &&
                   'Please ensure you have enough Mina in your account to covers Mina Network fee.'}
               </Text>
             </Box>
-            <HStack w={'full'} mt={'15px'} gap={'12px'}>
-              <QuestionIcon color={'var(--text-300)'} />
-              <Text display={'flex'} gap={1}>
-                Read more
-                <Text
-                  cursor={'pointer'}
-                  onClick={handleReadMore}
-                  color={'primary.purple'}
-                  _hover={{ textDecor: 'underline' }}
-                >
-                  About Fee
-                </Text>
-              </Text>
-            </HStack>
+            {/*<HStack w={'full'} mt={'15px'} gap={'12px'}>*/}
+            {/*  <QuestionIcon visibility={'hidden'} color={'var(--text-300)'} />*/}
+            {/*  <Text display={'flex'} gap={1}>*/}
+            {/*    Read more*/}
+            {/*    <Text*/}
+            {/*      cursor={'pointer'}*/}
+            {/*      onClick={handleReadMore}*/}
+            {/*      color={'primary.purple'}*/}
+            {/*      _hover={{ textDecor: 'underline' }}*/}
+            {/*    >*/}
+            {/*      Fee information*/}
+            {/*    </Text>*/}
+            {/*  </Text>*/}
+            {/*</HStack>*/}
             <Box w={'full'} mt={'15px'} gap={'12px'}>
               <Checkbox
                 fontSize={'14px'}

@@ -19,7 +19,7 @@ import { EVMBridgeTXLock } from '@/models/contract/evm/contract.bridge';
 import { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
 import { WALLET_NAME, WalletAuro } from '@/models/wallet';
 import { useZKContractState } from '@/providers/zkBridgeInitalize';
-import usersService from '@/services/usersService';
+import usersService, { GetListSpPairsResponse } from '@/services/usersService';
 import {
   getPersistSlice,
   getUISlice,
@@ -69,6 +69,8 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   const [gasFee, setGasFee] = useState<string>('0');
   const [tipFee, setTipFee] = useState<string>('0');
   const [ethPriceInUsd, setEthPriceInUsd] = useState<string>('');
+  const [supportedPairs, setSupportedPairs] =
+    useState<GetListSpPairsResponse | null>(null);
 
   const priceUsdInterval = useRef<null | NodeJS.Timeout>(null);
 
@@ -110,6 +112,35 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       BigNumber.ROUND_DOWN,
     );
   }, [modalPayload]);
+
+  const tarAsset = useMemo<TokenType | null>(() => {
+    if (!supportedPairs || !networkInstance.src) {
+      return null;
+    }
+
+    const pair = supportedPairs?.find(
+      (v) => `${v.id}` === `${asset?.pairId || ''}`,
+    );
+    if (!pair) return null;
+
+    const targetAsset: TokenType = {
+      pairId: `${pair.id}`,
+      bridgeCtrAddr: pair.toScAddress,
+      tokenAddr: pair.toAddress,
+      des: 'tar',
+      symbol: pair.toSymbol.toUpperCase(),
+      name: '',
+      decimals: pair.toDecimal,
+      network:
+        pair.toChain === 'eth'
+          ? NETWORK_NAME.ETHEREUM
+          : pair.toChain === NETWORK_NAME.MINA
+            ? NETWORK_NAME.MINA
+            : NETWORK_NAME.MINA,
+    };
+
+    return targetAsset;
+  }, [supportedPairs, networkInstance, asset]);
 
   function getReceivedAmount(params: {
     balance: string;
@@ -216,7 +247,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       {
         label: 'Destination:',
         value: `${addrStart}...${addrEnd}`,
-        affixIcon: assetIcon?.icon || '',
+        affixIcon: '',
       },
       {
         label: 'Bridging Fee:',
@@ -225,7 +256,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           asset.decimals,
           '~',
         )} ${asset.symbol.toUpperCase()}`,
-        affixIcon: assetIcon?.icon || '',
+        affixIcon: '',
       },
       {
         label:
@@ -237,7 +268,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           asset.decimals,
           '~',
         )} ${asset.symbol.toUpperCase()}`,
-        affixIcon: assetIcon?.icon || '',
+        affixIcon: '',
       },
       {
         label: 'Total Fee:',
@@ -250,8 +281,9 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           receivedAmount,
           asset.decimals,
           '~',
-        )} ${asset.symbol.toUpperCase()}`,
-        affixIcon: assetIcon?.icon || '',
+          //   TODO: received WETH in case asset is ETH
+        )} ${tarAsset?.symbol.toUpperCase()}`,
+        affixIcon: '',
       },
     ];
   }, [modalPayload, listIcon, gasFee, ethPriceInUsd]);
@@ -632,6 +664,15 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       }
     };
   }, [pathname, isConnected]);
+
+  useEffect(() => {
+    (async () => {
+      const [listPair, error] = await handleRequest(
+        usersService.getListSupportedPairs(),
+      );
+      setSupportedPairs(listPair);
+    })();
+  }, []);
 
   return {
     // transferFee,

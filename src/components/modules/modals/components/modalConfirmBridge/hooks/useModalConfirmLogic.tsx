@@ -233,9 +233,11 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         gasFee,
       });
 
-    let totalFee = '0';
+    let totalFeeInUsd = '0';
     if (ethPriceInUsd) {
-      totalFee = new BigNumber(totalFeeAmount).times(ethPriceInUsd).toString();
+      totalFeeInUsd = new BigNumber(totalFeeAmount)
+        .times(ethPriceInUsd)
+        .toString();
     }
 
     return [
@@ -272,7 +274,11 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       },
       {
         label: 'Total Fee:',
-        value: `${formatNumber2(totalFee.toString(), asset.decimals, '~')} USD`,
+        value: `${formatNumber2(
+          totalFeeInUsd.toString(),
+          asset.decimals,
+          '~',
+        )} USD / ${formatNumber2(totalFeeAmount, asset.decimals, '~')} ${asset.symbol.toUpperCase()}`,
         affixIcon: '',
       },
       {

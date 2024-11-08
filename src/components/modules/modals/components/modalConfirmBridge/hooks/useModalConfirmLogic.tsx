@@ -233,9 +233,11 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         gasFee,
       });
 
-    let totalFee = '0';
+    let totalFeeInUsd = '0';
     if (ethPriceInUsd) {
-      totalFee = new BigNumber(totalFeeAmount).times(ethPriceInUsd).toString();
+      totalFeeInUsd = new BigNumber(totalFeeAmount)
+        .times(ethPriceInUsd)
+        .toString();
     }
 
     return [
@@ -255,7 +257,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           tipFeeAmount,
           asset.decimals,
           '~',
-        )} ${asset.symbol.toUpperCase()}`,
+        )} ${asset.network === NETWORK_NAME.MINA ? tarAsset?.symbol.toUpperCase() : asset.symbol.toUpperCase()}`,
         affixIcon: '',
       },
       {
@@ -267,12 +269,17 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           gasFeeAmount,
           asset.decimals,
           '~',
-        )} ${asset.symbol.toUpperCase()}`,
+        )} ${asset.network === NETWORK_NAME.MINA ? tarAsset?.symbol.toUpperCase() : asset.symbol.toUpperCase()}`,
         affixIcon: '',
       },
       {
         label: 'Total Fee:',
-        value: `${formatNumber2(totalFee.toString(), asset.decimals, '~')} USD`,
+        value: `${formatNumber2(
+          totalFeeInUsd.toString(),
+          asset.decimals,
+          '~',
+        )} USD / ${formatNumber2(totalFeeAmount, asset.decimals, '~')} 
+        ${asset.network === NETWORK_NAME.MINA ? tarAsset?.symbol.toUpperCase() : asset.symbol.toUpperCase()}`,
         affixIcon: '',
       },
       {
@@ -281,7 +288,6 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           receivedAmount,
           asset.decimals,
           '~',
-          //   TODO: received WETH in case asset is ETH
         )} ${tarAsset?.symbol.toUpperCase()}`,
         affixIcon: '',
       },

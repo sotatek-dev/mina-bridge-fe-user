@@ -257,7 +257,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           tipFeeAmount,
           asset.decimals,
           '~',
-        )} ${asset.symbol.toUpperCase()}`,
+        )} ${asset.network === NETWORK_NAME.MINA ? tarAsset?.symbol.toUpperCase() : asset.symbol.toUpperCase()}`,
         affixIcon: '',
       },
       {
@@ -269,7 +269,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           gasFeeAmount,
           asset.decimals,
           '~',
-        )} ${asset.symbol.toUpperCase()}`,
+        )} ${asset.network === NETWORK_NAME.MINA ? tarAsset?.symbol.toUpperCase() : asset.symbol.toUpperCase()}`,
         affixIcon: '',
       },
       {
@@ -278,7 +278,8 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           totalFeeInUsd.toString(),
           asset.decimals,
           '~',
-        )} USD / ${formatNumber2(totalFeeAmount, asset.decimals, '~')} ${asset.symbol.toUpperCase()}`,
+        )} USD / ${formatNumber2(totalFeeAmount, asset.decimals, '~')} 
+        ${asset.network === NETWORK_NAME.MINA ? tarAsset?.symbol.toUpperCase() : asset.symbol.toUpperCase()}`,
         affixIcon: '',
       },
       {
@@ -287,7 +288,6 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           receivedAmount,
           asset.decimals,
           '~',
-          //   TODO: received WETH in case asset is ETH
         )} ${tarAsset?.symbol.toUpperCase()}`,
         affixIcon: '',
       },

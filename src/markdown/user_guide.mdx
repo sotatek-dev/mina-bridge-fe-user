@@ -1,6 +1,8 @@
 ﻿import BridgeFeeTable from '@/components/elements/bridgeFeeMdx';
 import { MDX_REDIRECT } from '@/configs/routes';
 
+**Ethereum to Mina Transfer Example**
+
 **Please note:**
 
 - It can take up to 30 minutes for WETH to be available on Auro once the bridging transaction is confirmed on Metamask
@@ -11,32 +13,33 @@ import { MDX_REDIRECT } from '@/configs/routes';
 
 ---
 
-#### 1. Wallet extension
+### 1. Wallet extension
 
 Ensure you have Metamask installed
 
-#### 2. Connect wallet
+### 2. Connect wallet
 
-After installing the wallet successfully, visit [here.](/)
+After installing the wallet successfully, visit the bridge site [here.](/)
 
 ![Home page](/user-guide/home-full.png)
 
 Click on **Connect to Wallet**.
 
-- Step 1: Click on a specific network (Ethereum), this indicates that Ethereum is their source network for tokens to be bridged.
-- Step 2: Choose Wallet (Metamask).
-- Step 3: After clicking Choose Wallet, the system will trigger your wallet to Connect Wallet. Click Confirm to Connect to our web3 application.
+- Step 1: Click on *Connect Wallet*.
+- Step 2: *Choose Network* Ethereum in this case.
+- Step 3: *Choose Wallet* Metamask for Ethereum > Mina bridging
+- Step 4: *Accept Terms of Service and privacy Policy* Ensure you are happy to proceed and have read through these
 
 ![Connect wallet modal](/user-guide/connect-wallet-390px.png)
 
-- Mina Bridge has been connected to the wallet on Metamask with Ethereum network.
+- You will see a success button once you have connected your wallet.
 
 ![Connect wallet success](/user-guide/header-full.png)
 
 - To disconnect from the bridge application, Click on Disconnect Button.
-- To change source account, you can do this through Metamask.
+- You can change the source account on Metamask.
 
-#### 3. Bridge
+### 3. Bridge Assets
 
 - _**Step 1**: Choose Assets_
 
@@ -46,25 +49,29 @@ The Mina Bridge supports only Ethereum at present though other tokens are planne
 
 You can select by clicking on the token from the list or search by typing the name of the cryptocurrency.
 
-- _**Step 2**: Choose “From” and “To” network types. The FromNetwork must be the source network, in this case Ethereum:_
+- _**Step 2**:  Input Destination Address: This is where the receiving address will be input, in this case your Mina Address._
 
 ![Form Bridge](/user-guide/form-bridge-390px.png)
 
-- **Destination Address:** This is where the receiving address will be input, in this case your Mina Address.
-
 - _**Step 3**: Enter the amount of Ethereum you wish to bridge and click Next._
 
-- _**Step 4**: Review the order details and ensure you have read the terms and conditions of the Bridge. If you are happy to proceed, Click ‘Confirm’._
+- _**Step 4**: Review the order details including the bridging and minting fees (More detail [here](/user-guide#bridging-fee)) and ensure you have read the terms and conditions of the Bridge. If you are happy to proceed, Click ‘Confirm’._
 
   ![Confirm popup](/user-guide/confirm-bridge-390px.png)
 
 - _**Step 5**: Metamask will pop up to allow you to sign the locking transaction on Ethereum and review the Ethereum Network fees. If you are happy to proceed, hit “confirm” on Metamask - the transaction will appear on Metamask as processing and then confirmed._
 
-- _**Step 6**: After the transaction has been confirmed, you will be able to track its progress via the Bridge’s history screen. This allows you to drill into the source and destination transactions via EtherScan and MinaScan._
+- _**Step 6**: After the transaction has been confirmed, you will be able to track its progress via the Bridge’s [History Page](/history). This allows you to drill into the source and destination transactions via EtherScan and MinaScan._
 
 ![Order History](/user-guide/history-full.png)
 
-#### 4. History Page
+### 4. Bridging complete
+
+Success! Once the transaction is completed, you will see your WETH available on your Auro wallet
+
+**Additional Information**
+
+#### History Page
 
 _List of statuses:_
 
@@ -74,7 +81,7 @@ _List of statuses:_
 
 - **Success**: Bridging transaction is complete and your WETH is available on Auro.
 
-#### 5. Proof of Asset
+#### Proof of Asset
 
 [Proof of Asset](/proof-of-asset)
 
@@ -92,6 +99,6 @@ For example, if you want to transfer 100 ETH from Ethereum to Mina using a bridg
 The proof of asset mechanism ensures a balance and trust between different blockchain networks, reducing the risk of fraud and increasing transparency.
 
 <div id={MDX_REDIRECT}></div>
-#### 6. Bridging Fees
+#### Bridging Fees
 
 <BridgeFeeTable />

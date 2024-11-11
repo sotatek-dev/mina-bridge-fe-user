@@ -6,8 +6,18 @@ import { getPxFromUrl } from '@/helpers/common';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
+    strong: ({ children }) => (
+      <Text display={'inline-block'} color={'text.700'}>
+        {children}
+      </Text>
+    ),
     h4: ({ children }) => (
       <Heading as={'h4'} variant={'h4'} color={'text.700'}>
+        {children}
+      </Heading>
+    ),
+    h3: ({ children }) => (
+      <Heading as={'h3'} variant={'h3'} color={'text.700'}>
         {children}
       </Heading>
     ),

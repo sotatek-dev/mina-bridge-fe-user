@@ -1,51 +1,51 @@
 /* eslint-disable react/no-unescaped-entities */
-import { Table, Thead, Tbody, Tr, Th, Td, Box, Text } from '@chakra-ui/react';
+import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { useMemo } from 'react';
 
 import useWindowSize from '@/hooks/useWindowSize';
 
 const TableEthToMinaRows = [
   {
-    label: 'ETH Lock',
-    amount: 'variable',
+    label: 'ETH Lock \nCharge for lock transaction\'s gas fee',
+    amount: 'Variable (ETH)',
     calculation: 'Eth network gas fee',
   },
   {
-    label: 'Bridge Fee',
+    label: 'Bridge Fee \nBridge operators fee',
     amount: '0.00%',
     calculation: 'By Bridge Operator',
   },
   {
-    label: 'Mina Mint',
-    amount: '0.000001',
-    calculation: 'Fixed fee - currently 0.000001 ETH',
+    label: 'Mina Mint \nCharge to cover minting transaction’s gas fee.',
+    amount: '0.000001 ETH',
+    calculation: 'Fixed fee can be updated by Bridge Operator depending on network cost',
   },
 ];
 const TableEthToMinaFeeSource = [
-  "Eth Account (Metamask) - Taken from transaction total on Metamask when txn confirmed.\nCharge for lock transaction's gas fee.",
-  'Eth Account (Metamask) - Taken from transaction total on Metamask when txn confirmed.\nBridge Fee: Charge for system fee.\nMina Mint: Charge for minting transaction’s gas fee.',
+  'Eth Account (Metamask) - Taken from transaction total on Metamask when txn confirmed.',
+  'Eth Account (Metamask) - Taken from transaction total on Metamask when txn confirmed.',
 ];
 const TableMinaToEthRows = [
   {
-    label: 'Mina Burn',
-    amount: 'variable',
+    label: 'Mina Burn \nCharge for burn transaction on Mina',
+    amount: 'Variable (Mina)',
     calculation: 'Mina Network fee',
   },
   {
-    label: 'Bridge Fee',
+    label: 'Bridge Fee \nBridge operators fee',
     amount: '0.00%',
     calculation: 'By Bridge Operator',
   },
   {
-    label: 'Eth Unlock',
+    label: 'Eth Unlock \nCharge for unlock ETH transaction’s gas fee.',
     amount: '0.00001',
     calculation: 'Fixed fee - currently 0.00001 ETH',
   },
 ];
 
 const TableMinaToEthFeeSource = [
-  "Auro wallet - Taken from user's Wallet on txn confirm Charge for lock transaction's gas fee.",
-  'Taken from transaction total (ETH amount unlocked).\nBridge Fee: Bridge Operators fee, Charge for system fee.\nETH Unlock: Charge for unlock ETH transaction’s gas fee.',
+  "Auro wallet - Taken from user's Wallet on txn confirm.",
+  'Taken from transaction total (ETH amount unlocked).',
 ];
 
 type TableProps = {
@@ -76,7 +76,7 @@ const BridgeTable = ({ title, rows, feeSource }: TableProps) => (
           textTransform={'unset'}
           w={'15%'}
         >
-          Amount (ETH)
+          Amount
         </Th>
         <Th
           border={'1px solid'}

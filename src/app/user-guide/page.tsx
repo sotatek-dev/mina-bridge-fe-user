@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useMDXComponents } from '../mdx-components';
 
 import { MDX_REDIRECT } from '@/configs/routes';
+import AdditionalInformation from '@/markdown/additional_information.mdx';
 import Introduction from '@/markdown/introduction.mdx';
 import UserGuideContent from '@/markdown/user_guide.mdx';
 
@@ -79,6 +80,21 @@ export default function UserGuide() {
           </Heading>
           <Box bg={'background.modal'} p={{ base: '20px', md: '24px 40px' }}>
             <UserGuideContent />
+          </Box>
+        </Box>
+        <Box>
+          <Heading
+            as={'h2'}
+            variant={'h1'}
+            fontSize={{ base: '32px', md: '40px' }}
+            mb={'30px'}
+            mt={'40px'}
+            color={'text.900'}
+          >
+            Additional Information
+          </Heading>
+          <Box bg={'background.modal'} p={{ base: '20px', md: '24px 40px' }}>
+            <AdditionalInformation />
           </Box>
         </Box>
       </VStack>

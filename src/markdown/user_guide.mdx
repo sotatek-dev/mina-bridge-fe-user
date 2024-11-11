@@ -1,7 +1,4 @@
-﻿import BridgeFeeTable from '@/components/elements/bridgeFeeMdx';
-import { MDX_REDIRECT } from '@/configs/routes';
-
-**Ethereum to Mina Transfer Example**
+﻿### **Ethereum to Mina Transfer Example**
 
 **Please note:**
 
@@ -68,37 +65,3 @@ You can select by clicking on the token from the list or search by typing the na
 ### 4. Bridging complete
 
 Success! Once the transaction is completed, you will see your WETH available on your Auro wallet
-
-**Additional Information**
-
-#### History Page
-
-_List of statuses:_
-
-- **ETH Locked**: Your source funds have been locked on Ethereum allowing for minting of WETH on Mina.
-
-- **Minting WETH in Mina network**: You WETH is now being minted on the Mina Network.
-
-- **Success**: Bridging transaction is complete and your WETH is available on Auro.
-
-#### Proof of Asset
-
-[Proof of Asset](/proof-of-asset)
-
-Proof of Asset in Bridge Token Multi-Chain is a mechanism used to ensure that each token created or transferred across different blockchains is backed by a corresponding asset. It helps maintain the integrity and value of the tokens as they move between various blockchain networks.
-
-Here's how proof of asset works in a multi-chain bridge token system:
-
-1. Locking the original asset: When a user wants to transfer tokens from one blockchain to another (e.g., from Ethereum to Binance Smart Chain), the bridge system locks the equivalent amount of tokens on the original blockchain. This ensures that the tokens being transferred to the new chain are properly backed and prevents the creation of unbacked tokens.
-2. Minting tokens on the new chain: After the original assets are locked on the first blockchain, an equivalent amount of tokens is minted on the new blockchain. These newly minted tokens represent the locked assets from the original chain.
-3. Proof of Asset: The system provides proof that the amount of newly minted tokens on the new blockchain is backed by the corresponding assets locked on the original blockchain. This information is usually recorded on the blockchain to ensure transparency and trust.
-4. Redeeming (returning assets): When a user wants to transfer the tokens back to the original blockchain, the system will burn the equivalent tokens on the new blockchain and unlock the corresponding assets on the original chain.
-
-For example, if you want to transfer 100 ETH from Ethereum to Mina using a bridge, the system will lock 100 ETH on Ethereum and mint an equivalent amount of 100 WETH (minus fees) on Mina. When you redeem the tokens, the ETH on Mina will be burned, and the 100 ETH (minus fees) on Ethereum will be unlocked for your use.
-
-The proof of asset mechanism ensures a balance and trust between different blockchain networks, reducing the risk of fraud and increasing transparency.
-
-<div id={MDX_REDIRECT}></div>
-#### Bridging Fees
-
-<BridgeFeeTable />

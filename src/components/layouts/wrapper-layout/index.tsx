@@ -62,7 +62,7 @@ function WrapperLayout({ children }: Props) {
       {isInitializing || !isClient ? (
         <LoadingWithText
           id={'zk_contract_initialize_loading'}
-          label={'Waiting for initialize instances'}
+          label={'Loading'}
         />
       ) : (
         <>

@@ -45,6 +45,7 @@ function WrapperLayout({ children }: Props) {
 
   useEffect(() => {
     setIsClient(true);
+    console.log('🚀 ~ Client side render successfully!');
   }, []);
 
   useEffect(() => {

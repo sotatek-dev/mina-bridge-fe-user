@@ -22,6 +22,7 @@ import { IsServer } from '@/constants';
 import { handleRequest } from '@/helpers/asyncHandlers';
 import { fromWei } from '@/helpers/common';
 import { getWeb3Instance } from '@/helpers/evmHandlers';
+import { store } from '@/store';
 import { TokenType } from '@/store/slices/persistSlice';
 
 export type WalletMetamaskEvents =
@@ -85,14 +86,10 @@ export default class WalletMetamask extends Wallet {
     if (IsServer) {
       throw new Error('Server rendering error');
     }
-    // const metadata = store.getState().walletObj.metamask;
-    // if (!metadata.isInjected)
-    //   throw new Error(this.errorList.WALLET_NOT_INSTALLED);
-    // return metadata.ethereum!!;
-    if (!window || !window?.ethereum) {
+    const metadata = store.getState().walletObj.metamask;
+    if (!metadata.isInjected)
       throw new Error(this.errorList.WALLET_NOT_INSTALLED);
-    }
-    return window.ethereum;
+    return metadata.ethereum!!;
   }
 
   getProvider() {

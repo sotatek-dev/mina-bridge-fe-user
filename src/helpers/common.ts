@@ -23,6 +23,7 @@ export const toWei = (
   decimal = typeof decimal === 'number' ? decimal : parseInt(decimal);
   return new BigNumber(amount)
     .multipliedBy(new BigNumber('1' + '0'.repeat(decimal)))
+    .integerValue(BigNumber.ROUND_HALF_UP)
     .toString();
 };
 

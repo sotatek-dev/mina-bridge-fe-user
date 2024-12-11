@@ -1,10 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import ITV from '@/configs/time';
 import { getWalletObjSlice, useAppDispatch, useAppSelector } from '@/store';
 import { walletObjSliceActions } from '@/store/slices/walletObjSlice';
 
 const maxIntervalPeriod = 5000;
+const ANNOUNCE_PROVIDER_EVENT = 'eip6963:announceProvider';
+const REQUEST_PROVIDER_EVENT = 'eip6963:requestProvider';
 
 export default function useWeb3Injected() {
   const dispatch = useAppDispatch();
@@ -14,20 +16,34 @@ export default function useWeb3Injected() {
 
   // Multi inject provider (Metamask / Trust wallet / ...)
   useEffect(() => {
-    window.addEventListener('eip6963:announceProvider', (event: any) => {
+    const handleProvider = (event: any) => {
       const provider = event.detail.provider;
 
-      if (provider.isMetaMask) {
-        console.log('🚀 ~ Exist metamask inject provider!');
-        dispatch(walletObjSliceActions.injectMetamask({ ethereum: provider }));
+      if (
+        provider.isPhantom ||
+        provider.isRabby ||
+        provider.isTrust ||
+        provider.isCoinbaseWallet ||
+        provider.isStarKeyWallet ||
+        provider.isRainbow ||
+        provider.isBraveWallet ||
+        provider.isOpera
+      ) {
+        return;
       }
-      if (provider.isTrust) {
-        console.log('🚀 ~ Exist trustwallet inject provider!');
-        // Using trustwallet inject provider
-      }
-    });
 
-    window.dispatchEvent(new Event('eip6963:requestProvider'));
+      if (provider.isMetaMask) {
+        console.log('🚀 ~ Exist metamask inject provider! ~:', provider);
+        dispatch(walletObjSliceActions.injectMetamask({ ethereum: provider }));
+        return;
+      }
+    };
+    window.addEventListener(ANNOUNCE_PROVIDER_EVENT, handleProvider);
+    window.dispatchEvent(new Event(REQUEST_PROVIDER_EVENT));
+
+    return () => {
+      window.removeEventListener('eip6963:announceProvider', handleProvider);
+    };
   }, []);
 
   //   Detecting web3 or ethereum injected

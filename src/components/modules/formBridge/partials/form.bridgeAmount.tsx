@@ -106,10 +106,14 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     [asset, assetRange, dailyQuota]
   );
 
-  async function estimateFee() {
+  async function estimateFee(isRefresh = false) {
     if (!nwProvider || !address || !asset || !srcNetwork) return '0';
 
-    if (lastNetworkFee && lastNetworkFee[srcNetwork.name].timestamp > 0) {
+    if (
+      !isRefresh &&
+      lastNetworkFee &&
+      lastNetworkFee[srcNetwork.name].timestamp > 0
+    ) {
       const nwFee = lastNetworkFee[srcNetwork.name];
       if (
         nwFee.timestamp &&
@@ -130,13 +134,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10
     );
     const amountBN = new BigNumber(gasAmount.toString());
-    console.log('Estimate Fee: ', {
-      gasPrice: gasPrice.toString(),
-      priceRatio: process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO,
-      priceBN: priceBN.toString(),
-      value: fromWei(amountBN.multipliedBy(priceBN).toString(), asset.decimals),
-      asset,
-    });
+    // console.log('🚀 ~ checkCurrentDecimals:', asset.decimals);
     updateStatus('isLoading', false);
     dispatch(
       persistSliceActions.setLastNwFee({
@@ -382,7 +380,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     }
     switch (srcNetwork.type) {
       case NETWORK_TYPE.EVM:
-        estimateFee();
+        estimateFee(true);
         itvFetchEVMFee.current = setInterval(estimateFee, ITV.S10); // 10 seconds
         return () => {
           clearInterval(itvFetchEVMFee.current);
@@ -392,7 +390,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       default:
         break;
     }
-  }, [srcNetwork, nwProvider, address, asset, lastNetworkFee]);
+  }, [asset]);
 
   return (
     <VStack w={'full'} align={'flex-start'} gap={'4px'} {...props}>

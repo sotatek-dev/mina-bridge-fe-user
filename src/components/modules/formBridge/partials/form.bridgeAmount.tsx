@@ -381,11 +381,11 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     switch (srcNetwork.type) {
       case NETWORK_TYPE.EVM:
         estimateFee(true);
-        itvFetchEVMFee.current = setInterval(estimateFee, ITV.S10); // 10 seconds
-        return () => {
-          clearInterval(itvFetchEVMFee.current);
-          itvFetchEVMFee.current = null;
-        };
+      // itvFetchEVMFee.current = setInterval(estimateFee, ITV.S10); // 10 seconds
+      // return () => {
+      //   clearInterval(itvFetchEVMFee.current);
+      //   itvFetchEVMFee.current = null;
+      // };
 
       default:
         break;

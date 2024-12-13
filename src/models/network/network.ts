@@ -133,7 +133,7 @@ export const EVM_CHAINS_METADATA: Record<
     chainName: 'sepolia',
     provider: {
       type: PROVIDER_TYPE.HTTPS,
-      uri: 'https://ethereum-sepolia.blockpi.network/v1/rpc/public',
+      uri: 'https://ethereum-sepolia-rpc.publicnode.com',
     },
     scanUrl: 'https://sepolia.etherscan.io',
   },
@@ -195,7 +195,7 @@ export const getZKChainIdName = (chainId: string): string => {
     default:
       return chainId;
   }
-}
+};
 
 // default export
 type Network =

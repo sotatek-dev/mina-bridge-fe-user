@@ -5,6 +5,7 @@ import {
   Flex,
   HStack,
   Image,
+  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
@@ -161,17 +162,13 @@ export default function DisplayBalance({
         : {})}
     >
       <VStack alignItems={'flex-start'} mr={'auto'} gap={'4px'}>
-        <Text variant={'xl_semiBold'} color={'text.900'}>
-          {/*<NumericFormat*/}
-          {/*  value={balance}*/}
-          {/*  thousandSeparator={','}*/}
-          {/*  decimalScale={4}*/}
-          {/*  decimalSeparator={'.'}*/}
-          {/*  displayType={'text'}*/}
-          {/*  renderText={(value) => value + ' '}*/}
-          {/*/>*/}
-          {`${formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)} ${asset.symbol}`}
-        </Text>
+        {balance === '' ? (
+          <Skeleton w={'100px'} h={'24px'} />
+        ) : (
+          <Text variant={'xl_semiBold'} color={'text.900'}>
+            {`${formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)} ${asset.symbol}`}
+          </Text>
+        )}
 
         <Flex
           flexDir={{ base: 'column', md: 'row' }}

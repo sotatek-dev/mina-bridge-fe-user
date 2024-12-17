@@ -1,6 +1,8 @@
 'use client';
 import { Heading } from '@chakra-ui/react';
-import { useEffect, useRef } from 'react';
+import { max } from 'lodash';
+import moment from 'moment';
+import { useEffect, useMemo, useRef } from 'react';
 import web3 from 'web3';
 
 import NetworkEthereum from '../../../../models/network/network.ethereum';
@@ -11,7 +13,13 @@ import { handleRequest } from '@/helpers/asyncHandlers';
 import { formatNumber, fromWei } from '@/helpers/common';
 import NetworkMina from '@/models/network/network.mina';
 import usersService from '@/services/usersService';
-import { getWalletSlice, useAppSelector } from '@/store';
+import {
+  getPreviewDQSlice,
+  getWalletSlice,
+  useAppDispatch,
+  useAppSelector,
+} from '@/store';
+import { previewDQSliceActions } from '@/store/slices/previewDailyQuotalSlice';
 
 const initialData: DailyQuota = {
   max: '0',
@@ -25,6 +33,26 @@ export default function FormDailyQuota() {
   const { address } = useAppSelector(getWalletSlice);
   const { dailyQuota, asset } = useFormBridgeState().state;
   const { updateQuota } = useFormBridgeState().methods;
+  const { previewDQs } = useAppSelector(getPreviewDQSlice);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (previewDQs.length === 0) return;
+    const storeDate = 'previewDQs[0].updatedAt';
+    const isNotToday = !moment(storeDate).isSame(moment(), 'day');
+    if (isNotToday) {
+      dispatch(previewDQSliceActions.updatePreviewDQ([]));
+    }
+  }, []);
+
+  const previewDQ = useMemo(() => {
+    if (!previewDQs) return 0;
+    const findPreviewDQ = previewDQs.find(
+      (item: { address: string }) => item.address === address
+    );
+    if (!findPreviewDQ) return 0;
+    return Number(findPreviewDQ.value);
+  }, [previewDQs, address]);
 
   const interval = useRef<any>(null);
 
@@ -42,14 +70,14 @@ export default function FormDailyQuota() {
     }
 
     const [res, error] = await handleRequest(
-      usersService.getDailyQuota({ address }),
+      usersService.getDailyQuota({ address })
     );
     if (error || !res) return updateQuota({ ...initialData });
     return updateQuota({
       max: formatNumber(res.dailyQuota.dailyQuota, 4),
       current: formatNumber(
         fromWei(`${res.totalAmountOfToDay}`, decimal),
-        asset!!.decimals,
+        asset!!.decimals
       ),
       asset: res.dailyQuota.asset,
     });
@@ -78,8 +106,9 @@ export default function FormDailyQuota() {
         textAlign={'center'}
       >
         Daily quota {dailyQuota.max} {dailyQuota.asset} per address (
-        {dailyQuota.current} {dailyQuota.asset} / {dailyQuota.max}{' '}
-        {dailyQuota.asset})
+        {max([Number(dailyQuota.current), previewDQ])} {dailyQuota.asset} /{' '}
+        {dailyQuota.max} {dailyQuota.asset}){' '}
+        {previewDQ > Number(dailyQuota.current) && 'Pending'}
       </Heading>
     )
   );

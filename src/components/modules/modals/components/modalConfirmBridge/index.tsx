@@ -21,9 +21,21 @@ import CustomModal, { ModalTitle } from '@/components/elements/customModal';
 import Loading from '@/components/elements/loading/spinner';
 import { MODAL_NAME } from '@/configs/modal';
 import ROUTES, { MDX_REDIRECT } from '@/configs/routes';
+import { handleRequest } from '@/helpers/asyncHandlers';
+import { formatNumber, fromWei } from '@/helpers/common';
 import useNotifier from '@/hooks/useNotifier';
 import { NETWORK_NAME } from '@/models/network';
-import { useAppDispatch } from '@/store';
+import usersService from '@/services/usersService';
+import {
+  getPreviewDQSlice,
+  getWalletSlice,
+  useAppDispatch,
+  useAppSelector,
+} from '@/store';
+import {
+  PreviewDQ,
+  previewDQSliceActions,
+} from '@/store/slices/previewDailyQuotalSlice';
 import BridgeIcon from '@public/assets/icons/icon.bridge.next.svg';
 
 export default function ModalConfirmBridge() {
@@ -41,6 +53,8 @@ export default function ModalConfirmBridge() {
   } = useModalSNLogic({
     modalName: MODAL_NAME.CONFIRM_BRIDGE,
   });
+  const { address, asset } = useAppSelector(getWalletSlice);
+  const { previewDQs } = useAppSelector(getPreviewDQSlice);
   const { sendNotification } = useNotifier();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -56,7 +70,7 @@ export default function ModalConfirmBridge() {
   const isDefault = useMemo(() => status === MODAL_CF_STATUS.IDLE, [status]);
   const isInitializing = useMemo(
     () => status === MODAL_CF_STATUS.INITIALIZE,
-    [status],
+    [status]
   );
   const isLoading = useMemo(() => status === MODAL_CF_STATUS.LOADING, [status]);
   const hasError = useMemo(() => status === MODAL_CF_STATUS.ERROR, [status]);
@@ -78,6 +92,57 @@ export default function ModalConfirmBridge() {
     // );
     window.open(`${ROUTES.USER_GUIDE}#${MDX_REDIRECT}`, '_blank');
   };
+
+  const updatePreviewQuotal = async () => {
+    if (!address || !asset) return;
+
+    const [res, error] = await handleRequest(
+      usersService.getDailyQuota({ address })
+    );
+    if (error || !res) return;
+
+    const formatDQ = formatNumber(
+      fromWei(`${res.totalAmountOfToDay}`, asset.decimals),
+      asset.decimals
+    );
+
+    const findPreviewDQ = previewDQs.find(
+      (item: { address: string }) => item.address === address
+    );
+    if (findPreviewDQ) {
+      const filterPreviewDQ = previewDQs.filter(
+        (item: { address: string }) => item.address !== address
+      );
+      const newPreviewDQ: PreviewDQ = {
+        address,
+        updatedAt: new Date().toISOString(),
+        value: String(
+          Number(findPreviewDQ.value) + Number(modalPayload?.amount)
+        ),
+      };
+      dispatch(
+        previewDQSliceActions.updatePreviewDQ([
+          ...filterPreviewDQ,
+          newPreviewDQ,
+        ])
+      );
+    } else {
+      const newPreviewDQ: PreviewDQ = {
+        address,
+        updatedAt: new Date().toISOString(),
+        value: String(Number(formatDQ) + Number(modalPayload?.amount)),
+      };
+      dispatch(
+        previewDQSliceActions.updatePreviewDQ([...previewDQs, newPreviewDQ])
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      updatePreviewQuotal();
+    }
+  }, [isSuccess]);
 
   const contentRendered = useMemo(() => {
     switch (true) {

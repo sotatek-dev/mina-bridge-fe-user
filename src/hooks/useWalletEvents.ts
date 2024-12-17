@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef } from 'react';
+import Web3 from 'web3';
 
 import { Network } from '@/models/network';
 import {
@@ -15,6 +16,7 @@ import {
 import {
   getUISlice,
   getWalletInstanceSlice,
+  getWalletObjSlice,
   getWalletSlice,
   useAppDispatch,
   useAppSelector,
@@ -24,10 +26,13 @@ import { walletSliceActions } from '@/store/slices/walletSlice';
 
 export default function useWalletEvents() {
   const { walletInstance, networkInstance } = useAppSelector(
-    getWalletInstanceSlice,
+    getWalletInstanceSlice
   );
 
   const { walletKey, networkName } = useAppSelector(getWalletSlice);
+  const {
+    metamask: { ethereum },
+  } = useAppSelector(getWalletObjSlice);
   const { banners } = useAppSelector(getUISlice);
   const dispatch = useAppDispatch();
   const chainChangedRef = useRef<any>(null);
@@ -50,13 +55,13 @@ export default function useWalletEvents() {
           payload: {
             chainId: curChain,
           },
-        }),
+        })
       );
 
     return dispatch(
       uiSliceActions.closeBanner({
         bannerName: BANNER_NAME.UNMATCHED_CHAIN_ID,
-      }),
+      })
     );
   }
 
@@ -67,7 +72,7 @@ export default function useWalletEvents() {
     if (chainChangedRef.current) {
       walletInstance.removeListener(
         WALLET_EVENT_NAME.CHAIN_CHANGED,
-        chainChangedRef.current,
+        chainChangedRef.current
       );
       chainChangedRef.current = null;
     }
@@ -81,7 +86,12 @@ export default function useWalletEvents() {
       handler(accounts) {
         if (isSnap) return;
         if (accounts && accounts.length > 0) {
-          return dispatch(walletSliceActions.updateAccount(accounts[0]));
+          let address = accounts[0];
+          if (walletKey === WALLET_NAME.METAMASK) {
+            const web3 = new Web3(ethereum);
+            address = web3.utils.toChecksumAddress(accounts[0]);
+          }
+          return dispatch(walletSliceActions.updateAccount(address));
         }
         return dispatch(walletSliceActions.disconnect());
       },
@@ -105,7 +115,7 @@ export default function useWalletEvents() {
               ? chainId.toLowerCase() !== networkInstance.src.metadata.chainId
               : chainId.toLowerCase() !==
                 getZKChainIdName(
-                  networkInstance.src.metadata.chainId,
+                  networkInstance.src.metadata.chainId
                 ).toLowerCase()
           )
             return dispatch(
@@ -114,17 +124,17 @@ export default function useWalletEvents() {
                 payload: {
                   chainId,
                 },
-              }),
+              })
             );
 
           return dispatch(
             uiSliceActions.closeBanner({
               bannerName: BANNER_NAME.UNMATCHED_CHAIN_ID,
-            }),
+            })
           );
         },
       },
-      isSnap ? networkInstance.src.type : undefined,
+      isSnap ? networkInstance.src.type : undefined
     );
     walletInstance.addListener({
       eventName: WALLET_EVENT_NAME.DISCONNECT,
@@ -147,7 +157,7 @@ export default function useWalletEvents() {
       walletInstance.removeListener(
         WALLET_EVENT_NAME.CHAIN_CHANGED,
         isSnap ? networkInstance.src?.type : undefined,
-        isSnap ? chainChangedRef.current : undefined,
+        isSnap ? chainChangedRef.current : undefined
       );
       chainChangedRef.current = null;
       walletInstance.removeListener(WALLET_EVENT_NAME.DISCONNECT);

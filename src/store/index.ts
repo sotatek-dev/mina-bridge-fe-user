@@ -13,7 +13,6 @@ import storage from 'redux-persist/lib/storage';
 
 import rootReducer from './slices';
 
-
 export type RootState = ReturnType<typeof rootReducer>;
 
 const persistConfig = {
@@ -63,3 +62,4 @@ export const getWalletSlice = (state: RootState) => state.wallet;
 export const getWalletObjSlice = (state: RootState) => state.walletObj;
 export const getWalletInstanceSlice = (state: RootState) =>
   state.walletInstance;
+export const getPreviewDQSlice = (state: RootState) => state.previewDQsStore;

@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import exampleSliceReducer from './exampleSlice';
 import persistSlice from './persistSlice';
+import previewDQSlice from './previewDailyQuotalSlice';
 import uiSlice from './uiSlice';
 import walletInstanceSlice from './walletInstanceSlice';
 import walletObjSlice from './walletObjSlice';
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   wallet: walletSlice,
   walletObj: walletObjSlice,
   walletInstance: walletInstanceSlice,
+  previewDQsStore: previewDQSlice,
 });
 
 export default rootReducer;

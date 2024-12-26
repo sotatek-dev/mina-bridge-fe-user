@@ -1,18 +1,20 @@
 'use client';
-import { Flex, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 
 import { useFormBridgeState } from '../context';
 
 import { MODAL_NAME } from '@/configs/modal';
-import { useAppDispatch } from '@/store';
+import { getWalletSlice, useAppDispatch, useAppSelector } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
 import { NETWORK_KEY } from '@/store/slices/walletSlice';
+import ArrowDownIcon from '@public/assets/icons/icon.arrow.down.svg';
 
 type Props = { label: string; networkKey: NETWORK_KEY };
 
 export default function NetworkCard({ label, networkKey }: Props) {
   const dispatch = useAppDispatch();
+  const { isConnected } = useAppSelector(getWalletSlice);
 
   const { status, srcNetwork, tarNetwork } = useFormBridgeState().state;
 
@@ -101,12 +103,13 @@ export default function NetworkCard({ label, networkKey }: Props) {
               Select Network
             </Text>
           )}
-          <Image
-            ml={'auto'}
-            w={'22px'}
-            h={'22px'}
-            src={'/assets/icons/icon.arrow.down.purple.svg'}
-          />
+          <Box ml={'auto'}>
+            <ArrowDownIcon
+              color={isConnected ? 'var(--primary-purple)' : 'var(--text-200)'}
+              height={'22'}
+              width={'22'}
+            />
+          </Box>
         </HStack>
       </VStack>
     </Flex>

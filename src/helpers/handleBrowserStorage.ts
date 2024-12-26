@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN } from '@/configs/constants';
+import { ACCESS_TOKEN, TERMS_OF_USE } from '@/configs/constants';
 
 export default class StorageUtils {
   static setItem(key: string, value: string) {
@@ -22,5 +22,13 @@ export default class StorageUtils {
 
   static getToken() {
     return StorageUtils.getItem(ACCESS_TOKEN, '');
+  }
+
+  static setAcceptTermsOfUse(value = '') {
+    StorageUtils.setItem(TERMS_OF_USE, value);
+  }
+
+  static getAcceptTermsOfUse() {
+    return StorageUtils.getItem(TERMS_OF_USE, '');
   }
 }

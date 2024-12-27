@@ -28,8 +28,8 @@ import { handleRequest } from '@/helpers/asyncHandlers';
 import { formatNumber, fromWei, zeroCutterStart } from '@/helpers/common';
 import { getWeb3Instance } from '@/helpers/evmHandlers';
 import useNotifier from '@/hooks/useNotifier';
-import Network, { NETWORK_TYPE } from '@/models/network/network';
-import { Wallet } from '@/models/wallet';
+import Network, { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
+import { Wallet, WALLET_NAME, WalletAuro } from '@/models/wallet';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
@@ -50,7 +50,12 @@ type Props = {} & Pick<StackProps, ChakraBoxSizeProps>;
 const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   type ErrorType = keyof typeof ErrorList | null;
   const dispatch = useAppDispatch();
-  const { address, isConnected } = useAppSelector(getWalletSlice);
+  const {
+    address,
+    isConnected,
+    walletKey,
+    asset: assetWallet,
+  } = useAppSelector(getWalletSlice);
   const { walletInstance, networkInstance } = useAppSelector(
     getWalletInstanceSlice
   );
@@ -72,7 +77,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
 
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState<ErrorType>(null);
-  // const [isFetchingBalance, setIsFetchingBalance] = useState<boolean>(false);
+  const [isInsufficient, setIsInsufficient] = useState(false);
 
   // timeout
   const throttleInput = useRef<any>(null);
@@ -91,17 +96,11 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     () => ({
       required: 'This field is required',
       insufficient_fund: 'Insufficient balance',
-      reach_min: `You have to bridge at least ${assetRange[0]} ${
-        asset?.symbol || ''
-      }`,
-      reach_max: `You can only bridge maximum ${assetRange[1]} ${
-        asset?.symbol || ''
-      }`,
+      reach_min: `You have to bridge at least ${assetRange[0]} ${asset?.symbol || ''}`,
+      reach_max: `You can only bridge maximum ${assetRange[1]} ${asset?.symbol || ''}`,
       insufficient_fund_fee:
         'Transaction can’t be made because of insufficient balance for transfer fee',
-      insufficient_daily_quota: `You can only bridge ${dailyQuota.max} ${
-        asset?.symbol || ''
-      } per address daily`,
+      insufficient_daily_quota: `You can only bridge ${dailyQuota.max} ${asset?.symbol || ''} per address daily`,
     }),
     [asset, assetRange, dailyQuota]
   );
@@ -392,6 +391,32 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     }
   }, [asset]);
 
+  useEffect(() => {
+    const getNativeBalance = async () => {
+      const balance = await (walletInstance as WalletAuro)?.getNativeBalance(
+        networkInstance?.src as Network,
+        address as string,
+        assetWallet as TokenType
+      );
+      setIsInsufficient(
+        new BigNumber(balance).lt(process.env.NEXT_PUBLIC_MINA_GAS_FEE || 0.1)
+      );
+    };
+
+    if (
+      isConnected &&
+      assetWallet?.network === NETWORK_NAME.MINA &&
+      networkInstance?.src?.name === NETWORK_NAME.MINA &&
+      walletInstance?.name === WALLET_NAME.AURO
+    ) {
+      getNativeBalance();
+    }
+
+    if (assetWallet?.network === NETWORK_NAME.ETHEREUM) {
+      setIsInsufficient(false);
+    }
+  }, [assetWallet, address, walletInstance, isConnected]);
+
   return (
     <VStack w={'full'} align={'flex-start'} gap={'4px'} {...props}>
       <Text variant={'lg_medium'} m={'0'}>
@@ -434,25 +459,60 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
         </Text>
       ) : null}
       {status.isConnected ? (
-        <HStack>
-          <Text variant={'md'} color={'text.500'}>
-            Available:{' '}
-            {asset &&
-              formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)}{' '}
-            {(asset?.symbol.toUpperCase() || '') + ' '}
-            Tokens
-          </Text>
-          {isFetchingBalance && (
-            <Loading
-              id={'bridge-amount-loading'}
-              bgOpacity={0}
-              w={'15px'}
-              h={'15px'}
-              spinnerSize={15}
-              spinnerThickness={8}
-            />
+        <VStack alignItems={'flex-start'} gap={0}>
+          <HStack>
+            <Text variant={'md'} color={'text.500'}>
+              Available:{' '}
+              {asset &&
+                formatNumber(
+                  balance,
+                  asset.decimals,
+                  BigNumber.ROUND_DOWN
+                )}{' '}
+              {(asset?.symbol.toUpperCase() || '') + ' '}
+              Tokens
+            </Text>
+            {isFetchingBalance && (
+              <Loading
+                id={'bridge-amount-loading'}
+                bgOpacity={0}
+                w={'15px'}
+                h={'15px'}
+                spinnerSize={15}
+                spinnerThickness={8}
+              />
+            )}
+
+            {/* <Text
+              variant={'md'}
+              color={'red.500'}
+              display={'flex'}
+              alignItems={'center'}
+              gap={'8px'}
+            >
+              <Text color={'text.500'}>{' - '}</Text>Insufficient balance
+            </Text> */}
+          </HStack>
+          {walletKey === WALLET_NAME.AURO && (
+            <HStack>
+              <Text variant={'md'} color={'text.500'}>
+                {`Gas fee: ${process.env.NEXT_PUBLIC_MINA_GAS_FEE || 0.1} MINA Tokens`}
+              </Text>
+
+              {isInsufficient && (
+                <Text
+                  variant={'md'}
+                  color={'red.500'}
+                  display={'flex'}
+                  alignItems={'center'}
+                  gap={'8px'}
+                >
+                  <Text color={'text.500'}> - </Text>Insufficient for gas{' '}
+                </Text>
+              )}
+            </HStack>
           )}
-        </HStack>
+        </VStack>
       ) : null}
     </VStack>
   );

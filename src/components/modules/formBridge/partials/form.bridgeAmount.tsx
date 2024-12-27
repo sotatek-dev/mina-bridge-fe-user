@@ -133,6 +133,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10
     );
     const amountBN = new BigNumber(gasAmount.toString());
+    // console.log('🚀 ~ checkCurrentDecimals:', asset.decimals);
     updateStatus('isLoading', false);
     dispatch(
       persistSliceActions.setLastNwFee({

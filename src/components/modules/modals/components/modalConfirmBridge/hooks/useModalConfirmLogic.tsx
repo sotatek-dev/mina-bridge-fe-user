@@ -7,6 +7,7 @@ import ROUTES from '@/configs/routes';
 import { IsServer } from '@/constants';
 import { handleRequest } from '@/helpers/asyncHandlers';
 import {
+  countExpectedTimes,
   formatNumber,
   formatNumber2,
   fromWei,
@@ -71,6 +72,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   const [ethPriceInUsd, setEthPriceInUsd] = useState<string>('');
   const [supportedPairs, setSupportedPairs] =
     useState<GetListSpPairsResponse | null>(null);
+  const [expectedTimes, setExpectedTimes] = useState<string>('');
 
   const priceUsdInterval = useRef<null | NodeJS.Timeout>(null);
 
@@ -678,7 +680,22 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       );
       setSupportedPairs(listPair);
     })();
-  }, []);
+  }, []); 
+  
+  useEffect(() => {
+    if (!modalPayload || !curModal.isOpen) return;
+    const pair = supportedPairs?.find(
+      (v) => `${v.id}` === `${asset?.pairId || ''}`,
+    );
+    if (!pair) return;
+
+    (async () => {
+      const [expectedTimesRes, error] = await handleRequest(
+        usersService.getExpectedTimes({ network: pair.toChain }),
+      );
+      setExpectedTimes(countExpectedTimes(expectedTimesRes?.completeTimeEstimated));
+    })();
+  }, [curModal.isOpen, modalPayload, supportedPairs, asset]);
 
   return {
     // transferFee,
@@ -692,5 +709,6 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     onDismiss,
     handleCloseModal,
     getDisplayValues,
+    expectedTimes,
   };
 }

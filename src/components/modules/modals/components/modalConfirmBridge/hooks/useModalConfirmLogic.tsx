@@ -7,6 +7,7 @@ import ROUTES from '@/configs/routes';
 import { IsServer } from '@/constants';
 import { handleRequest } from '@/helpers/asyncHandlers';
 import {
+  countExpectedTimes,
   formatNumber,
   formatNumber2,
   fromWei,
@@ -63,7 +64,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
   const zkCtr = useZKContractState().state;
   const pathname = usePathname();
-  const [isAgreeTerm, setIsAgreeTerm] = useState<boolean>(false);
+  // const [isAgreeTerm, setIsAgreeTerm] = useState<boolean>(false);
   const [status, setStatus] = useState<MODAL_CF_STATUS>(MODAL_CF_STATUS.IDLE);
   // const [transferFee, setTransferFee] = useState<string>('0');
   const [gasFee, setGasFee] = useState<string>('0');
@@ -71,6 +72,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   const [ethPriceInUsd, setEthPriceInUsd] = useState<string>('');
   const [supportedPairs, setSupportedPairs] =
     useState<GetListSpPairsResponse | null>(null);
+  const [expectedTimes, setExpectedTimes] = useState<string>('');
 
   const priceUsdInterval = useRef<null | NodeJS.Timeout>(null);
 
@@ -222,7 +224,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
     const { asset, amount, destAddr, balance } = modalPayload;
     const [addrStart, addrEnd] = truncateMid(destAddr, 4, 4);
-    const assetIcon = listIcon.find((e) => e.symbol === asset.symbol);
+    const assetIcon = listIcon.find((e: any) => e.symbol === asset.symbol);
 
     const { receivedAmount, tipFeeAmount, gasFeeAmount, totalFeeAmount } =
       getReceivedAmount({
@@ -294,13 +296,13 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     ];
   }, [modalPayload, listIcon, gasFee, ethPriceInUsd]);
 
-  function toggleAgreeTerm() {
-    setIsAgreeTerm((prev) => !prev);
-  }
+  // function toggleAgreeTerm() {
+  //   setIsAgreeTerm((prev) => !prev);
+  // }
 
   function onSuccess(): true {
     modalPayload && modalPayload.onFinish();
-    setIsAgreeTerm(false);
+    // setIsAgreeTerm(false);
     setStatus(MODAL_CF_STATUS.SUCCESS);
     setGasFee('0');
     setTipFee('0');
@@ -308,7 +310,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   }
   function onError(): false {
     modalPayload && modalPayload.onError();
-    setIsAgreeTerm(false);
+    // setIsAgreeTerm(false);
     setStatus(MODAL_CF_STATUS.ERROR);
     setGasFee('0');
     setTipFee('0');
@@ -318,7 +320,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   function onDismiss() {
     modalPayload && modalPayload.onFinish();
     setStatus(MODAL_CF_STATUS.IDLE);
-    setIsAgreeTerm(false);
+    // setIsAgreeTerm(false);
     setGasFee('0');
     setTipFee('0');
   }
@@ -678,7 +680,22 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       );
       setSupportedPairs(listPair);
     })();
-  }, []);
+  }, []); 
+  
+  useEffect(() => {
+    if (!modalPayload || !curModal.isOpen) return;
+    const pair = supportedPairs?.find(
+      (v) => `${v.id}` === `${asset?.pairId || ''}`,
+    );
+    if (!pair) return;
+
+    (async () => {
+      const [expectedTimesRes, error] = await handleRequest(
+        usersService.getExpectedTimes({ network: pair.toChain }),
+      );
+      setExpectedTimes(countExpectedTimes(expectedTimesRes?.completeTimeEstimated));
+    })();
+  }, [curModal.isOpen, modalPayload, supportedPairs, asset]);
 
   return {
     // transferFee,
@@ -686,11 +703,12 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     status,
     modalPayload,
     networkInstance,
-    isAgreeTerm,
-    toggleAgreeTerm,
+    // isAgreeTerm,
+    // toggleAgreeTerm,
     handleConfirm,
     onDismiss,
     handleCloseModal,
     getDisplayValues,
+    expectedTimes,
   };
 }

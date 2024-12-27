@@ -29,6 +29,7 @@ enum USERS_ENDPOINT {
   PROTOCOL_FEE = 'protocol-fee',
   PRICE_USD = 'price-usd',
   PROOF_OF_ASSETS = 'proof-of-assets',
+  EXPECTED_TIMES = 'estimate',
 }
 
 export { CoinGeckoSV, PairDetailSV, PairSV, USERS_ENDPOINT };

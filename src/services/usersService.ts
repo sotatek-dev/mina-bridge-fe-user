@@ -87,6 +87,10 @@ export type GetPriceUsdResponse = {
 export type GetPoAResponse = {
   totalWethInCirculation: string;
 };
+export type GetExpectedTimesResponse = {
+  receivedNetwork: string;
+  completeTimeEstimated: number;
+};
 
 class UsersService {
   readonly service: AxiosService;
@@ -140,6 +144,15 @@ class UsersService {
   getProofOfAsset() {
     return this.service.get<GetPoAResponse>(
       `${this.baseURL}/${USERS_ENDPOINT.PROOF_OF_ASSETS}`
+    );
+  }
+
+  getExpectedTimes(query: { network: string }) {
+    return this.service.get<GetExpectedTimesResponse>(
+      `${this.baseURL}/${USERS_ENDPOINT.EXPECTED_TIMES}`,
+      {
+        params: { receivedNetwork: query.network },
+      }
     );
   }
 }

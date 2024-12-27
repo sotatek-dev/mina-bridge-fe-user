@@ -37,6 +37,7 @@ export default function ModalConfirmBridge() {
     // toggleAgreeTerm,
     handleConfirm,
     handleCloseModal,
+    expectedTimes,
   } = useModalSNLogic({
     modalName: MODAL_NAME.CONFIRM_BRIDGE,
   });
@@ -309,7 +310,7 @@ export default function ModalConfirmBridge() {
               <Text variant={'lg'} color={'primary.orange'}>Expected times</Text>
               
               <Text variant={'lg_medium'} color={'primary.orange'}>
-                ~30 minutes{' '}
+                ~{expectedTimes}{' '}
                 {networkInstance.src?.name === NETWORK_NAME.MINA &&
                   'Please ensure you have enough Mina in your account to covers Mina Network fee.'}
               </Text>

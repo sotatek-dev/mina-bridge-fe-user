@@ -269,3 +269,26 @@ export function getScanUrl(networkName: string) {
     ? process.env.NEXT_PUBLIC_REQUIRED_MINA_SCAN_URL
     : process.env.NEXT_PUBLIC_REQUIRED_ETH_SCAN_URL;
 }
+export const countExpectedTimes = (seconds: any): string => {
+  const diffMinute = seconds / 60;
+  const diffHour = seconds / 3600;
+  const diffDay = seconds / 86400;
+
+  const diffMonth = seconds / (30.44 * 86400);
+  if (Math.floor(diffMonth) > 12) {
+    return '> 12 months';
+  }
+  if (Math.floor(diffMonth) > 0) {
+    return `${Math.floor(diffMonth)} months`;
+  }
+  if (Math.floor(diffDay) > 0) {
+    return `${Math.floor(diffDay)} days`;
+  }
+  if (Math.floor(diffHour) > 0) {
+    return `${Math.floor(diffHour)} hours`;
+  }
+  if (Math.floor(diffMinute) < 1) {
+    return '< 1 minutes';
+  }
+  return `${Math.floor(diffMinute) || 1} minutes`;
+};

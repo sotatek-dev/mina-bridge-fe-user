@@ -15,6 +15,7 @@ import {
   useAppSelector,
 } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
+import ArrowDownIcon from '@public/assets/icons/icon.arrow.down.svg';
 
 type Props = { buttonProps?: ButtonProps } & Pick<
   ButtonProps,
@@ -84,15 +85,18 @@ function FormAssetSelector({ buttonProps, ...sizingProps }: Props) {
         bg={'background.0'}
         leftIcon={<Image h={'24px'} src={assetIcon?.icon || ''} />}
         rightIcon={
-          <Image
-            w={'22px'}
-            h={'22px'}
+          <VStack
             position={'absolute'}
             right={'12px'}
             top={'50%'}
             transform={'translateY(-50%)'}
-            src={'/assets/icons/icon.arrow.down.purple.svg'}
-          />
+          >
+            <ArrowDownIcon
+              color={isConnected ? 'var(--primary-purple)' : 'var(--text-400)'}
+              height={'22'}
+              width={'22'}
+            />
+          </VStack>
         }
       >
         {asset?.symbol.toUpperCase() || ''}

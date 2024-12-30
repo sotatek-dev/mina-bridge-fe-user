@@ -23,7 +23,7 @@ import StorageUtils from '@/helpers/handleBrowserStorage';
 import useNotifier from '@/hooks/useNotifier';
 import { NETWORK_NAME } from '@/models/network';
 import { useAppDispatch } from '@/store';
-import BridgeIcon from '@public/assets/icons/icon.bridge.next.svg';
+import ArrowRightIcon from '@public/assets/icons/icon.arrow.right.svg';
 
 export default function ModalConfirmBridge() {
   const {
@@ -56,7 +56,7 @@ export default function ModalConfirmBridge() {
   const isDefault = useMemo(() => status === MODAL_CF_STATUS.IDLE, [status]);
   const isInitializing = useMemo(
     () => status === MODAL_CF_STATUS.INITIALIZE,
-    [status],
+    [status]
   );
   const isLoading = useMemo(() => status === MODAL_CF_STATUS.LOADING, [status]);
   const hasError = useMemo(() => status === MODAL_CF_STATUS.ERROR, [status]);
@@ -265,8 +265,17 @@ export default function ModalConfirmBridge() {
                 top={'50%'}
                 left={'50%'}
                 transform={'translate(-50%,-50%)'}
+                w={'40px'}
+                h={'40px'}
+                bg={'var(--background-0)'}
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'center'}
+                border={'1px'}
+                borderRadius={50}
+                borderColor={'var(--text-200)'}
               >
-                <BridgeIcon color={'var(--background-0)'} />
+                <ArrowRightIcon color={'var(--text-600)'} />
               </Box>
             </Grid>
             <VStack w={'full'} gap={'20px'} mt={'15px'}>

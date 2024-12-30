@@ -21,6 +21,7 @@ import {
 } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
 import { NETWORK_KEY, walletSliceActions } from '@/store/slices/walletSlice';
+import ArrowDownIcon from '@public/assets/icons/icon.arrow.down.svg';
 import MenuIcon from '@public/assets/icons/icon.burger-menu.right.svg';
 
 export default function useHeaderLogic(extractFnc: boolean = false) {
@@ -131,11 +132,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
           >
             {nw.name} Network
           </Text>
-          <Image
-            src={'/assets/icons/icon.arrow.down.svg'}
-            w={'16px'}
-            h={'16px'}
-          />
+          <ArrowDownIcon color={'text.500'} height={'16'} width={'16'} />
         </>
       ),
     };

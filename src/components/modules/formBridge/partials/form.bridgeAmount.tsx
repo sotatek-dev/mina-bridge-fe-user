@@ -68,6 +68,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     dailyQuota,
     srcNetwork,
     txEmitCount,
+    isInsufficient,
   } = useFormBridgeState().state;
   const { nwProvider } = useFormBridgeState().constants;
   const { updateAmount, updateStatus, updateBalance } =
@@ -77,7 +78,6 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
 
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState<ErrorType>(null);
-  const [isInsufficient, setIsInsufficient] = useState(false);
 
   // timeout
   const throttleInput = useRef<any>(null);
@@ -390,32 +390,6 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
         break;
     }
   }, [asset]);
-
-  useEffect(() => {
-    const getNativeBalance = async () => {
-      const balance = await (walletInstance as WalletAuro)?.getNativeBalance(
-        networkInstance?.src as Network,
-        address as string,
-        assetWallet as TokenType
-      );
-      setIsInsufficient(
-        new BigNumber(balance).lt(process.env.NEXT_PUBLIC_MINA_GAS_FEE || 0.1)
-      );
-    };
-
-    if (
-      isConnected &&
-      assetWallet?.network === NETWORK_NAME.MINA &&
-      networkInstance?.src?.name === NETWORK_NAME.MINA &&
-      walletInstance?.name === WALLET_NAME.AURO
-    ) {
-      getNativeBalance();
-    }
-
-    if (assetWallet?.network === NETWORK_NAME.ETHEREUM) {
-      setIsInsufficient(false);
-    }
-  }, [assetWallet, address, walletInstance, isConnected]);
 
   return (
     <VStack w={'full'} align={'flex-start'} gap={'4px'} {...props}>

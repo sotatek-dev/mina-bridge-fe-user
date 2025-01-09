@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import React, {
   useCallback,
@@ -12,7 +13,8 @@ import { DesAddrRef } from '../partials/form.desAddress';
 import useETHBridgeContract from '@/hooks/useETHBridgeContract';
 import BridgeContract from '@/models/contract/evm/contract.bridge';
 import { Network } from '@/models/network';
-import { NetworkEVMProviderType } from '@/models/network/network';
+import { NETWORK_NAME, NetworkEVMProviderType } from '@/models/network/network';
+import { WALLET_NAME, WalletAuro } from '@/models/wallet';
 import {
   getPersistSlice,
   getUISlice,
@@ -55,6 +57,7 @@ export type FormBridgeState = {
   assetRange: string[];
   balance: string;
   txEmitCount: number;
+  isInsufficient: boolean;
 };
 
 export type FormBridgeCtxValueType = {
@@ -72,7 +75,7 @@ export type FormBridgeCtxValueType = {
     updateAmount: (val: string) => void;
     updateStatus: (
       key: keyof FormBridgeState['status'],
-      value: boolean,
+      value: boolean
     ) => void;
     updateAsset: (asset: TokenType) => void;
     updateAssetRage: (assetRange: string[]) => void;
@@ -80,6 +83,7 @@ export type FormBridgeCtxValueType = {
     // refetchBalance: () => void;
     updateTxEmitCount: () => void;
     resetFormValues: () => void;
+    updateIsInsufficient: (isInsufficient: boolean) => void;
   };
 };
 export type FormBridgeProviderProps = React.PropsWithChildren<{}>;
@@ -106,6 +110,7 @@ export const initModalCWState: FormBridgeState = {
   assetRange: ['0', '0'],
   balance: '0',
   txEmitCount: 0,
+  isInsufficient: false,
 };
 
 export const FormBridgeContext =
@@ -121,7 +126,9 @@ export default function FormBridgeProvider({
   const dispatch = useAppDispatch();
   const { address, isConnected, asset } = useAppSelector(getWalletSlice);
   const { isLoading } = useAppSelector(getUISlice);
-  const { networkInstance } = useAppSelector(getWalletInstanceSlice);
+  const { walletInstance, networkInstance } = useAppSelector(
+    getWalletInstanceSlice
+  );
   const { listAsset } = useAppSelector(getPersistSlice);
 
   const [state, setState] = useState<FormBridgeState>(initModalCWState);
@@ -134,12 +141,12 @@ export default function FormBridgeProvider({
       'provider' in networkInstance.src?.metadata
         ? networkInstance.src.metadata.provider
         : undefined,
-    [networkInstance.src],
+    [networkInstance.src]
   );
   const bridgeCtrAsset = useMemo(
     () =>
       asset ? { addr: asset.bridgeCtrAddr, network: asset.network } : null,
-    [asset],
+    [asset]
   );
   const bridgeCtr = useETHBridgeContract({
     network: networkInstance.src,
@@ -151,7 +158,7 @@ export default function FormBridgeProvider({
     () =>
       networkInstance.src?.nativeCurrency.symbol.toLowerCase() ===
       state.asset?.symbol.toLowerCase(),
-    [state.asset, networkInstance.src],
+    [state.asset, networkInstance.src]
   );
 
   // update partial state
@@ -163,7 +170,7 @@ export default function FormBridgeProvider({
         tarNetwork,
       }));
     },
-    [setState],
+    [setState]
   );
 
   // update partial state
@@ -178,10 +185,10 @@ export default function FormBridgeProvider({
                 [key]: value,
               },
             }
-          : prev,
+          : prev
       );
     },
-    [setState],
+    [setState]
   );
 
   // const refetchBalance = useCallback(() => {
@@ -206,10 +213,10 @@ export default function FormBridgeProvider({
               ...prev,
               desAddr: address,
             }
-          : prev,
+          : prev
       );
     },
-    [setState],
+    [setState]
   );
 
   // update partial state
@@ -221,10 +228,10 @@ export default function FormBridgeProvider({
               ...prev,
               amount,
             }
-          : prev,
+          : prev
       );
     },
-    [setState],
+    [setState]
   );
 
   // update partial state
@@ -236,10 +243,10 @@ export default function FormBridgeProvider({
               ...prev,
               asset,
             }
-          : prev,
+          : prev
       );
     },
-    [setState],
+    [setState]
   );
 
   // update min max
@@ -251,10 +258,10 @@ export default function FormBridgeProvider({
               ...prev,
               assetRange,
             }
-          : prev,
+          : prev
       );
     },
-    [setState],
+    [setState]
   );
 
   // update balance
@@ -265,7 +272,7 @@ export default function FormBridgeProvider({
             ...prev,
             balance,
           }
-        : prev,
+        : prev
     );
   }, []);
 
@@ -277,9 +284,20 @@ export default function FormBridgeProvider({
             ...prev,
             dailyQuota,
           }
-        : prev,
+        : prev
     );
   }, []);
+
+  // update gas fee is inf
+  const updateIsInsufficient = useCallback(
+    (isInsufficient: boolean) => {
+      setState((prev) => ({
+        ...prev,
+        isInsufficient: isInsufficient,
+      }));
+    },
+    [setState]
+  );
 
   // execute when click confirm btn
   const resetFormValues = useCallback(() => {
@@ -295,7 +313,7 @@ export default function FormBridgeProvider({
       isConnected: boolean,
       isGlobalLoading: boolean,
       desAddr: string,
-      amount: string,
+      amount: string
     ) => {
       // check connected
       updateStatus('isConnected', isConnected);
@@ -306,7 +324,7 @@ export default function FormBridgeProvider({
       // sync loading with global loadin
       updateStatus('isLoading', isGlobalLoading);
     },
-    [updateStatus],
+    [updateStatus]
   );
 
   // init assets
@@ -314,13 +332,13 @@ export default function FormBridgeProvider({
     if (!networkInstance.src || listAsset[networkInstance.src.name].length < 1)
       return;
     const assets = listAsset[networkInstance.src.name].filter(
-      (asset) => asset.des === 'src',
+      (asset) => asset.des === 'src'
     );
     if (!asset || asset.network !== networkInstance.src.name) {
       dispatch(
         walletSliceActions.changeAsset(
-          assets.length > 0 ? assets[0] : undefined,
-        ),
+          assets.length > 0 ? assets[0] : undefined
+        )
       );
       return;
     }
@@ -351,6 +369,32 @@ export default function FormBridgeProvider({
     }
   }, [isConnected]);
 
+  useEffect(() => {
+    const getNativeBalance = async () => {
+      const balance = await (walletInstance as WalletAuro)?.getNativeBalance(
+        networkInstance?.src as Network,
+        address as string,
+        asset as TokenType
+      );
+      updateIsInsufficient(
+        new BigNumber(balance).lt(process.env.NEXT_PUBLIC_MINA_GAS_FEE || 0.1)
+      );
+    };
+
+    if (
+      isConnected &&
+      asset?.network === NETWORK_NAME.MINA &&
+      networkInstance?.src?.name === NETWORK_NAME.MINA &&
+      walletInstance?.name === WALLET_NAME.AURO
+    ) {
+      getNativeBalance();
+    }
+
+    if (asset?.network === NETWORK_NAME.ETHEREUM) {
+      updateIsInsufficient(false);
+    }
+  }, [asset, address, walletInstance, isConnected]);
+
   // final value
   const value = useMemo<FormBridgeCtxValueType>(
     () => ({
@@ -372,6 +416,7 @@ export default function FormBridgeProvider({
         updateAssetRage,
         updateBalance,
         updateTxEmitCount,
+        updateIsInsufficient,
         // refetchBalance,
       },
     }),
@@ -390,9 +435,10 @@ export default function FormBridgeProvider({
       updateAssetRage,
       // refetchBalance,
       updateTxEmitCount,
+      updateIsInsufficient,
       resetFormValues,
       bridgeCtr,
-    ],
+    ]
   );
 
   // return statement

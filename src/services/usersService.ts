@@ -17,6 +17,15 @@ export type SupportedPairResponse = {
   status: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt: null;
+  dailyQuota: string;
+  bridgeFee: string;
+  mintingFee: string;
+  unlockingFee: string;
+  asset: string;
+  totalWethMinted: string;
+  totalWethBurnt: string;
+  isHidden: false;
 };
 export type GetListSpPairsResponse = SupportedPairResponse[];
 
@@ -116,24 +125,24 @@ class UsersService {
     );
   }
 
-  getDailyQuota(query: { address: string }) {
+  getDailyQuota(query: { userAddress: string; tokenAddress: string }) {
     return this.service.get<GetDailyQuotaResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.address}`
+      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.userAddress}/${query.tokenAddress}`
     );
   }
 
-  getProtocolFee(payload: { pairId: string | number }) {
-    return this.service.post<{
-      gasFee: string;
-      tipRate: string;
-      decimal: string;
-    }>(
-      `${this.baseURL}/${USERS_ENDPOINT.BRIDGE}/${USERS_ENDPOINT.PROTOCOL_FEE}`,
-      {
-        pairId: Number(payload.pairId),
-      }
-    );
-  }
+  // getProtocolFee(payload: { pairId: string | number }) {
+  //   return this.service.post<{
+  //     gasFee: string;
+  //     tipRate: string;
+  //     decimal: string;
+  //   }>(
+  //     `${this.baseURL}/${USERS_ENDPOINT.BRIDGE}/${USERS_ENDPOINT.PROTOCOL_FEE}`,
+  //     {
+  //       pairId: Number(payload.pairId),
+  //     }
+  //   );
+  // }
 
   getPriceUsd() {
     return this.service.get<GetPriceUsdResponse>(

@@ -22,13 +22,14 @@ const initialData: DailyQuota = {
 const recheckInterval = ITV.M5;
 
 export default function FormDailyQuota() {
-  const { address } = useAppSelector(getWalletSlice);
+  const { address, asset: currentAsset } = useAppSelector(getWalletSlice);
   const { dailyQuota, asset } = useFormBridgeState().state;
   const { updateQuota } = useFormBridgeState().methods;
 
   const interval = useRef<any>(null);
 
   async function getDailyQuota(address: string) {
+    if (!asset) return;
     let decimal = asset!!.decimals;
 
     if (web3.utils.isAddress(address)) {
@@ -42,16 +43,19 @@ export default function FormDailyQuota() {
     }
 
     const [res, error] = await handleRequest(
-      usersService.getDailyQuota({ address }),
+      usersService.getDailyQuota({
+        userAddress: address,
+        tokenAddress: asset?.tokenAddr,
+      })
     );
     if (error || !res) return updateQuota({ ...initialData });
     return updateQuota({
       max: formatNumber(res.dailyQuota.dailyQuota, 4),
       current: formatNumber(
         fromWei(`${res.totalAmountOfToDay}`, decimal),
-        asset!!.decimals,
+        asset!!.decimals
       ),
-      asset: res.dailyQuota.asset,
+      asset: currentAsset?.symbol || '',
     });
   }
 

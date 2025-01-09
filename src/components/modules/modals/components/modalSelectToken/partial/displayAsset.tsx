@@ -26,7 +26,7 @@ export default function DisplayAsset({ data }: Props) {
     getWalletInstanceSlice
   );
 
-  const { handleCloseCurModal } = useModalSTState().methods;
+  const { handleCloseCurModal, updateAsset } = useModalSTState().methods;
 
   const [balance, setBalance] = useState<string>('0');
 
@@ -45,6 +45,10 @@ export default function DisplayAsset({ data }: Props) {
 
   async function handleSelectAsset() {
     if (isSelected) return handleCloseCurModal();
+    else {
+      updateAsset(data);
+      handleCloseCurModal();
+    }
   }
 
   async function checkBalance(
@@ -88,7 +92,10 @@ export default function DisplayAsset({ data }: Props) {
         cursor={'pointer'}
         position={'relative'}
       >
-        <Image src={curAssetIcon?.icon || ''} h={'36px'} />
+        <Image
+          src={curAssetIcon?.icon || '/assets/logos/logo.default.token.svg'}
+          h={'36px'}
+        />
         <VStack gap={'0'} alignItems={'flex-start'} justifyContent={'center'}>
           <Text variant={'xl_semiBold'}>{data.symbol.toUpperCase()}</Text>
           <Text

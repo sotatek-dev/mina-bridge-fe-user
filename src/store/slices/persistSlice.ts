@@ -128,20 +128,20 @@ const initializeData = createAppThunk()(
         updatedAt: pair.updatedAt,
       });
 
-      addAsset(pair.fromChain, {
-        pairId: `${pair.id}`,
-        bridgeCtrAddr: pair.fromScAddress,
-        tokenAddr: pair.fromAddress,
+      addAsset(pair?.fromChain, {
+        pairId: `${pair?.id}`,
+        bridgeCtrAddr: pair?.fromScAddress,
+        tokenAddr: pair?.fromAddress,
         des: 'src',
         symbol: pair.fromSymbol?.toUpperCase() || pair.asset.toUpperCase(),
         name: '',
         decimals: pair.fromDecimal,
         totalWethInCirculation: pair.totalCirculation,
       });
-      addAsset(pair.toChain, {
-        pairId: `${pair.id}`,
-        bridgeCtrAddr: pair.toScAddress,
-        tokenAddr: pair.toAddress,
+      addAsset(pair?.toChain, {
+        pairId: `${pair?.id}`,
+        bridgeCtrAddr: pair?.toScAddress,
+        tokenAddr: pair?.toAddress,
         des: 'tar',
         symbol: pair.toSymbol?.toUpperCase() || `W${pair.asset.toUpperCase()}`,
         name: '',

@@ -51,7 +51,7 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
       bridgeCtrAddr: pair.toScAddress,
       tokenAddr: pair.toAddress,
       des: 'tar',
-      symbol: pair.toSymbol?.toUpperCase() || `W${pair.asset?.toUpperCase()}`,
+      symbol: pair.asset.toUpperCase(),
       name: '',
       decimals: pair.toDecimal,
       totalWethInCirculation: pair.totalCirculation,

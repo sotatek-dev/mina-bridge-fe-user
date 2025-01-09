@@ -127,10 +127,10 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
     const targetAsset: TokenType = {
       pairId: `${pair.id}`,
-      bridgeCtrAddr: pair.toScAddress,
-      tokenAddr: pair.toAddress,
+      bridgeCtrAddr: pair?.toScAddress,
+      tokenAddr: pair?.toAddress,
       des: 'tar',
-      symbol: pair.toSymbol?.toUpperCase() || `W${pair.asset?.toUpperCase()}`,
+      symbol: pair.asset.toUpperCase(),
       name: '',
       decimals: pair.toDecimal,
       totalWethInCirculation: pair.totalCirculation,
@@ -332,24 +332,46 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
   async function getProtocolFee(modalPayload: ModalConfirmBridgePayload) {
     const [res, error] = await handleRequest(
-      usersService.getProtocolFee({
-        pairId: modalPayload.asset.pairId,
-      })
+      usersService.getListSupportedPairs()
     );
     if (error || !res) {
       setGasFee('0');
       setTipFee('0');
       return;
     }
-    const gasFee = fromWei(res.gasFee, res.decimal);
-    setGasFee(gasFee);
+    const currentPair = res.find((pair) => String(pair.id) === asset?.pairId);
+    if (!currentPair) return;
+
+    let gasFee = '';
+    let decimal = 18;
+    let tipRate = currentPair.bridgeFee;
+
+    // Check Network Receive
+    if (networkInstance?.tar?.name === NETWORK_NAME.MINA) {
+      decimal = currentPair.toDecimal;
+      gasFee = toWei(currentPair.mintingFee, decimal);
+    } else {
+      decimal = decimal = currentPair.fromDecimal;
+      gasFee = toWei(currentPair.unlockingFee, decimal);
+    }
+
+    setGasFee(fromWei(gasFee, decimal));
     setTipFee(
       new BigNumber(modalPayload.amount)
         .minus(gasFee)
-        .times(res.tipRate)
+        .times(tipRate)
         .div(100)
         .toString()
     );
+
+    console.log('Fee:', {
+      gasFee: fromWei(gasFee, decimal),
+      tipFee: new BigNumber(modalPayload.amount)
+        .minus(gasFee)
+        .times(tipRate)
+        .div(100)
+        .toString(),
+    });
   }
 
   function buildEVMBridgeTX(

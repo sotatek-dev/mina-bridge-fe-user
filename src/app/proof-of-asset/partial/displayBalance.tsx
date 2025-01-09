@@ -5,22 +5,18 @@ import {
   Flex,
   HStack,
   Image,
-  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import Web3 from 'web3';
+import { useMemo, useRef } from 'react';
 
-import { handleRequest } from '@/helpers/asyncHandlers';
-import { formatNumber, fromWei, truncateMid } from '@/helpers/common';
+import { formatNumber, truncateMid } from '@/helpers/common';
 import useNotifier from '@/hooks/useNotifier';
 import { Network } from '@/models/network';
-import { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
+import { NETWORK_NAME } from '@/models/network/network';
 import { getEtherAccountScan } from '@/models/network/network.ethereum';
 import { getMinaAccountScan } from '@/models/network/network.mina';
-import usersService from '@/services/usersService';
 import { TokenType } from '@/store/slices/persistSlice';
 
 type Props = {

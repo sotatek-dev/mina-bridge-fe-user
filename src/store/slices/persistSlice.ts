@@ -8,7 +8,6 @@ import { handleRequest } from '@/helpers/asyncHandlers';
 import { NETWORK_NAME } from '@/models/network/network';
 import usersService, { SupportedPairResponse } from '@/services/usersService';
 
-
 export type TokenType = {
   pairId: string;
   des: 'src' | 'tar';
@@ -18,6 +17,7 @@ export type TokenType = {
   name: string;
   symbol: string;
   decimals: number;
+  totalWethInCirculation: string;
 };
 
 export type LastAssetRecord = {
@@ -28,7 +28,7 @@ export type LastAssetRecord = {
 
 export type PairType = Pick<
   SupportedPairResponse,
-  'id' | 'status' | 'createdAt' | 'updatedAt'
+  'id' | 'status' | 'createdAt' | 'updatedAt' | 'asset'
 >;
 
 export type SetLastNWFeePayload = {
@@ -123,6 +123,7 @@ const initializeData = createAppThunk()(
       listPair.push({
         id: pair.id,
         status: pair.status,
+        asset: pair.asset?.toUpperCase(),
         createdAt: pair.createdAt,
         updatedAt: pair.updatedAt,
       });
@@ -132,18 +133,20 @@ const initializeData = createAppThunk()(
         bridgeCtrAddr: pair.fromScAddress,
         tokenAddr: pair.fromAddress,
         des: 'src',
-        symbol: pair.fromSymbol.toUpperCase(),
+        symbol: pair.fromSymbol?.toUpperCase() || pair.asset.toUpperCase(),
         name: '',
         decimals: pair.fromDecimal,
+        totalWethInCirculation: pair.totalCirculation,
       });
       addAsset(pair.toChain, {
         pairId: `${pair.id}`,
         bridgeCtrAddr: pair.toScAddress,
         tokenAddr: pair.toAddress,
         des: 'tar',
-        symbol: pair.toSymbol.toUpperCase(),
+        symbol: pair.toSymbol?.toUpperCase() || `W${pair.asset.toUpperCase()}`,
         name: '',
         decimals: pair.toDecimal,
+        totalWethInCirculation: pair.totalCirculation,
       });
     });
 

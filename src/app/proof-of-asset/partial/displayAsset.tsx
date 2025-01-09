@@ -37,6 +37,7 @@ export default function DisplayAsset({ assetSymbol, data }: Props) {
       bg={'background.modal'}
       px={'35px'}
       py={'26px'}
+      mb={'16px'}
     >
       <GridItem mb={{ base: '30px', md: '0' }}>
         <HStack>

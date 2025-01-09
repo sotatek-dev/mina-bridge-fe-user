@@ -331,8 +331,10 @@ export default function FormBridgeProvider({
   useEffect(() => {
     if (!networkInstance.src || listAsset[networkInstance.src.name].length < 1)
       return;
+    const des =
+      networkInstance.src.name === NETWORK_NAME.ETHEREUM ? 'src' : 'tar';
     const assets = listAsset[networkInstance.src.name].filter(
-      (asset) => asset.des === 'src'
+      (asset) => asset.des === des
     );
     if (!asset || asset.network !== networkInstance.src.name) {
       dispatch(

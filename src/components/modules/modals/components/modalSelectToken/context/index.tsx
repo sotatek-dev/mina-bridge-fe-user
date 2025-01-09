@@ -66,7 +66,8 @@ export default function ModalSTProvider({
 
   const getListToken = useCallback(
     (nw: NETWORK_NAME, list: PersistState['listAsset']) => {
-      const listSrc = list[nw].filter((asset) => asset.des === 'src');
+      const des = nw === NETWORK_NAME.ETHEREUM ? 'src' : 'tar';
+      const listSrc = list[nw].filter((asset) => asset.des === des);
       const listToken = uniqBy(listSrc, (e) =>
         [e.tokenAddr, e.symbol, e.decimals].join()
       );

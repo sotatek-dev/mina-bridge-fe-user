@@ -8,7 +8,6 @@ import { handleRequest } from '@/helpers/asyncHandlers';
 import { NETWORK_NAME } from '@/models/network/network';
 import usersService, { SupportedPairResponse } from '@/services/usersService';
 
-
 export type TokenType = {
   pairId: string;
   des: 'src' | 'tar';
@@ -121,29 +120,29 @@ const initializeData = createAppThunk()(
 
     res!!.forEach((pair) => {
       listPair.push({
-        id: pair.id,
-        status: pair.status,
-        createdAt: pair.createdAt,
-        updatedAt: pair.updatedAt,
+        id: pair?.id,
+        status: pair?.status,
+        createdAt: pair?.createdAt,
+        updatedAt: pair?.updatedAt,
       });
 
-      addAsset(pair.fromChain, {
-        pairId: `${pair.id}`,
-        bridgeCtrAddr: pair.fromScAddress,
-        tokenAddr: pair.fromAddress,
+      addAsset(pair?.fromChain, {
+        pairId: `${pair?.id}`,
+        bridgeCtrAddr: pair?.fromScAddress,
+        tokenAddr: pair?.fromAddress,
         des: 'src',
-        symbol: pair.fromSymbol.toUpperCase(),
+        symbol: pair?.asset?.toUpperCase(),
         name: '',
-        decimals: pair.fromDecimal,
+        decimals: pair?.fromDecimal,
       });
-      addAsset(pair.toChain, {
-        pairId: `${pair.id}`,
-        bridgeCtrAddr: pair.toScAddress,
-        tokenAddr: pair.toAddress,
+      addAsset(pair?.toChain, {
+        pairId: `${pair?.id}`,
+        bridgeCtrAddr: pair?.toScAddress,
+        tokenAddr: pair?.toAddress,
         des: 'tar',
-        symbol: pair.toSymbol.toUpperCase(),
+        symbol: `W${pair?.asset?.toUpperCase()}`,
         name: '',
-        decimals: pair.toDecimal,
+        decimals: pair?.toDecimal,
       });
     });
 

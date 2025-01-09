@@ -1,10 +1,11 @@
 'use client';
 import { Button, ButtonProps, Image, Text, VStack } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { useFormBridgeState } from '../context';
 
 import { MODAL_NAME } from '@/configs/modal';
+import useNotifier from '@/hooks/useNotifier';
 import { NETWORK_TYPE } from '@/models/network/network';
 import { WALLET_NAME } from '@/models/wallet';
 import {
@@ -24,11 +25,12 @@ type Props = { buttonProps?: ButtonProps } & Pick<
 
 function FormAssetSelector({ buttonProps, ...sizingProps }: Props) {
   const dispatch = useAppDispatch();
-  const { walletKey, isConnected } = useAppSelector(getWalletSlice);
+  const { walletKey, isConnected, address } = useAppSelector(getWalletSlice);
   const { networkInstance, walletInstance } = useAppSelector(
     getWalletInstanceSlice
   );
   const { listIcon } = useAppSelector(getPersistSlice);
+  const { sendNotification } = useNotifier();
 
   const { status, asset } = useFormBridgeState().state;
   const { isNativeCurrency } = useFormBridgeState().constants;
@@ -52,17 +54,34 @@ function FormAssetSelector({ buttonProps, ...sizingProps }: Props) {
     dispatch(uiSliceActions.openModal({ modalName: MODAL_NAME.SELECT_TOKEN }));
   }
 
-  function watchTokenWithMetamask() {
-    if (walletKey !== WALLET_NAME.METAMASK) return;
+  async function watchTokenWithMetamask() {
+    if (walletKey !== WALLET_NAME.METAMASK || !asset) return;
     if ('watchToken' in walletInstance!!) {
-      walletInstance.watchToken({
-        type: 'ERC20',
-        options: {
-          address: '0x08394e7e653472694ECd4527656B2881e5701A14',
-          symbol: 'DOP_USDT',
-          decimals: 6,
-        },
-      });
+      console.log({ asset });
+      try {
+        await walletInstance.watchToken({
+          type: 'ERC20',
+          options: {
+            address: asset?.tokenAddr,
+            symbol: asset?.symbol,
+            decimals: asset?.decimals,
+          },
+        });
+        sendNotification({
+          toastType: 'success',
+          options: {
+            title: 'Success!',
+          },
+        });
+      } catch (error) {
+        console.log('Add token error', error);
+        sendNotification({
+          toastType: 'error',
+          options: {
+            title: 'Add token to metamask failed!',
+          },
+        });
+      }
     }
   }
 
@@ -83,7 +102,12 @@ function FormAssetSelector({ buttonProps, ...sizingProps }: Props) {
         gap={'0'}
         onClick={openSelectAssetsModal}
         bg={'background.0'}
-        leftIcon={<Image h={'24px'} src={assetIcon?.icon || ''} />}
+        leftIcon={
+          <Image
+            h={'24px'}
+            src={assetIcon?.icon || '/assets/logos/logo.default.token.svg'}
+          />
+        }
         rightIcon={
           <VStack
             position={'absolute'}

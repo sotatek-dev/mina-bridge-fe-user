@@ -37,10 +37,18 @@ export default function DisplayAsset({ assetSymbol, data }: Props) {
       bg={'background.modal'}
       px={'35px'}
       py={'26px'}
+      mb={'16px'}
     >
       <GridItem mb={{ base: '30px', md: '0' }}>
         <HStack>
-          <Image src={'/assets/logos/logo.ethereum.circle.svg'} h={'40px'} />
+          <Image
+            src={
+              assetSymbol === 'ETH'
+                ? '/assets/logos/logo.ethereum.circle.svg'
+                : '/assets/logos/logo.default.token.svg'
+            }
+            h={'40px'}
+          />
           <Heading as={'h4'} variant={'h4'} color={'text.900'}>
             {assetSymbol}
           </Heading>

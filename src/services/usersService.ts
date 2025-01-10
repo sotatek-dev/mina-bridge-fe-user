@@ -4,20 +4,9 @@ import { USERS_ENDPOINT } from '@/services/config';
 
 export type SupportedPairResponse = {
   id: number;
-  fromChain: string;
-  fromSymbol: string;
-  fromAddress: string;
-  fromDecimal: number;
-  fromScAddress: string;
-  toChain: string;
-  toSymbol: string;
-  toAddress: string;
-  toDecimal: number;
-  toScAddress: string;
-  status: string;
   createdAt: string;
   updatedAt: string;
-  deletedAt: null;
+  deletedAt: string;
   dailyQuota: string;
   bridgeFee: string;
   mintingFee: string;
@@ -25,7 +14,19 @@ export type SupportedPairResponse = {
   asset: string;
   totalWethMinted: string;
   totalWethBurnt: string;
-  isHidden: false;
+  fromChain: string;
+  toChain: string;
+  fromSymbol: any;
+  toSymbol: any;
+  fromAddress: string;
+  toAddress: string;
+  fromDecimal: number;
+  toDecimal: number;
+  fromScAddress: string;
+  toScAddress: string;
+  isHidden: boolean;
+  status: string;
+  totalCirculation: string;
 };
 export type GetListSpPairsResponse = SupportedPairResponse[];
 

@@ -54,6 +54,7 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
       symbol: pair.asset.toUpperCase(),
       name: '',
       decimals: pair.toDecimal,
+      totalWethInCirculation: pair.totalCirculation,
       network:
         pair.toChain === 'eth'
           ? NETWORK_NAME.ETHEREUM

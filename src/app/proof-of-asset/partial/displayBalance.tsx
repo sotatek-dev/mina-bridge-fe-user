@@ -5,22 +5,18 @@ import {
   Flex,
   HStack,
   Image,
-  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import Web3 from 'web3';
+import { useMemo, useRef } from 'react';
 
-import { handleRequest } from '@/helpers/asyncHandlers';
-import { formatNumber, fromWei, truncateMid } from '@/helpers/common';
+import { formatNumber, truncateMid } from '@/helpers/common';
 import useNotifier from '@/hooks/useNotifier';
 import { Network } from '@/models/network';
-import { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
+import { NETWORK_NAME } from '@/models/network/network';
 import { getEtherAccountScan } from '@/models/network/network.ethereum';
 import { getMinaAccountScan } from '@/models/network/network.mina';
-import usersService from '@/services/usersService';
 import { TokenType } from '@/store/slices/persistSlice';
 
 type Props = {
@@ -37,7 +33,7 @@ export default function DisplayBalance({
   isLastItem,
 }: Props) {
   const { sendNotification, checkNotifyActive } = useNotifier();
-  const [balance, setBalance] = useState<string>('');
+  // const [balance, setBalance] = useState<string>('');
 
   const copyNotifyRef = useRef<any>(null);
 
@@ -47,69 +43,69 @@ export default function DisplayBalance({
   );
 
   const dpAddress = useMemo(() => {
-    const [f, l] = truncateMid(asset.bridgeCtrAddr, 7, 7);
+    const [f, l] = truncateMid(asset.tokenAddr, 7, 7);
     return f + '...' + l;
   }, [asset]);
 
-  async function getNativeTokenBalance(addr: string) {
-    switch (network.type) {
-      case NETWORK_TYPE.EVM:
-        const web3Instance = new Web3(
-          new Web3.providers.HttpProvider(network.metadata.provider.uri)
-        );
+  // async function getNativeTokenBalance(addr: string) {
+  //   switch (network.type) {
+  //     case NETWORK_TYPE.EVM:
+  //       const web3Instance = new Web3(
+  //         new Web3.providers.HttpProvider(network.metadata.provider.uri)
+  //       );
 
-        const [res, error] = await handleRequest(
-          web3Instance.eth.getBalance(addr)
-        );
-        if (error || !res) {
-          return setBalance('0');
-        }
-        return setBalance(fromWei(res.toString(), asset.decimals));
-      case NETWORK_TYPE.ZK:
-        return setBalance('0');
+  //       const [res, error] = await handleRequest(
+  //         web3Instance.eth.getBalance(addr)
+  //       );
+  //       if (error || !res) {
+  //         return setBalance('0');
+  //       }
+  //       return setBalance(fromWei(res.toString(), asset.decimals));
+  //     case NETWORK_TYPE.ZK:
+  //       return setBalance('0');
 
-      // const tokenCtr = new ERC20Contract(asset.tokenAddr);
-      // const [blnWei, fetchError] = await handleRequest(
-      //   tokenCtr.getBalance(addr)
-      // );
-      // if (fetchError || !blnWei) {
-      //   return setBalance('0');
-      // }
-      // return setBalance(formWei(blnWei, asset.decimals));
-      default:
-        break;
-    }
-  }
+  //     // const tokenCtr = new ERC20Contract(asset.tokenAddr);
+  //     // const [blnWei, fetchError] = await handleRequest(
+  //     //   tokenCtr.getBalance(addr)
+  //     // );
+  //     // if (fetchError || !blnWei) {
+  //     //   return setBalance('0');
+  //     // }
+  //     // return setBalance(formWei(blnWei, asset.decimals));
+  //     default:
+  //       break;
+  //   }
+  // }
 
-  async function getERC20TokenBalance(addr: string) {
-    switch (network.type) {
-      case NETWORK_TYPE.EVM:
-        return setBalance('0');
-      case NETWORK_TYPE.ZK:
-        const [res] = await handleRequest(usersService.getProofOfAsset());
-        return setBalance(res?.totalWethInCirculation || '0');
+  // async function getERC20TokenBalance(addr: string) {
+  //   switch (network.type) {
+  //     case NETWORK_TYPE.EVM:
+  //       return setBalance('0');
+  //     case NETWORK_TYPE.ZK:
+  //       const [res] = await handleRequest(usersService.getProofOfAsset());
+  //       return setBalance(res?.totalWethInCirculation || '0');
 
-      // const ERC20Module = await import('@/models/contract/zk/contract.ERC20');
-      // const ERC20Contract = ERC20Module.default;
-      // const ctr = new ERC20Contract();
-      // await ctr.setInfo(asset.tokenAddr, network);
-      // const circulating = await ctr.getCirculatingAmount();
-      // return setBalance(fromWei(circulating, asset.decimals));
+  //     // const ERC20Module = await import('@/models/contract/zk/contract.ERC20');
+  //     // const ERC20Contract = ERC20Module.default;
+  //     // const ctr = new ERC20Contract();
+  //     // await ctr.setInfo(asset.tokenAddr, network);
+  //     // const circulating = await ctr.getCirculatingAmount();
+  //     // return setBalance(fromWei(circulating, asset.decimals));
 
-      // const tokenCtr = new ERC20Contract(asset.tokenAddr);
-      // const [blnWei, fetchError] = await handleRequest(
-      //   tokenCtr.getBalance(addr)
-      // );
-      // if (fetchError || !blnWei) {
-      //   return setBalance('0');
-      // }
-      default:
-        break;
-    }
-  }
+  //     // const tokenCtr = new ERC20Contract(asset.tokenAddr);
+  //     // const [blnWei, fetchError] = await handleRequest(
+  //     //   tokenCtr.getBalance(addr)
+  //     // );
+  //     // if (fetchError || !blnWei) {
+  //     //   return setBalance('0');
+  //     // }
+  //     default:
+  //       break;
+  //   }
+  // }
 
   function handleCopy() {
-    navigator.clipboard.writeText(asset.bridgeCtrAddr);
+    navigator.clipboard.writeText(asset.tokenAddr);
     if (
       copyNotifyRef.current !== null &&
       checkNotifyActive(copyNotifyRef.current)
@@ -119,7 +115,7 @@ export default function DisplayBalance({
     copyNotifyRef.current = sendNotification({
       toastType: 'success',
       options: {
-        title: 'Bridge contract address copied',
+        title: 'Contract address copied',
       },
     });
   }
@@ -128,10 +124,10 @@ export default function DisplayBalance({
     let url: string = '';
     switch (asset.network) {
       case NETWORK_NAME.ETHEREUM:
-        url = getEtherAccountScan(asset.bridgeCtrAddr);
+        url = getEtherAccountScan(asset.tokenAddr);
         break;
       case NETWORK_NAME.MINA:
-        url = getMinaAccountScan(asset.bridgeCtrAddr);
+        url = getMinaAccountScan(asset.tokenAddr);
         break;
       default:
         break;
@@ -139,15 +135,15 @@ export default function DisplayBalance({
     window.open(url, '_blank');
   }
 
-  useEffect(() => {
-    if (!isNativeCurrency) return;
-    getNativeTokenBalance(asset.bridgeCtrAddr);
-  }, [isNativeCurrency, asset.bridgeCtrAddr]);
+  // useEffect(() => {
+  //   if (!isNativeCurrency) return;
+  //   getNativeTokenBalance(asset.tokenAddr);
+  // }, [isNativeCurrency, asset.tokenAddr]);
 
-  useEffect(() => {
-    if (isNativeCurrency) return;
-    getERC20TokenBalance(asset.bridgeCtrAddr);
-  }, [isNativeCurrency, asset.bridgeCtrAddr]);
+  // useEffect(() => {
+  //   if (isNativeCurrency) return;
+  //   getERC20TokenBalance(asset.tokenAddr);
+  // }, [isNativeCurrency, asset.tokenAddr]);
 
   return (
     <HStack
@@ -162,13 +158,11 @@ export default function DisplayBalance({
         : {})}
     >
       <VStack alignItems={'flex-start'} mr={'auto'} gap={'4px'}>
-        {balance === '' ? (
-          <Skeleton w={'100px'} h={'24px'} />
-        ) : (
+        {!isLastItem ? (
           <Text variant={'xl_semiBold'} color={'text.900'}>
-            {`${formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)} ${asset.symbol}`}
+            {`${formatNumber(asset.totalWethInCirculation, asset.decimals, BigNumber.ROUND_DOWN)} ${asset.symbol}`}
           </Text>
-        )}
+        ) : null}
 
         <Flex
           flexDir={{ base: 'column', md: 'row' }}

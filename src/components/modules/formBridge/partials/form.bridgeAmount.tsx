@@ -156,26 +156,35 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     srcNetwork: Network,
     walletInstance: Wallet
   ) {
-    if (isFetchingBalance) return;
-    if (srcNetwork.name !== asset.network) return;
+    try {
+      if (isFetchingBalance) return;
+      if (srcNetwork.name !== asset.network) return;
 
-    setIsFetchingBalance(true);
-    const [res, error] = await handleRequest(
-      walletInstance.getBalance(srcNetwork, address, asset)
-    );
-    // console.log('🚀 ~ checkBalance ~ res, error:', res, error);
-    if (error || res === null) {
+      setIsFetchingBalance(true);
+      const isNativeToken = srcNetwork.nativeCurrency.symbol === asset.symbol;
+      let res;
+      if (isNativeToken)
+        res = await walletInstance.getBalance(srcNetwork, address, asset);
+      else
+        res = await walletInstance.getBalanceERC20(
+          srcNetwork,
+          address,
+          asset,
+          (networkInstance.src?.metadata as any)?.provider
+        );
+      // console.log('🚀 ~ checkBalance ~ res, error:', res, error);
+      updateBalance(res || '0');
+      setIsFetchingBalance(false);
+    } catch (error) {
       if (balance === '0') {
         sendNotification({
           toastType: 'error',
           options: {
-            title: error.message,
+            title: 'Get Balance Failed',
           },
         });
       }
     }
-    updateBalance(res || '0');
-    setIsFetchingBalance(false);
   }
 
   function dpError(e: ErrorType) {

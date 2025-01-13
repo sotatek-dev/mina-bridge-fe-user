@@ -1,15 +1,20 @@
 'use client';
 import { Button, ButtonProps } from '@chakra-ui/react';
+import BigNumber from 'bignumber.js';
 import React, { useMemo, useState } from 'react';
+import Web3 from 'web3';
 
 import { useFormBridgeState } from '../context';
 
 import Loading from '@/components/elements/loading/spinner';
+import ABICommonTokenErc20 from '@/configs/ABIs/evm/CommonTokenErc20';
 import { MODAL_NAME } from '@/configs/modal';
 import ITV from '@/configs/time';
 import { formatNumber } from '@/helpers/common';
 import useETHBridgeContract from '@/hooks/useETHBridgeContract';
+import Contract, { PROVIDER_TYPE } from '@/models/contract/evm/contract';
 import { NETWORK_TYPE } from '@/models/network/network';
+import { WALLET_INJECT_OBJ } from '@/models/wallet/wallet.abstract';
 import {
   getWalletInstanceSlice,
   getWalletSlice,
@@ -34,7 +39,7 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
 
   const [isAllowed, setIsAllowed] = useState<boolean>(false);
   const { networkInstance } = useAppSelector(getWalletInstanceSlice);
-  const { address } = useAppSelector(getWalletSlice);
+  const { address, asset: assetWallet } = useAppSelector(getWalletSlice);
 
   const isClickable =
     status.isValidData && status.isMatchedNetwork && !isInsufficient;
@@ -58,12 +63,51 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
     //   '🚀 ~ file: form.confirmButton.tsx:15 ~ getAllowance ~ amount:',
     //   amount
     // );
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        setIsAllowed(true);
-        resolve(null);
-      }, 1000);
+    if (!assetWallet || !asset) return;
+    // const newProvider = new Web3(window.ethereum);
+    // const contract = new newProvider.eth.Contract(
+    //   ABICommonTokenErc20,
+    //   assetWallet.tokenAddr
+    // );
+    // const approve = await contract.methods
+    //   .approve(
+    //     '0xf901687c39100fccb45a31d4807441808d193d1c',
+    //     BigNumber(amount).multipliedBy(1e18).toString()
+    //   )
+    //   .send({ from: address });
+    const contract = new Contract({
+      address: assetWallet.tokenAddr,
+      contractABI: ABICommonTokenErc20,
+      provider: {
+        type: PROVIDER_TYPE.WALLET,
+        injectObject: WALLET_INJECT_OBJ.METAMASK,
+      },
     });
+
+    const allowance = await contract.contractInstance.methods
+      .allowance(address, '0xf901687c39100fccb45a31d4807441808d193d1c')
+      .call();
+
+    const approve = await contract.contractInstance.methods
+      .approve(
+        '0xf901687c39100fccb45a31d4807441808d193d1c',
+        BigNumber(amount).multipliedBy(`1e${asset.decimals}`).toString()
+      )
+      .send({ from: address });
+
+    // console.log({
+    //   approve: BigNumber(amount).multipliedBy(`1e${asset.decimals}`).toString(),
+    //   amount,
+    //   assetDecimal: asset.decimals,
+    //   allowance: BigNumber(allowance).dividedBy(`1e${asset.decimals}`).toString(),
+    // });
+
+    // return new Promise((resolve, reject) => {
+    //   setTimeout(() => {
+    //     setIsAllowed(true);
+    //     resolve(null);
+    //   }, 1000);
+    // });
   }
 
   // finish action

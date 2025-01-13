@@ -1,7 +1,10 @@
 import { MetaMaskInpageProvider, RequestArguments } from '@metamask/providers';
 import Web3, { ProviderMessage, ProviderRpcError } from 'web3';
 
-import { PROVIDER_TYPE, ProviderType } from '../contract/evm/contract';
+import Contract, {
+  PROVIDER_TYPE,
+  ProviderType,
+} from '../contract/evm/contract';
 import Network, {
   getZKChainIdName,
   NETWORK_NAME,
@@ -17,6 +20,7 @@ import Wallet, {
   WALLET_NAME,
 } from './wallet.abstract';
 
+import ABICommonTokenErc20 from '@/configs/ABIs/evm/CommonTokenErc20';
 import ITV from '@/configs/time';
 import { IsServer } from '@/constants';
 import { handleRequest } from '@/helpers/asyncHandlers';
@@ -317,6 +321,33 @@ export default class WalletMetamask extends Wallet {
           throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
 
         return fromWei(blnWei!!.toString(), asset.decimals);
+
+      default:
+        return '';
+    }
+  }
+
+  async getBalanceERC20(
+    network: Network,
+    userAddr: string,
+    asset: TokenType,
+    provider: ProviderType
+  ): Promise<string> {
+    switch (network.type) {
+      case NETWORK_TYPE.EVM:
+        const contract = new Contract({
+          address: asset.tokenAddr,
+          contractABI: ABICommonTokenErc20,
+          provider: provider,
+        });
+        const [blnWei, error] = await handleRequest(
+          contract.contractInstance.methods.balanceOf(userAddr).call()
+        );
+        if (error) throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
+        return fromWei(blnWei!!.toString(), asset.decimals);
+
+      case NETWORK_TYPE.ZK:
+        return '';
 
       default:
         return '';

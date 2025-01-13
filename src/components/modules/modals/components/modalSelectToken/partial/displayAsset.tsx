@@ -57,7 +57,16 @@ export default function DisplayAsset({ data }: Props) {
     wallet: Wallet,
     network: Network
   ) {
-    const res = await wallet.getBalance(network, userAddr, asset);
+    const isNativeToken = network.nativeCurrency.symbol === asset.symbol;
+    let res;
+    if (isNativeToken) res = await wallet.getBalance(network, userAddr, asset);
+    else
+      res = await wallet.getBalanceERC20(
+        network,
+        userAddr,
+        asset,
+        (networkInstance.src?.metadata as any)?.provider
+      );
     setBalance(formatNumber(res, asset.decimals, BigNumber.ROUND_DOWN));
   }
 

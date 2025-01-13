@@ -355,7 +355,8 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       gasFee = toWei(currentPair.unlockingFee, decimal);
     }
 
-    setGasFee(fromWei(gasFee, decimal));
+    gasFee = fromWei(gasFee, decimal);
+    setGasFee(gasFee);
     setTipFee(
       new BigNumber(modalPayload.amount)
         .minus(gasFee)
@@ -365,12 +366,16 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     );
 
     console.log('Fee:', {
-      gasFee: fromWei(gasFee, decimal),
+      gasFee,
       tipFee: new BigNumber(modalPayload.amount)
         .minus(gasFee)
         .times(tipRate)
         .div(100)
         .toString(),
+      currentPair,
+      amount: modalPayload.amount,
+      tipRate,
+      decimal,
     });
   }
 

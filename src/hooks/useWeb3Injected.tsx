@@ -32,7 +32,7 @@ export default function useWeb3Injected() {
     window.dispatchEvent(new Event(REQUEST_PROVIDER_EVENT));
 
     return () => {
-      window.removeEventListener('eip6963:announceProvider', handleProvider);
+      window.removeEventListener(ANNOUNCE_PROVIDER_EVENT, handleProvider);
     };
   }, []);
 

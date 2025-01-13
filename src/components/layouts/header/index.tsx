@@ -65,11 +65,26 @@ export default function Header({}: Props) {
 
       <HStack ml={'auto'} gap={{ base: '10px', md: '16px' }}>
         {isConnected && isMdSize && (
-          <Link href={ROUTES.HISTORY} mr={'32px'}>
-            <Text variant={'lg_semiBold'} color={'text.700'}>
-              History
-            </Text>
-          </Link>
+          <HStack mr={'32px'}>
+            <Link href={ROUTES.HISTORY}>
+              <Text variant={'lg_semiBold'} color={'text.700'}>
+                History
+              </Text>
+            </Link>
+            {/* <HStack
+              w={'20px'}
+              h={'20px'}
+              bg={'var(--red-500)'}
+              borderRadius={'50%'}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'center'}
+            >
+              <Text color={'white'} fontSize={'12px'}>
+                0
+              </Text>
+            </HStack> */}
+          </HStack>
         )}
         {!isMdSize && isConnected && <Button {...btnBurgerMenuProps} />}
         <Button

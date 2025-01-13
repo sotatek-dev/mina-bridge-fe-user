@@ -28,8 +28,8 @@ import { handleRequest } from '@/helpers/asyncHandlers';
 import { formatNumber, fromWei, zeroCutterStart } from '@/helpers/common';
 import { getWeb3Instance } from '@/helpers/evmHandlers';
 import useNotifier from '@/hooks/useNotifier';
-import Network, { NETWORK_TYPE } from '@/models/network/network';
-import { Wallet } from '@/models/wallet';
+import Network, { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
+import { Wallet, WALLET_NAME, WalletAuro } from '@/models/wallet';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
@@ -40,7 +40,7 @@ import {
 import { persistSliceActions, TokenType } from '@/store/slices/persistSlice';
 
 const numberRegex = new RegExp(
-  /^([0-9]{1,100}\.[0-9]{1,100})$|^([0-9]{1,100})\.?$|^\.([0-9]{1,100})?$/
+  /^([0-9]{1,100}\.[0-9]{1,100})$|^([0-9]{1,100})\.?$|^\.([0-9]{1,100})?$/,
 );
 
 export type FormBridgeAmountRef = null | { resetValue: () => void };
@@ -50,9 +50,14 @@ type Props = {} & Pick<StackProps, ChakraBoxSizeProps>;
 const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   type ErrorType = keyof typeof ErrorList | null;
   const dispatch = useAppDispatch();
-  const { address, isConnected } = useAppSelector(getWalletSlice);
+  const {
+    address,
+    isConnected,
+    walletKey,
+    asset: assetWallet,
+  } = useAppSelector(getWalletSlice);
   const { walletInstance, networkInstance } = useAppSelector(
-    getWalletInstanceSlice
+    getWalletInstanceSlice,
   );
 
   const {
@@ -63,6 +68,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     dailyQuota,
     srcNetwork,
     txEmitCount,
+    isInsufficient,
   } = useFormBridgeState().state;
   const { nwProvider } = useFormBridgeState().constants;
   const { updateAmount, updateStatus, updateBalance } =
@@ -72,7 +78,6 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
 
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState<ErrorType>(null);
-  // const [isFetchingBalance, setIsFetchingBalance] = useState<boolean>(false);
 
   // timeout
   const throttleInput = useRef<any>(null);
@@ -91,19 +96,13 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     () => ({
       required: 'This field is required',
       insufficient_fund: 'Insufficient balance',
-      reach_min: `You have to bridge at least ${assetRange[0]} ${
-        asset?.symbol || ''
-      }`,
-      reach_max: `You can only bridge maximum ${assetRange[1]} ${
-        asset?.symbol || ''
-      }`,
+      reach_min: `You have to bridge at least ${assetRange[0]} ${asset?.symbol || ''}`,
+      reach_max: `You can only bridge maximum ${assetRange[1]} ${asset?.symbol || ''}`,
       insufficient_fund_fee:
         'Transaction can’t be made because of insufficient balance for transfer fee',
-      insufficient_daily_quota: `You can only bridge ${dailyQuota.max} ${
-        asset?.symbol || ''
-      } per address daily`,
+      insufficient_daily_quota: `You can only bridge ${dailyQuota.max} ${asset?.symbol || ''} per address daily`,
     }),
-    [asset, assetRange, dailyQuota]
+    [asset, assetRange, dailyQuota],
   );
 
   async function estimateFee(isRefresh = false) {
@@ -127,11 +126,11 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     updateStatus('isLoading', true);
 
     const [gasPrice, error] = await handleRequest(
-      getWeb3Instance(nwProvider).eth.getGasPrice()
+      getWeb3Instance(nwProvider).eth.getGasPrice(),
     );
     if (error || !gasPrice) return '0';
     const priceBN = new BigNumber(gasPrice?.toString() || '0').multipliedBy(
-      process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10
+      process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10,
     );
     const amountBN = new BigNumber(gasAmount.toString());
     updateStatus('isLoading', false);
@@ -141,11 +140,11 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
         data: {
           value: fromWei(
             amountBN.multipliedBy(priceBN).toString(),
-            asset.decimals
+            asset.decimals,
           ),
           timestamp: moment.now(),
         },
-      })
+      }),
     );
     return;
   }
@@ -154,14 +153,14 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     address: string,
     asset: TokenType,
     srcNetwork: Network,
-    walletInstance: Wallet
+    walletInstance: Wallet,
   ) {
     if (isFetchingBalance) return;
     if (srcNetwork.name !== asset.network) return;
 
     setIsFetchingBalance(true);
     const [res, error] = await handleRequest(
-      walletInstance.getBalance(srcNetwork, address, asset)
+      walletInstance.getBalance(srcNetwork, address, asset),
     );
     // console.log('🚀 ~ checkBalance ~ res, error:', res, error);
     if (error || res === null) {
@@ -192,7 +191,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       console.log('🚀 ~ throttleInput.current=setTimeout ~ value:', value);
       const balanceBN = new BigNumber(balance);
       const availQuota = new BigNumber(dailyQuota.max).minus(
-        new BigNumber(dailyQuota.current)
+        new BigNumber(dailyQuota.current),
       );
       // return error
       if (bn.isNaN()) return dpError('required');
@@ -310,21 +309,21 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
           formatNumber(
             maxAmount.toString(10),
             asset.decimals,
-            BigNumber.ROUND_DOWN
-          )
+            BigNumber.ROUND_DOWN,
+          ),
         );
         throttleActions(
           formatNumber(
             maxAmount.toString(10),
             asset.decimals,
-            BigNumber.ROUND_DOWN
-          )
+            BigNumber.ROUND_DOWN,
+          ),
         );
       }
     } else {
       setValue(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
       throttleActions(
-        formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)
+        formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN),
       );
     }
   }
@@ -337,7 +336,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
         setError(null);
       },
     }),
-    [setValue, setError]
+    [setValue, setError],
   );
 
   useEffect(() => {
@@ -362,7 +361,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       () => {
         checkBalance(address, asset, srcNetwork, walletInstance);
       },
-      ITV.M5 // 5min
+      ITV.M5, // 5min
     );
     return () => {
       clearInterval(itvCheckBalance.current);
@@ -433,25 +432,60 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
         </Text>
       ) : null}
       {status.isConnected ? (
-        <HStack>
-          <Text variant={'md'} color={'text.500'}>
-            Available:{' '}
-            {asset &&
-              formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)}{' '}
-            {(asset?.symbol.toUpperCase() || '') + ' '}
-            Tokens
-          </Text>
-          {isFetchingBalance && (
-            <Loading
-              id={'bridge-amount-loading'}
-              bgOpacity={0}
-              w={'15px'}
-              h={'15px'}
-              spinnerSize={15}
-              spinnerThickness={8}
-            />
+        <VStack alignItems={'flex-start'} gap={0}>
+          <HStack>
+            <Text variant={'md'} color={'text.500'}>
+              Available:{' '}
+              {asset &&
+                formatNumber(
+                  balance,
+                  asset.decimals,
+                  BigNumber.ROUND_DOWN,
+                )}{' '}
+              {(asset?.symbol.toUpperCase() || '') + ' '}
+              Tokens
+            </Text>
+            {isFetchingBalance && (
+              <Loading
+                id={'bridge-amount-loading'}
+                bgOpacity={0}
+                w={'15px'}
+                h={'15px'}
+                spinnerSize={15}
+                spinnerThickness={8}
+              />
+            )}
+
+            {/* <Text
+              variant={'md'}
+              color={'red.500'}
+              display={'flex'}
+              alignItems={'center'}
+              gap={'8px'}
+            >
+              <Text color={'text.500'}>{' - '}</Text>Insufficient balance
+            </Text> */}
+          </HStack>
+          {walletKey === WALLET_NAME.AURO && (
+            <HStack>
+              <Text variant={'md'} color={'text.500'}>
+                {`Gas fee: ${process.env.NEXT_PUBLIC_MINA_GAS_FEE || 0.1} MINA Tokens`}
+              </Text>
+
+              {isInsufficient && (
+                <Text
+                  variant={'md'}
+                  color={'red.500'}
+                  display={'flex'}
+                  alignItems={'center'}
+                  gap={'8px'}
+                >
+                  <Text color={'text.500'}> - </Text>Insufficient for gas{' '}
+                </Text>
+              )}
+            </HStack>
           )}
-        </HStack>
+        </VStack>
       ) : null}
     </VStack>
   );

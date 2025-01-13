@@ -1,4 +1,5 @@
 export const ACCESS_TOKEN = 'token_access';
+export const TERMS_OF_USE = 'terms_of_use';
 export const HOOK_CACHE_FILE_NAMES = [
   'lagrange-basis-fp-1024',
   'lagrange-basis-fp-2048',

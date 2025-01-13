@@ -21,13 +21,14 @@ import {
 } from '@/store';
 import { uiSliceActions } from '@/store/slices/uiSlice';
 import { NETWORK_KEY, walletSliceActions } from '@/store/slices/walletSlice';
+import ArrowDownIcon from '@public/assets/icons/icon.arrow.down.svg';
 import MenuIcon from '@public/assets/icons/icon.burger-menu.right.svg';
 
 export default function useHeaderLogic(extractFnc: boolean = false) {
   const dispatch = useAppDispatch();
   const { lastNetworkName } = useAppSelector(getPersistSlice);
   const { walletInstance, networkInstance } = useAppSelector(
-    getWalletInstanceSlice
+    getWalletInstanceSlice,
   );
   const { isConnected, address } = useAppSelector(getWalletSlice);
 
@@ -40,7 +41,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
   const { width } = useWindowSize();
   const isMdSize = useMemo(
     () => width / 16 >= Number(md.replace('em', '')),
-    [width, md]
+    [width, md],
   );
 
   const toggleMenu = useCallback(() => {
@@ -74,7 +75,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
 
   const openConnectWalletModal = useCallback(() => {
     dispatch(
-      uiSliceActions.openModal({ modalName: MODAL_NAME.CONNECT_WALLET })
+      uiSliceActions.openModal({ modalName: MODAL_NAME.CONNECT_WALLET }),
     );
   }, [dispatch]);
 
@@ -87,7 +88,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
           networkKey: NETWORK_KEY.SRC,
           isValidate: true,
         },
-      })
+      }),
     );
   }, [closeDrawer]);
 
@@ -131,11 +132,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
           >
             {nw.name} Network
           </Text>
-          <Image
-            src={'/assets/icons/icon.arrow.down.svg'}
-            w={'16px'}
-            h={'16px'}
-          />
+          <ArrowDownIcon color={'text.500'} height={'16'} width={'16'} />
         </>
       ),
     };

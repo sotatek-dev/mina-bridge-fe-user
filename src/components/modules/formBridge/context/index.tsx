@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import React, {
   useCallback,
@@ -12,7 +13,8 @@ import { DesAddrRef } from '../partials/form.desAddress';
 import useETHBridgeContract from '@/hooks/useETHBridgeContract';
 import BridgeContract from '@/models/contract/evm/contract.bridge';
 import { Network } from '@/models/network';
-import { NetworkEVMProviderType } from '@/models/network/network';
+import { NETWORK_NAME, NetworkEVMProviderType } from '@/models/network/network';
+import { WALLET_NAME, WalletAuro } from '@/models/wallet';
 import {
   getPersistSlice,
   getUISlice,
@@ -55,6 +57,7 @@ export type FormBridgeState = {
   assetRange: string[];
   balance: string;
   txEmitCount: number;
+  isInsufficient: boolean;
 };
 
 export type FormBridgeCtxValueType = {
@@ -80,6 +83,7 @@ export type FormBridgeCtxValueType = {
     // refetchBalance: () => void;
     updateTxEmitCount: () => void;
     resetFormValues: () => void;
+    updateIsInsufficient: (isInsufficient: boolean) => void;
   };
 };
 export type FormBridgeProviderProps = React.PropsWithChildren<{}>;
@@ -106,6 +110,7 @@ export const initModalCWState: FormBridgeState = {
   assetRange: ['0', '0'],
   balance: '0',
   txEmitCount: 0,
+  isInsufficient: false,
 };
 
 export const FormBridgeContext =
@@ -121,7 +126,9 @@ export default function FormBridgeProvider({
   const dispatch = useAppDispatch();
   const { address, isConnected, asset } = useAppSelector(getWalletSlice);
   const { isLoading } = useAppSelector(getUISlice);
-  const { networkInstance } = useAppSelector(getWalletInstanceSlice);
+  const { walletInstance, networkInstance } = useAppSelector(
+    getWalletInstanceSlice,
+  );
   const { listAsset } = useAppSelector(getPersistSlice);
 
   const [state, setState] = useState<FormBridgeState>(initModalCWState);
@@ -281,6 +288,17 @@ export default function FormBridgeProvider({
     );
   }, []);
 
+  // update gas fee is insuficient
+  const updateIsInsufficient = useCallback(
+    (isInsufficient: boolean) => {
+      setState((prev) => ({
+        ...prev,
+        isInsufficient: isInsufficient,
+      }));
+    },
+    [setState],
+  );
+
   // execute when click confirm btn
   const resetFormValues = useCallback(() => {
     desAddrRef.current && desAddrRef.current.resetValue();
@@ -351,6 +369,30 @@ export default function FormBridgeProvider({
     }
   }, [isConnected]);
 
+  useEffect(() => {
+    const getNativeBalance = async () => {
+      const balance = await (walletInstance as WalletAuro)?.getNativeBalance(
+        networkInstance?.src as Network,
+        address as string,
+        asset as TokenType,
+      );
+      updateIsInsufficient(
+        new BigNumber(balance).lt(process.env.NEXT_PUBLIC_MINA_GAS_FEE || 0.1),
+      );
+    };
+    if (
+      isConnected &&
+      asset?.network === NETWORK_NAME.MINA &&
+      networkInstance?.src?.name === NETWORK_NAME.MINA &&
+      walletInstance?.name === WALLET_NAME.AURO
+    ) {
+      getNativeBalance();
+    }
+    if (asset?.network === NETWORK_NAME.ETHEREUM) {
+      updateIsInsufficient(false);
+    }
+  }, [asset, address, walletInstance, isConnected]);
+
   // final value
   const value = useMemo<FormBridgeCtxValueType>(
     () => ({
@@ -372,6 +414,7 @@ export default function FormBridgeProvider({
         updateAssetRage,
         updateBalance,
         updateTxEmitCount,
+        updateIsInsufficient,
         // refetchBalance,
       },
     }),
@@ -390,6 +433,7 @@ export default function FormBridgeProvider({
       updateAssetRage,
       // refetchBalance,
       updateTxEmitCount,
+      updateIsInsufficient,
       resetFormValues,
       bridgeCtr,
     ],

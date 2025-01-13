@@ -43,7 +43,7 @@ export default function ListAsset({}: Props) {
   return (
     uniqPairs.length > 0 &&
     uniqPairs.map((pair) => (
-      <DisplayAsset key={pair.id} assetSymbol={'ETH'} data={pair} />
+      <DisplayAsset key={pair.id} assetSymbol={pair.asset} data={pair} />
     ))
   );
 }

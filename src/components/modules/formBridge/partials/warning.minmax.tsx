@@ -42,7 +42,7 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
     }
 
     const pair = supportedPairs?.find(
-      (v) => `${v.id}` === `${asset?.pairId || ''}`,
+      (v) => `${v.id}` === `${asset?.pairId || ''}`
     );
     if (!pair) return null;
 
@@ -51,9 +51,10 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
       bridgeCtrAddr: pair.toScAddress,
       tokenAddr: pair.toAddress,
       des: 'tar',
-      symbol: pair.toSymbol.toUpperCase(),
+      symbol: pair.asset.toUpperCase(),
       name: '',
       decimals: pair.toDecimal,
+      totalWethInCirculation: pair.totalCirculation,
       network:
         pair.toChain === 'eth'
           ? NETWORK_NAME.ETHEREUM
@@ -71,7 +72,7 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
         asset,
         range,
         timestamp: moment.now(),
-      }),
+      })
     );
   }
 
@@ -85,14 +86,14 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
         (e) =>
           e.asset.pairId === asset.pairId &&
           e.asset.symbol === asset.symbol &&
-          e.asset.network === asset.network,
+          e.asset.network === asset.network
       );
       if (persistedAsset) {
         if (
           persistedAsset.timestamp &&
           moment(moment.now()).diff(
             moment(persistedAsset.timestamp),
-            'minute',
+            'minute'
           ) <= 5
         ) {
           updateStatus('isLoading', false);
@@ -112,7 +113,7 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
           async () => ({
             min: await bridgeCtr.getMinAmount(),
             max: await bridgeCtr.getMaxAmount(),
-          }),
+          })
         );
 
         // handle if have error
@@ -194,7 +195,7 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
   useEffect(() => {
     (async () => {
       const [listPair, error] = await handleRequest(
-        usersService.getListSupportedPairs(),
+        usersService.getListSupportedPairs()
       );
       setSupportedPairs(listPair);
     })();

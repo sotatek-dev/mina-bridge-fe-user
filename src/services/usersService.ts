@@ -4,19 +4,29 @@ import { USERS_ENDPOINT } from '@/services/config';
 
 export type SupportedPairResponse = {
   id: number;
-  fromChain: string;
-  fromSymbol: string;
-  fromAddress: string;
-  fromDecimal: number;
-  fromScAddress: string;
-  toChain: string;
-  toSymbol: string;
-  toAddress: string;
-  toDecimal: number;
-  toScAddress: string;
-  status: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt: string;
+  dailyQuota: string;
+  bridgeFee: string;
+  mintingFee: string;
+  unlockingFee: string;
+  asset: string;
+  totalWethMinted: string;
+  totalWethBurnt: string;
+  fromChain: string;
+  toChain: string;
+  fromSymbol: any;
+  toSymbol: any;
+  fromAddress: string;
+  toAddress: string;
+  fromDecimal: number;
+  toDecimal: number;
+  fromScAddress: string;
+  toScAddress: string;
+  isHidden: boolean;
+  status: string;
+  totalCirculation: string;
 };
 export type GetListSpPairsResponse = SupportedPairResponse[];
 
@@ -116,24 +126,24 @@ class UsersService {
     );
   }
 
-  getDailyQuota(query: { address: string }) {
+  getDailyQuota(query: { userAddress: string; tokenAddress: string }) {
     return this.service.get<GetDailyQuotaResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.address}`
+      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.userAddress}/${query.tokenAddress}`
     );
   }
 
-  getProtocolFee(payload: { pairId: string | number }) {
-    return this.service.post<{
-      gasFee: string;
-      tipRate: string;
-      decimal: string;
-    }>(
-      `${this.baseURL}/${USERS_ENDPOINT.BRIDGE}/${USERS_ENDPOINT.PROTOCOL_FEE}`,
-      {
-        pairId: Number(payload.pairId),
-      }
-    );
-  }
+  // getProtocolFee(payload: { pairId: string | number }) {
+  //   return this.service.post<{
+  //     gasFee: string;
+  //     tipRate: string;
+  //     decimal: string;
+  //   }>(
+  //     `${this.baseURL}/${USERS_ENDPOINT.BRIDGE}/${USERS_ENDPOINT.PROTOCOL_FEE}`,
+  //     {
+  //       pairId: Number(payload.pairId),
+  //     }
+  //   );
+  // }
 
   getPriceUsd() {
     return this.service.get<GetPriceUsdResponse>(

@@ -59,7 +59,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   const { listIcon } = useAppSelector(getPersistSlice);
   const { address, asset, isConnected } = useAppSelector(getWalletSlice);
   const { networkInstance, walletInstance } = useAppSelector(
-    getWalletInstanceSlice,
+    getWalletInstanceSlice
   );
 
   const zkCtr = useZKContractState().state;
@@ -83,7 +83,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       curModal.payload && 'destAddr' in curModal.payload
         ? curModal.payload
         : null,
-    [curModal],
+    [curModal]
   );
 
   const bridgeEVMCtr = useETHBridgeContract({
@@ -111,7 +111,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     return formatNumber(
       new BigNumber(amount).toString(),
       asset.decimals,
-      BigNumber.ROUND_DOWN,
+      BigNumber.ROUND_DOWN
     );
   }, [modalPayload]);
 
@@ -121,18 +121,19 @@ export default function useModalConfirmLogic({ modalName }: Params) {
     }
 
     const pair = supportedPairs?.find(
-      (v) => `${v.id}` === `${asset?.pairId || ''}`,
+      (v) => `${v.id}` === `${asset?.pairId || ''}`
     );
     if (!pair) return null;
 
     const targetAsset: TokenType = {
       pairId: `${pair.id}`,
-      bridgeCtrAddr: pair.toScAddress,
-      tokenAddr: pair.toAddress,
+      bridgeCtrAddr: pair?.toScAddress,
+      tokenAddr: pair?.toAddress,
       des: 'tar',
-      symbol: pair.toSymbol.toUpperCase(),
+      symbol: pair.asset.toUpperCase(),
       name: '',
       decimals: pair.toDecimal,
+      totalWethInCirculation: pair.totalCirculation,
       network:
         pair.toChain === 'eth'
           ? NETWORK_NAME.ETHEREUM
@@ -258,7 +259,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         value: `${formatNumber2(
           tipFeeAmount,
           asset.decimals,
-          '~',
+          '~'
         )} ${asset.network === NETWORK_NAME.MINA ? tarAsset?.symbol.toUpperCase() : asset.symbol.toUpperCase()}`,
         affixIcon: '',
       },
@@ -270,7 +271,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         value: `${formatNumber2(
           gasFeeAmount,
           asset.decimals,
-          '~',
+          '~'
         )} ${asset.network === NETWORK_NAME.MINA ? tarAsset?.symbol.toUpperCase() : asset.symbol.toUpperCase()}`,
         affixIcon: '',
       },
@@ -279,7 +280,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         value: `${formatNumber2(
           totalFeeInUsd.toString(),
           asset.decimals,
-          '~',
+          '~'
         )} USD / ${formatNumber2(totalFeeAmount, asset.decimals, '~')} 
         ${asset.network === NETWORK_NAME.MINA ? tarAsset?.symbol.toUpperCase() : asset.symbol.toUpperCase()}`,
         affixIcon: '',
@@ -289,7 +290,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         value: `${formatNumber2(
           receivedAmount,
           asset.decimals,
-          '~',
+          '~'
         )} ${tarAsset?.symbol.toUpperCase()}`,
         affixIcon: '',
       },
@@ -331,28 +332,55 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
   async function getProtocolFee(modalPayload: ModalConfirmBridgePayload) {
     const [res, error] = await handleRequest(
-      usersService.getProtocolFee({
-        pairId: modalPayload.asset.pairId,
-      }),
+      usersService.getListSupportedPairs()
     );
     if (error || !res) {
       setGasFee('0');
       setTipFee('0');
       return;
     }
-    const gasFee = fromWei(res.gasFee, res.decimal);
+    const currentPair = res.find((pair) => String(pair.id) === asset?.pairId);
+    if (!currentPair) return;
+
+    let gasFee = '';
+    let decimal = 18;
+    let tipRate = currentPair.bridgeFee;
+
+    // Check Network Receive
+    if (networkInstance?.tar?.name === NETWORK_NAME.MINA) {
+      decimal = currentPair.toDecimal;
+      gasFee = toWei(currentPair.mintingFee, decimal);
+    } else {
+      decimal = decimal = currentPair.fromDecimal;
+      gasFee = toWei(currentPair.unlockingFee, decimal);
+    }
+
+    gasFee = fromWei(gasFee, decimal);
     setGasFee(gasFee);
     setTipFee(
       new BigNumber(modalPayload.amount)
         .minus(gasFee)
-        .times(res.tipRate)
+        .times(tipRate)
+        .div(100)
+        .toString()
+    );
+
+    console.log('Fee:', {
+      gasFee,
+      tipFee: new BigNumber(modalPayload.amount)
+        .minus(gasFee)
+        .times(tipRate)
         .div(100)
         .toString(),
-    );
+      currentPair,
+      amount: modalPayload.amount,
+      tipRate,
+      decimal,
+    });
   }
 
   function buildEVMBridgeTX(
-    params: ModalConfirmBridgePayload,
+    params: ModalConfirmBridgePayload
   ): EVMBridgeTXLock | null {
     if (!bridgeEVMCtr) return null;
     // console.log('🚀 ~ useModalConfirmLogic ~ params.amount:', params.amount);
@@ -417,7 +445,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
 
   async function handleEVMBridge(
     tx: EVMBridgeTXLock,
-    { modalPayload, address }: BridgePayload,
+    { modalPayload, address }: BridgePayload
   ): Promise<boolean> {
     if (!bridgeEVMCtr) return onError();
     const [_, error] = await handleRequest(
@@ -426,7 +454,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         userAddr: address,
         asset: modalPayload.asset,
         isNativeToken: modalPayload.isNativeCurrency,
-      }),
+      })
     );
     if (error) return onError();
     return onSuccess();
@@ -448,12 +476,12 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       // fetch involve into the process accounts
       await zkCtr.erc20Contract.fetchInvolveAccount(
         address,
-        modalPayload.asset.bridgeCtrAddr,
+        modalPayload.asset.bridgeCtrAddr
       );
 
       const update = await AccountUpdate.create(
         zkCtr.bridgeContract.bridgeAddress,
-        zkCtr.erc20Contract.contractInstance?.tokenId,
+        zkCtr.erc20Contract.contractInstance?.tokenId
       );
       const accountIsNew = await update.account.isNew.getAndRequireEquals();
 
@@ -462,7 +490,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         const balance = await (walletInstance as WalletAuro).getNativeBalance(
           networkInstance.src,
           address,
-          asset,
+          asset
         );
         if (new BigNumber(balance).lt(0.1)) {
           sendNotification({
@@ -485,7 +513,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
           async () => {
             AccountUpdate.fundNewAccount(PublicKey.fromBase58(address), 1);
             await zkCtr.bridgeContract!!.lock('1', '200000000');
-          },
+          }
         );
 
         await tx1.prove();
@@ -510,7 +538,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         const balance = await (walletInstance as WalletAuro).getNativeBalance(
           networkInstance.src,
           address,
-          asset,
+          asset
         );
         if (new BigNumber(balance).lt(0.1)) {
           sendNotification({
@@ -534,9 +562,9 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         async () => {
           await zkCtr.bridgeContract!!.lock(
             modalPayload.destAddr,
-            toWei(modalPayload.amount, modalPayload.asset.decimals),
+            toWei(modalPayload.amount, modalPayload.asset.decimals)
           );
-        },
+        }
       );
 
       // prove tx
@@ -663,7 +691,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       () => {
         fetchEthPriceInUsd();
       },
-      Number(process.env.NEXT_PUBLIC_INTERVAL_FETCH_ETH_PRICE_IN_USD || 60000),
+      Number(process.env.NEXT_PUBLIC_INTERVAL_FETCH_ETH_PRICE_IN_USD || 60000)
     );
 
     return () => {
@@ -676,24 +704,26 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   useEffect(() => {
     (async () => {
       const [listPair, error] = await handleRequest(
-        usersService.getListSupportedPairs(),
+        usersService.getListSupportedPairs()
       );
       setSupportedPairs(listPair);
     })();
-  }, []); 
-  
+  }, []);
+
   useEffect(() => {
     if (!modalPayload || !curModal.isOpen) return;
     const pair = supportedPairs?.find(
-      (v) => `${v.id}` === `${asset?.pairId || ''}`,
+      (v) => `${v.id}` === `${asset?.pairId || ''}`
     );
     if (!pair) return;
 
     (async () => {
       const [expectedTimesRes, error] = await handleRequest(
-        usersService.getExpectedTimes({ network: pair.toChain }),
+        usersService.getExpectedTimes({ network: pair.toChain })
       );
-      setExpectedTimes(countExpectedTimes(expectedTimesRes?.completeTimeEstimated));
+      setExpectedTimes(
+        countExpectedTimes(expectedTimesRes?.completeTimeEstimated)
+      );
     })();
   }, [curModal.isOpen, modalPayload, supportedPairs, asset]);
 

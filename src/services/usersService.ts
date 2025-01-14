@@ -87,6 +87,10 @@ export type GetPriceUsdResponse = {
 export type GetPoAResponse = {
   totalWethInCirculation: string;
 };
+export type GetExpectedTimesResponse = {
+  receivedNetwork: string;
+  completeTimeEstimated: number;
+};
 
 class UsersService {
   readonly service: AxiosService;
@@ -98,7 +102,7 @@ class UsersService {
 
   async getListSupportedPairs() {
     const res = await this.service.get<GetListSpPairsResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.SP_PAIRS}`
+      `${this.baseURL}/${USERS_ENDPOINT.SP_PAIRS}`,
     );
     return res;
   }
@@ -108,13 +112,13 @@ class UsersService {
       `${this.baseURL}/${USERS_ENDPOINT.HISTORY}/${query.address}`,
       {
         params: { limit: query.limit, page: query.page },
-      }
+      },
     );
   }
 
   getDailyQuota(query: { address: string }) {
     return this.service.get<GetDailyQuotaResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.address}`
+      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.address}`,
     );
   }
 
@@ -127,19 +131,28 @@ class UsersService {
       `${this.baseURL}/${USERS_ENDPOINT.BRIDGE}/${USERS_ENDPOINT.PROTOCOL_FEE}`,
       {
         pairId: Number(payload.pairId),
-      }
+      },
     );
   }
 
   getPriceUsd() {
     return this.service.get<GetPriceUsdResponse>(
-      `${this.baseURL}/token/${USERS_ENDPOINT.PRICE_USD}`
+      `${this.baseURL}/token/${USERS_ENDPOINT.PRICE_USD}`,
     );
   }
 
   getProofOfAsset() {
     return this.service.get<GetPoAResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.PROOF_OF_ASSETS}`
+      `${this.baseURL}/${USERS_ENDPOINT.PROOF_OF_ASSETS}`,
+    );
+  }
+
+  getExpectedTimes(query: { network: string }) {
+    return this.service.get<GetExpectedTimesResponse>(
+      `${this.baseURL}/${USERS_ENDPOINT.EXPECTED_TIMES}`,
+      {
+        params: { receivedNetwork: query.network },
+      },
     );
   }
 }

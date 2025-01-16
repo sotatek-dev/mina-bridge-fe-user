@@ -126,19 +126,6 @@ export default function ModalConfirmBridge() {
             <Heading as={'h3'} variant={'h3'} color={'text.900'} mt={'20px'}>
               Transaction Submitted
             </Heading>
-            <Text
-              variant={'md'}
-              color={'text.500'}
-              mt={'5px'}
-              onClick={() => {
-                onDismiss();
-                handleCloseModal();
-                router.push(ROUTES.HISTORY);
-              }}
-              cursor={'pointer'}
-            >
-              View on History
-            </Text>
           </VStack>
         );
 
@@ -415,7 +402,26 @@ export default function ModalConfirmBridge() {
         }
         if (isLoading) return null;
 
-        if (isSuccess || hasError)
+        if (isSuccess)
+          return (
+            <Button
+              variant={'primary.orange.solid'}
+              w={'full'}
+              h={'46px'}
+              mt={'25px'}
+              mx={'40px'}
+              mb={'40px'}
+              onClick={() => {
+                onDismiss();
+                handleCloseModal();
+                router.push(ROUTES.HISTORY);
+              }}
+            >
+              View on History
+            </Button>
+          );
+
+        if (hasError)
           return (
             <Button
               variant={'primary.orange.solid'}

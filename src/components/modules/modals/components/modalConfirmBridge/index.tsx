@@ -56,7 +56,7 @@ export default function ModalConfirmBridge() {
   const isDefault = useMemo(() => status === MODAL_CF_STATUS.IDLE, [status]);
   const isInitializing = useMemo(
     () => status === MODAL_CF_STATUS.INITIALIZE,
-    [status],
+    [status]
   );
   const isLoading = useMemo(() => status === MODAL_CF_STATUS.LOADING, [status]);
   const hasError = useMemo(() => status === MODAL_CF_STATUS.ERROR, [status]);
@@ -307,11 +307,11 @@ export default function ModalConfirmBridge() {
               justifyContent={'space-between'}
               display={'flex'}
             >
-              <Text variant={'lg'} color={'primary.orange'}>
+              <Text variant={'md'} color={'primary.orange'}>
                 Expected times
               </Text>
 
-              <Text variant={'lg_medium'} color={'primary.orange'}>
+              <Text variant={'md_medium'} color={'primary.orange'}>
                 ~{expectedTimes}{' '}
               </Text>
             </Box>

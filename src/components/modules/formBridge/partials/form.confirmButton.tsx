@@ -26,7 +26,7 @@ type Props = { isDisplayed: boolean } & Pick<ButtonProps, ChakraBoxSizeProps>;
 // component content
 function Content(props: Omit<Props, 'isDisplayed'>) {
   const dispatch = useAppDispatch();
-  const { status, asset, amount, desAddr, balance } =
+  const { status, asset, amount, desAddr, balance, isInsufficient } =
     useFormBridgeState().state;
   const { isNativeCurrency } = useFormBridgeState().constants;
   const { updateStatus, resetFormValues, updateTxEmitCount } =
@@ -36,7 +36,8 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
   const { networkInstance } = useAppSelector(getWalletInstanceSlice);
   const { address } = useAppSelector(getWalletSlice);
 
-  const isClickable = status.isValidData && status.isMatchedNetwork;
+  const isClickable =
+    status.isValidData && status.isMatchedNetwork && !isInsufficient;
 
   // only token in evm chains need to get allowance
   const isNeedApprove =

@@ -82,7 +82,7 @@ export default function Card({ nwKey }: CardProps) {
               : WALLET_NAME.AURO
           ]!,
         network: network,
-      }),
+      })
     );
     //  when fail to connect
     if (walletSliceActions.connectWallet.rejected.match(res)) {
@@ -139,7 +139,16 @@ export default function Card({ nwKey }: CardProps) {
   return (
     <Button variant={'_blank'} key={nwKey} {...containerProps}>
       <Flex {...contentProps}>
-        <Image w={'36px'} h={'36px'} src={network.metadata.logo.base} />
+        <Image
+          w={'36px'}
+          h={'36px'}
+          src={network.metadata.logo.base}
+          filter={
+            !isSelected && (payload as ModalSNPayload)?.isDisable
+              ? 'grayscale(100%)'
+              : undefined
+          }
+        />
         <Text textTransform={'capitalize'} variant={'xl_semiBold'}>
           {network.name} Network
         </Text>

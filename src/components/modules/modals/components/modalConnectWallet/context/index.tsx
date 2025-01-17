@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { MODAL_NAME } from '@/configs/modal';
 import { handleRequest } from '@/helpers/asyncHandlers';
+import StorageUtils from '@/helpers/handleBrowserStorage';
 import useNotifier from '@/hooks/useNotifier';
 import NETWORKS, { Network, NETWORK_NAME } from '@/models/network';
 import WALLETS, { Wallet, WALLET_NAME } from '@/models/wallet';
@@ -189,6 +190,7 @@ export default function ModalCWProvider({
       handleCloseModal();
       if (walletSliceActions.connectWallet.fulfilled.match(res)) {
         openCWSuccessModal();
+        StorageUtils.setAcceptTermsOfUse('true');
       }
       if (walletSliceActions.connectWallet.rejected.match(res)) {
         sendNotification({
@@ -222,7 +224,7 @@ export default function ModalCWProvider({
         isScreenLoading: false,
         isSnapInstalling: false,
       },
-      isAcceptTerm: false,
+      isAcceptTerm: Boolean(StorageUtils.getAcceptTermsOfUse()) ?? false,
       selectedNetwork: lastNetworkName,
     });
   }, [curModal.isOpen, lastNetworkName]);

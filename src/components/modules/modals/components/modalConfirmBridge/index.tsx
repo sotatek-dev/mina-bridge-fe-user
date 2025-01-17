@@ -1,9 +1,7 @@
 'use client';
-import { Link } from '@chakra-ui/next-js';
 import {
   Box,
   Button,
-  Checkbox,
   Grid,
   GridItem,
   Heading,
@@ -21,10 +19,11 @@ import CustomModal, { ModalTitle } from '@/components/elements/customModal';
 import Loading from '@/components/elements/loading/spinner';
 import { MODAL_NAME } from '@/configs/modal';
 import ROUTES, { MDX_REDIRECT } from '@/configs/routes';
+import StorageUtils from '@/helpers/handleBrowserStorage';
 import useNotifier from '@/hooks/useNotifier';
 import { NETWORK_NAME } from '@/models/network';
 import { useAppDispatch } from '@/store';
-import BridgeIcon from '@public/assets/icons/icon.bridge.next.svg';
+import ArrowRightIcon from '@public/assets/icons/icon.arrow.right.svg';
 
 export default function ModalConfirmBridge() {
   const {
@@ -32,12 +31,13 @@ export default function ModalConfirmBridge() {
     networkInstance,
     modalPayload,
     getDisplayValues,
-    isAgreeTerm,
+    // isAgreeTerm,
     onDismiss,
     status,
-    toggleAgreeTerm,
+    // toggleAgreeTerm,
     handleConfirm,
     handleCloseModal,
+    expectedTimes,
   } = useModalSNLogic({
     modalName: MODAL_NAME.CONFIRM_BRIDGE,
   });
@@ -56,7 +56,7 @@ export default function ModalConfirmBridge() {
   const isDefault = useMemo(() => status === MODAL_CF_STATUS.IDLE, [status]);
   const isInitializing = useMemo(
     () => status === MODAL_CF_STATUS.INITIALIZE,
-    [status],
+    [status]
   );
   const isLoading = useMemo(() => status === MODAL_CF_STATUS.LOADING, [status]);
   const hasError = useMemo(() => status === MODAL_CF_STATUS.ERROR, [status]);
@@ -126,19 +126,6 @@ export default function ModalConfirmBridge() {
             <Heading as={'h3'} variant={'h3'} color={'text.900'} mt={'20px'}>
               Transaction Submitted
             </Heading>
-            <Text
-              variant={'md'}
-              color={'text.500'}
-              mt={'5px'}
-              onClick={() => {
-                onDismiss();
-                handleCloseModal();
-                router.push(ROUTES.HISTORY);
-              }}
-              cursor={'pointer'}
-            >
-              View on History
-            </Text>
           </VStack>
         );
 
@@ -265,8 +252,17 @@ export default function ModalConfirmBridge() {
                 top={'50%'}
                 left={'50%'}
                 transform={'translate(-50%,-50%)'}
+                w={'40px'}
+                h={'40px'}
+                bg={'var(--background-0)'}
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'center'}
+                border={'1px'}
+                borderRadius={50}
+                borderColor={'var(--text-200)'}
               >
-                <BridgeIcon color={'var(--background-0)'} />
+                <ArrowRightIcon color={'var(--text-600)'} />
               </Box>
             </Grid>
             <VStack w={'full'} gap={'20px'} mt={'15px'}>
@@ -295,13 +291,35 @@ export default function ModalConfirmBridge() {
               gap={'10px'}
               borderRadius={'8px'}
               bg={'rgba(222, 98, 46, 0.10)'}
+              justifyContent={'space-between'}
+              display={'flex'}
             >
               <Text variant={'md'} color={'primary.orange'}>
-                ~30 minutes.{' '}
-                {networkInstance.src?.name === NETWORK_NAME.MINA &&
-                  'Please ensure you have enough Mina in your account to covers Mina Network fee.'}
+                Expected times
+              </Text>
+
+              <Text variant={'md_medium'} color={'primary.orange'}>
+                ~{expectedTimes}{' '}
               </Text>
             </Box>
+            {networkInstance.src?.name === NETWORK_NAME.MINA && (
+              <Box
+                w={'full'}
+                mt={'8px'}
+                p={'10px 15px'}
+                gap={'10px'}
+                borderRadius={'8px'}
+                bg={'rgba(222, 98, 46, 0.10)'}
+                justifyContent={'space-between'}
+                display={'flex'}
+              >
+                <Text variant={'md'} color={'primary.orange'}>
+                  Please ensure you have enough Mina in your account to covers
+                  Mina Network fee.
+                </Text>
+              </Box>
+            )}
+
             {/*<HStack w={'full'} mt={'15px'} gap={'12px'}>*/}
             {/*  <QuestionIcon visibility={'hidden'} color={'var(--text-300)'} />*/}
             {/*  <Text display={'flex'} gap={1}>*/}
@@ -316,7 +334,7 @@ export default function ModalConfirmBridge() {
             {/*    </Text>*/}
             {/*  </Text>*/}
             {/*</HStack>*/}
-            <Box w={'full'} mt={'15px'} gap={'12px'}>
+            {/* <Box w={'full'} mt={'15px'} gap={'12px'}>
               <Checkbox
                 fontSize={'14px'}
                 isChecked={isAgreeTerm}
@@ -334,7 +352,7 @@ export default function ModalConfirmBridge() {
                   </Link>
                 </Text>
               </Checkbox>
-            </Box>
+            </Box> */}
           </>
         );
     }
@@ -342,13 +360,13 @@ export default function ModalConfirmBridge() {
     handleCloseModal,
     onDismiss,
     modalPayload,
-    isAgreeTerm,
+    // isAgreeTerm,
     isLoading,
     hasError,
     isSuccess,
     isDefault,
     isInitializing,
-    toggleAgreeTerm,
+    // toggleAgreeTerm,
     displayValues,
     networkInstance,
   ]);
@@ -371,7 +389,7 @@ export default function ModalConfirmBridge() {
       isLoading={isFreezeScreen}
       footerElements={({ handleCloseModal }) => {
         async function handleOnClick() {
-          if (!isAgreeTerm) return;
+          if (!Boolean(StorageUtils.getAcceptTermsOfUse())) return;
           if (isFreezeScreen)
             return sendNotification({
               toastType: 'warning',
@@ -384,7 +402,26 @@ export default function ModalConfirmBridge() {
         }
         if (isLoading) return null;
 
-        if (isSuccess || hasError)
+        if (isSuccess)
+          return (
+            <Button
+              variant={'primary.orange.solid'}
+              w={'full'}
+              h={'46px'}
+              mt={'25px'}
+              mx={'40px'}
+              mb={'40px'}
+              onClick={() => {
+                onDismiss();
+                handleCloseModal();
+                router.push(ROUTES.HISTORY);
+              }}
+            >
+              View on History
+            </Button>
+          );
+
+        if (hasError)
           return (
             <Button
               variant={'primary.orange.solid'}
@@ -403,7 +440,11 @@ export default function ModalConfirmBridge() {
           );
         return (
           <Button
-            variant={isAgreeTerm ? 'primary.orange.solid' : 'ghost'}
+            variant={
+              Boolean(StorageUtils.getAcceptTermsOfUse())
+                ? 'primary.orange.solid'
+                : 'ghost'
+            }
             w={'full'}
             h={'46px'}
             mt={'30px'}

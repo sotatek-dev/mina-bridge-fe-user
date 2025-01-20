@@ -208,10 +208,10 @@ export function fetchFiles(type: ZkContractType) {
     return Promise.all(
       listFiles.map((file) => {
         return Promise.all([
-          fetch(`${publicStaticUri}/o1js-v1/${file}.header`).then((res) =>
+          fetch(`${publicStaticUri}/o1js/${file}.header`).then((res) =>
             res.text()
           ),
-          fetch(`${publicStaticUri}/o1js-v1/${file}`).then((res) => res.text()),
+          fetch(`${publicStaticUri}/o1js/${file}`).then((res) => res.text()),
         ]).then(([header, data]) => ({ file, header, data }));
       })
     ).then((cacheList) =>
@@ -225,8 +225,8 @@ export function fetchFiles(type: ZkContractType) {
   return Promise.all(
     listFiles.map((file) => {
       return Promise.all([
-        fetch(`/caches/o1js-v1/${file}.header`).then((res) => res.text()),
-        fetch(`/caches/o1js-v1/${file}`).then((res) => res.text()),
+        fetch(`/caches/o1js/${file}.header`).then((res) => res.text()),
+        fetch(`/caches/o1js/${file}`).then((res) => res.text()),
       ]).then(([header, data]) => ({ file, header, data }));
     })
   ).then((cacheList) =>

@@ -73,7 +73,6 @@ function FormAssetSelector({ buttonProps, ...sizingProps }: Props) {
           },
         });
       } catch (error) {
-        console.log('Add token error', error);
         sendNotification({
           toastType: 'error',
           options: {

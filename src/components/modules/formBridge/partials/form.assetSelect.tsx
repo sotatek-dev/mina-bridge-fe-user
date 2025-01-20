@@ -57,7 +57,6 @@ function FormAssetSelector({ buttonProps, ...sizingProps }: Props) {
   async function watchTokenWithMetamask() {
     if (walletKey !== WALLET_NAME.METAMASK || !asset) return;
     if ('watchToken' in walletInstance!!) {
-      console.log({ asset });
       try {
         await walletInstance.watchToken({
           type: 'ERC20',

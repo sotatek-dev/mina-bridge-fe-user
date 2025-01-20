@@ -217,13 +217,4 @@ export default class WalletAuro extends Wallet {
     }
     return '0';
   }
-
-  async getBalanceERC20(
-    network: Network,
-    userAddr: string,
-    asset: TokenType,
-    provider: ProviderType
-  ): Promise<string> {
-    return '';
-  }
 }

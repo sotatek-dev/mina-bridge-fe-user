@@ -105,7 +105,10 @@ function FormAssetSelector({ buttonProps, ...sizingProps }: Props) {
         leftIcon={
           <Image
             h={'24px'}
-            src={assetIcon?.icon || '/assets/logos/logo.default.token.svg'}
+            src={
+              assetIcon?.icon ||
+              (address ? '/assets/logos/logo.default.token.svg' : '')
+            }
           />
         }
         rightIcon={

@@ -28,7 +28,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
   const dispatch = useAppDispatch();
   const { lastNetworkName } = useAppSelector(getPersistSlice);
   const { walletInstance, networkInstance } = useAppSelector(
-    getWalletInstanceSlice
+    getWalletInstanceSlice,
   );
   const { isConnected, address } = useAppSelector(getWalletSlice);
 
@@ -41,7 +41,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
   const { width } = useWindowSize();
   const isMdSize = useMemo(
     () => width / 16 >= Number(md.replace('em', '')),
-    [width, md]
+    [width, md],
   );
 
   const toggleMenu = useCallback(() => {
@@ -75,7 +75,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
 
   const openConnectWalletModal = useCallback(() => {
     dispatch(
-      uiSliceActions.openModal({ modalName: MODAL_NAME.CONNECT_WALLET })
+      uiSliceActions.openModal({ modalName: MODAL_NAME.CONNECT_WALLET }),
     );
   }, [dispatch]);
 
@@ -88,7 +88,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
           networkKey: NETWORK_KEY.SRC,
           isValidate: true,
         },
-      })
+      }),
     );
   }, [closeDrawer]);
 

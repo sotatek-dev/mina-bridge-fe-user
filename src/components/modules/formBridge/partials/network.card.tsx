@@ -31,7 +31,7 @@ export default function NetworkCard({ label, networkKey }: Props) {
           isValidate: networkKey === NETWORK_KEY.SRC ? true : false,
           isDisable: networkKey === NETWORK_KEY.TAR,
         },
-      })
+      }),
     );
   }
 

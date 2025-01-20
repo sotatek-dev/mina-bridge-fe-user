@@ -288,7 +288,7 @@ export default function FormBridgeProvider({
     );
   }, []);
 
-  // update gas fee is inf
+  // update gas fee is insuficient
   const updateIsInsufficient = useCallback(
     (isInsufficient: boolean) => {
       setState((prev) => ({
@@ -382,7 +382,6 @@ export default function FormBridgeProvider({
         new BigNumber(balance).lt(process.env.NEXT_PUBLIC_MINA_GAS_FEE || 0.1)
       );
     };
-
     if (
       isConnected &&
       asset?.network === NETWORK_NAME.MINA &&
@@ -391,7 +390,6 @@ export default function FormBridgeProvider({
     ) {
       getNativeBalance();
     }
-
     if (asset?.network === NETWORK_NAME.ETHEREUM) {
       updateIsInsufficient(false);
     }

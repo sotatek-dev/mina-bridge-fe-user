@@ -71,7 +71,7 @@ export default function Header({}: Props) {
                 History
               </Text>
             </Link>
-            <HStack
+            {/* <HStack
               w={'20px'}
               h={'20px'}
               bg={'var(--red-500)'}
@@ -83,7 +83,7 @@ export default function Header({}: Props) {
               <Text color={'white'} fontSize={'12px'}>
                 0
               </Text>
-            </HStack>
+            </HStack> */}
           </HStack>
         )}
         {!isMdSize && isConnected && <Button {...btnBurgerMenuProps} />}

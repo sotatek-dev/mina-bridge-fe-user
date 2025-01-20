@@ -8,7 +8,7 @@ import { useModalSTState } from '../context';
 
 import { formatNumber } from '@/helpers/common';
 import { Network } from '@/models/network';
-import { Wallet } from '@/models/wallet';
+import { Wallet, WalletMetamask } from '@/models/wallet';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
@@ -57,17 +57,23 @@ export default function DisplayAsset({ data }: Props) {
     wallet: Wallet,
     network: Network
   ) {
-    const isNativeToken = network.nativeCurrency.symbol === asset.symbol;
-    let res;
-    if (isNativeToken) res = await wallet.getBalance(network, userAddr, asset);
-    else
-      res = await wallet.getBalanceERC20(
-        network,
-        userAddr,
-        asset,
-        (networkInstance.src?.metadata as any)?.provider
-      );
-    setBalance(formatNumber(res, asset.decimals, BigNumber.ROUND_DOWN));
+    let avaiBalance;
+    if (wallet instanceof WalletMetamask) {
+      const isNativeToken = network.nativeCurrency.symbol === asset.symbol;
+      if (isNativeToken)
+        avaiBalance = await wallet.getBalance(network, userAddr, asset);
+      else
+        avaiBalance = await wallet.getBalanceERC20(
+          network,
+          userAddr,
+          asset,
+          (networkInstance.src?.metadata as any)?.provider
+        );
+    } else {
+      avaiBalance = await wallet.getBalance(network, userAddr, asset);
+    }
+
+    setBalance(formatNumber(avaiBalance, asset.decimals, BigNumber.ROUND_DOWN));
   }
 
   useEffect(() => {

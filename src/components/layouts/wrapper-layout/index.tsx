@@ -18,7 +18,13 @@ import useLoadWalletInstances from '@/hooks/useLoadWalletInstances';
 import useWalletEvents from '@/hooks/useWalletEvents';
 import useWeb3Injected from '@/hooks/useWeb3Injected';
 import { useZKContractState } from '@/providers/zkBridgeInitalize';
-import { getWalletSlice, useAppDispatch, useAppSelector } from '@/store';
+import {
+  getUISlice,
+  getWalletSlice,
+  useAppDispatch,
+  useAppSelector,
+} from '@/store';
+import { BANNER_NAME } from '@/store/slices/uiSlice';
 import { walletSliceActions } from '@/store/slices/walletSlice';
 
 type Props = PropsWithChildren<{}>;
@@ -33,7 +39,9 @@ function WrapperLayout({ children }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { banners } = useAppSelector(getUISlice);
   const { isConnected } = useAppSelector(getWalletSlice);
+
   const { isInitializing } = useZKContractState().state;
   const isNotPOAScreen = pathname !== ROUTES.PROOF_OF_ASSETS;
   const isNotHistoryScreen = pathname !== ROUTES.HISTORY;
@@ -42,6 +50,8 @@ function WrapperLayout({ children }: Props) {
   const { colorMode } = useChakraTheme();
 
   const [isClient, setIsClient] = useState(false);
+
+  const curBanner = banners[BANNER_NAME.UNMATCHED_CHAIN_ID];
 
   useEffect(() => {
     setIsClient(true);
@@ -83,6 +93,7 @@ function WrapperLayout({ children }: Props) {
             bgRepeat={'no-repeat'}
             bgAttachment={'fixed'}
             overflow={'auto'}
+            pt={curBanner.isDisplay && curBanner.payload ? '50px' : ''}
           >
             {!isNotHomeScreen && <UnmatchedChain />}
             <Container

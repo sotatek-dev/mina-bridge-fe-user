@@ -32,12 +32,14 @@ import Network, { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
 import { Wallet, WALLET_NAME, WalletAuro } from '@/models/wallet';
 import {
   getPersistSlice,
+  getUISlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
   useAppSelector,
 } from '@/store';
 import { persistSliceActions, TokenType } from '@/store/slices/persistSlice';
+import { BANNER_NAME } from '@/store/slices/uiSlice';
 
 const numberRegex = new RegExp(
   /^([0-9]{1,100}\.[0-9]{1,100})$|^([0-9]{1,100})\.?$|^\.([0-9]{1,100})?$/,
@@ -75,6 +77,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     useFormBridgeState().methods;
 
   const { lastNetworkFee } = useAppSelector(getPersistSlice);
+  const { banners } = useAppSelector(getUISlice);
 
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState<ErrorType>(null);
@@ -88,6 +91,8 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   const { sendNotification } = useNotifier();
 
   const isFetchingBalance = status.isFetchingBalance;
+
+  const curBanner = banners[BANNER_NAME.UNMATCHED_CHAIN_ID];
   const setIsFetchingBalance = (isFetching: boolean) => {
     updateStatus('isFetchingBalance', isFetching);
   };
@@ -346,7 +351,8 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       !walletInstance ||
       !srcNetwork ||
       !networkInstance.src ||
-      srcNetwork.name !== networkInstance.src.name
+      srcNetwork.name !== networkInstance.src.name ||
+      (curBanner.isDisplay && curBanner.payload)
     ) {
       updateBalance('0');
       return;
@@ -367,7 +373,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       clearInterval(itvCheckBalance.current);
       itvCheckBalance.current = null;
     };
-  }, [address, asset, walletInstance, srcNetwork, txEmitCount]);
+  }, [address, asset, walletInstance, srcNetwork, txEmitCount, banners]);
 
   // frequently get gas price
   useEffect(() => {

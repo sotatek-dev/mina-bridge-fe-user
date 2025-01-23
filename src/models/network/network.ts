@@ -95,9 +95,23 @@ export const EVM_CHAINS_METADATA: Record<
     chainName: 'ethereum',
     provider: {
       type: PROVIDER_TYPE.HTTPS,
-      uri: 'https://mainnet.infura.io/v3/',
+      uri:
+        process.env.NEXT_PUBLIC_REQUIRED_ETH_RPC_MAINNET ||
+        'https://mainnet.infura.io/v3/1b7a1af6054b4b4aa62d387f77eb5daa',
     },
     scanUrl: 'https://etherscan.io',
+  },
+  [EVM_CHAIN.SEPOLIA]: {
+    chainId: '0xaa36a7',
+    chainType: CHAIN_TYPE.TESTNET,
+    chainName: 'sepolia',
+    provider: {
+      type: PROVIDER_TYPE.HTTPS,
+      uri:
+        process.env.NEXT_PUBLIC_REQUIRED_ETH_RPC_SEPOLIA ||
+        'https://ethereum-sepolia-rpc.publicnode.com',
+    },
+    scanUrl: 'https://sepolia.etherscan.io',
   },
   [EVM_CHAIN.ROPSTEN]: {
     chainId: '0x3',
@@ -129,16 +143,6 @@ export const EVM_CHAINS_METADATA: Record<
     },
     scanUrl: 'https://etherscan.io',
   },
-  [EVM_CHAIN.SEPOLIA]: {
-    chainId: '0xaa36a7',
-    chainType: CHAIN_TYPE.TESTNET,
-    chainName: 'sepolia',
-    provider: {
-      type: PROVIDER_TYPE.HTTPS,
-      uri: 'https://ethereum-sepolia-rpc.publicnode.com',
-    },
-    scanUrl: 'https://sepolia.etherscan.io',
-  },
 };
 
 export const getEVMMetadata = (chain: EVM_CHAIN) => EVM_CHAINS_METADATA[chain];
@@ -149,7 +153,9 @@ export const ZK_CHAINS_METADATA: Record<ZK_CHAIN, NetworkZKChainMetadataType> =
       chainId: ZK_CHAIN.MAINNET,
       chainType: CHAIN_TYPE.MAINNET,
       chainName: 'Mina',
-      proxyUrl: 'https://proxy.minaexplorer.com/',
+      proxyUrl:
+        process.env.NEXT_PUBLIC_REQUIRED_MINA_RPC_MAINNET ||
+        'https://api.minascan.io/node/mainnet/v1/graphql',
       archiveUrl: '',
       scanUrl: 'https://minascan.io/mainnet',
     },
@@ -157,7 +163,9 @@ export const ZK_CHAINS_METADATA: Record<ZK_CHAIN, NetworkZKChainMetadataType> =
       chainId: ZK_CHAIN.DEVNET,
       chainType: CHAIN_TYPE.DEVNET,
       chainName: 'Mina Devnet',
-      proxyUrl: 'https://api.minascan.io/node/devnet/v1/graphql',
+      proxyUrl:
+        process.env.NEXT_PUBLIC_REQUIRED_MINA_RPC_DEVNET ||
+        'https://api.minascan.io/node/devnet/v1/graphql',
       archiveUrl: '',
       scanUrl: 'https://minascan.io/devnet',
     },

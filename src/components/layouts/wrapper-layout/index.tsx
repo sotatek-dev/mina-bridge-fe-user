@@ -46,6 +46,8 @@ function WrapperLayout({ children }: Props) {
   const isNotPOAScreen = pathname !== ROUTES.PROOF_OF_ASSETS;
   const isNotHistoryScreen = pathname !== ROUTES.HISTORY;
   const isNotUserGuide = pathname !== ROUTES.USER_GUIDE;
+  const isNotTerm = pathname !== ROUTES.TERMS_OF_SERVICE;
+  const isNotPrivacy = pathname !== ROUTES.PRIVACY_POLICY;
   const isNotHomeScreen = pathname !== ROUTES.HOME;
   const { colorMode } = useChakraTheme();
 
@@ -84,7 +86,11 @@ function WrapperLayout({ children }: Props) {
             minH={'calc(100vh - 75px)'}
             bgColor={'text.100'}
             bgImage={
-              isNotPOAScreen && isNotHistoryScreen && isNotUserGuide
+              isNotPOAScreen &&
+              isNotHistoryScreen &&
+              isNotUserGuide &&
+              isNotTerm &&
+              isNotPrivacy
                 ? `url("/assets/images/image.main-${colorMode === Theme.DARK ? 'dark' : 'light'}.jpg")`
                 : ''
             }

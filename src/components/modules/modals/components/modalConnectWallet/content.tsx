@@ -6,6 +6,7 @@ import useModalCWLogic from './hooks/useModalCWLogic';
 import Section from './partials/section';
 
 import LoadingWithText from '@/components/elements/loading/spinner.text';
+import ROUTES from '@/configs/routes';
 
 type Props = {};
 
@@ -35,11 +36,19 @@ export default function ModalCWContent({}: Props) {
           alignItems={'flex-start'}
         >
           I read and accept{' '}
-          <Link href={'#'} target={'_blank'} color={'primary.purple'}>
+          <Link
+            href={ROUTES.PRIVACY_POLICY}
+            target={'_blank'}
+            color={'primary.purple'}
+          >
             Terms of Service
           </Link>{' '}
           and{' '}
-          <Link href={'#'} target={'_blank'} color={'primary.purple'}>
+          <Link
+            href={ROUTES.PRIVACY_POLICY}
+            target={'_blank'}
+            color={'primary.purple'}
+          >
             Privacy Policy
           </Link>
         </Checkbox>

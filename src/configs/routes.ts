@@ -4,6 +4,8 @@ enum ROUTES {
   USER_GUIDE = '/user-guide',
   INTERNAL_ERROR = '/error_500',
   HISTORY = '/history',
+  TERMS_OF_SERVICE = '/term-of-service',
+  PRIVACY_POLICY = '/privacy-policy',
 }
 
 export const PROTECTED_ROUTES = [ROUTES.HISTORY];

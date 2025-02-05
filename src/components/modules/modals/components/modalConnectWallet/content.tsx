@@ -37,7 +37,7 @@ export default function ModalCWContent({}: Props) {
         >
           I read and accept{' '}
           <Link
-            href={ROUTES.PRIVACY_POLICY}
+            href={ROUTES.TERMS_OF_SERVICE}
             target={'_blank'}
             color={'primary.purple'}
           >

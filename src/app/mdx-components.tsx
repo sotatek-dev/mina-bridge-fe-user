@@ -7,7 +7,7 @@ import { getPxFromUrl } from '@/helpers/common';
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     strong: ({ children }) => (
-      <Text display={'inline-block'} color={'text.700'}>
+      <Text display={'inline-block'} color={'text.700'} fontWeight={'bold'}>
         {children}
       </Text>
     ),
@@ -36,6 +36,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         />
       </Flex>
     ),
+    ul: ({ children }) => <ul style={{ marginBottom: '8px' }}>{children}</ul>,
     li: ({ children }) => <li style={{ marginLeft: '30px' }}>{children}</li>,
     a: ({ href, children, ...props }) => (
       <Link href={href || '/'} color={'blue.500'} {...props}>

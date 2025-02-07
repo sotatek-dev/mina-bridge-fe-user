@@ -11,12 +11,14 @@ import { formatNumber } from '@/helpers/common';
 import useETHBridgeContract from '@/hooks/useETHBridgeContract';
 import { NETWORK_TYPE } from '@/models/network/network';
 import {
+  getUISlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
   useAppSelector,
 } from '@/store';
 import {
+  BANNER_NAME,
   ModalConfirmBridgePayload,
   uiSliceActions,
 } from '@/store/slices/uiSlice';
@@ -35,9 +37,15 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
   const [isAllowed, setIsAllowed] = useState<boolean>(false);
   const { networkInstance } = useAppSelector(getWalletInstanceSlice);
   const { address } = useAppSelector(getWalletSlice);
+  const { banners } = useAppSelector(getUISlice);
+
+  const curBanner = banners[BANNER_NAME.UNMATCHED_CHAIN_ID];
 
   const isClickable =
-    status.isValidData && status.isMatchedNetwork && !isInsufficient;
+    status.isValidData &&
+    status.isMatchedNetwork &&
+    !isInsufficient &&
+    !(curBanner.isDisplay && curBanner.payload);
 
   // only token in evm chains need to get allowance
   const isNeedApprove =

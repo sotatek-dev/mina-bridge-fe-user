@@ -11,6 +11,18 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </Text>
     ),
+    h5: ({ children }) => (
+      <Heading
+        as={'h5'}
+        variant={'h5'}
+        color={'text.700'}
+        fontSize={'18px'}
+        fontWeight={'bold'}
+        mt={'8px'}
+      >
+        {children}
+      </Heading>
+    ),
     h4: ({ children }) => (
       <Heading as={'h4'} variant={'h4'} color={'text.700'}>
         {children}

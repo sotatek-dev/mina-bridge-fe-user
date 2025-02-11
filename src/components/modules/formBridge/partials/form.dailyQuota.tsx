@@ -15,6 +15,7 @@ import { getWalletSlice, useAppSelector } from '@/store';
 
 const initialData: DailyQuota = {
   max: '0',
+  systemMax: '0',
   current: '0',
   asset: '',
 };
@@ -46,7 +47,8 @@ export default function FormDailyQuota() {
     );
     if (error || !res) return updateQuota({ ...initialData });
     return updateQuota({
-      max: formatNumber(res.dailyQuota.dailyQuota, 4),
+      max: formatNumber(res.dailyQuota.dailyQuotaPerAddress, 4),
+      systemMax: formatNumber(res.dailyQuota.dailyQuotaSystem, 4),
       current: formatNumber(
         fromWei(`${res.totalAmountOfToDay}`, decimal),
         asset!!.decimals,
@@ -70,17 +72,27 @@ export default function FormDailyQuota() {
 
   return (
     address && (
-      <Heading
-        as={'h4'}
-        variant={'h4'}
-        color={'text.900'}
-        mt={{ base: '15px', md: '20px' }}
-        textAlign={'center'}
-      >
-        Daily quota {dailyQuota.max} {dailyQuota.asset} per address (
-        {dailyQuota.current} {dailyQuota.asset} / {dailyQuota.max}{' '}
-        {dailyQuota.asset})
-      </Heading>
+      <>
+        <Heading
+          as={'h4'}
+          variant={'h4'}
+          color={'text.900'}
+          mt={{ base: '15px', md: '20px' }}
+          textAlign={'center'}
+        >
+          Daily quota system: {dailyQuota.systemMax} {dailyQuota.asset}
+        </Heading>
+        <Heading
+          as={'h4'}
+          variant={'h4'}
+          color={'text.900'}
+          textAlign={'center'}
+        >
+          Daily quota: {dailyQuota.max} {dailyQuota.asset} per address (
+          {dailyQuota.current} {dailyQuota.asset} / {dailyQuota.max}{' '}
+          {dailyQuota.asset})
+        </Heading>
+      </>
     )
   );
 }

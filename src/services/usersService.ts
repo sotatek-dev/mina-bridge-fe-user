@@ -72,7 +72,8 @@ export type ParamHistory = {
 export type GetDailyQuotaResponse = {
   dailyQuota: {
     id: number;
-    dailyQuota: string;
+    dailyQuotaPerAddress: string;
+    dailyQuotaSystem: string;
     tip: string;
     asset: string;
   };

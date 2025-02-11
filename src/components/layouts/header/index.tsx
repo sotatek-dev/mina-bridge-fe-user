@@ -58,8 +58,13 @@ export default function Header({}: Props) {
       bg={'background.0'}
     >
       <HStack justifyContent={'center'} gap={1} mr={2}>
-        <Link href={ROUTES.HOME}>
+        <Link href={ROUTES.HOME} _hover={{ textDecor: 'none' }}>
           <Logo />
+          {process.env.NEXT_PUBLIC_ENV === 'production' && (
+            <Text fontSize={'10px'} color={'var(--logo-color)'}>
+              Public Beta
+            </Text>
+          )}
         </Link>
       </HStack>
 

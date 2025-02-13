@@ -28,8 +28,8 @@ import { handleRequest } from '@/helpers/asyncHandlers';
 import { formatNumber, fromWei, zeroCutterStart } from '@/helpers/common';
 import { getWeb3Instance } from '@/helpers/evmHandlers';
 import useNotifier from '@/hooks/useNotifier';
-import Network, { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
-import { Wallet, WALLET_NAME, WalletAuro } from '@/models/wallet';
+import Network, { NETWORK_TYPE } from '@/models/network/network';
+import { Wallet, WALLET_NAME, WalletMetamask } from '@/models/wallet';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
@@ -160,20 +160,32 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       if (isFetchingBalance) return;
       if (srcNetwork.name !== asset.network) return;
 
+      let availableBalance;
       setIsFetchingBalance(true);
-      const isNativeToken = srcNetwork.nativeCurrency.symbol === asset.symbol;
-      let res;
-      if (isNativeToken)
-        res = await walletInstance.getBalance(srcNetwork, address, asset);
-      else
-        res = await walletInstance.getBalanceERC20(
+      if (walletInstance instanceof WalletMetamask) {
+        const isNativeToken = srcNetwork.nativeCurrency.symbol === asset.symbol;
+        if (isNativeToken)
+          availableBalance = await walletInstance.getBalance(
+            srcNetwork,
+            address,
+            asset
+          );
+        else
+          availableBalance = await walletInstance.getBalanceERC20(
+            srcNetwork,
+            address,
+            asset,
+            (networkInstance.src?.metadata as any)?.provider
+          );
+      } else {
+        availableBalance = await walletInstance.getBalance(
           srcNetwork,
           address,
-          asset,
-          (networkInstance.src?.metadata as any)?.provider
+          asset
         );
-      // console.log('🚀 ~ checkBalance ~ res, error:', res, error);
-      updateBalance(res || '0');
+      }
+
+      updateBalance(availableBalance || '0');
       setIsFetchingBalance(false);
     } catch (error) {
       if (balance === '0') {

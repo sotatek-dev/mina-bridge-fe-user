@@ -137,20 +137,20 @@ export class Bridge extends SmartContract {
     sig3
   ) {
     const managerZkapp = new Manager(this.manager.getAndRequireEquals());
-    managerZkapp.isAdmin(this.sender.getAndRequireSignature());
+    managerZkapp.isMinter(this.sender.getAndRequireSignature());
     const msg = [
       ...receiver.toFields(),
       ...amount.toFields(),
       ...tokenAddr.toFields(),
     ];
-    this.validateValidator(
-      useSig1,
-      validator1,
-      useSig2,
-      validator2,
-      useSig3,
-      validator3
-    );
+    // this.validateValidator(
+    //   useSig1,
+    //   validator1,
+    //   useSig2,
+    //   validator2,
+    //   useSig3,
+    //   validator3,
+    // );
     this.validateSig(msg, sig1, validator1, useSig1);
     this.validateSig(msg, sig2, validator2, useSig2);
     this.validateSig(msg, sig3, validator3, useSig3);
@@ -167,7 +167,6 @@ export class Bridge extends SmartContract {
     validator3
   ) {
     let count = UInt64.from(0);
-    const zero = Field.from(0);
     const falseB = Bool(false);
     const trueB = Bool(true);
     const validatorManager = new ValidatorManager(
@@ -175,14 +174,26 @@ export class Bridge extends SmartContract {
     );
     const validateIndex = async (validator, useSig) => {
       const index = await validatorManager.getValidatorIndex(validator);
-      const isGreaterThanZero = index.greaterThan(zero);
+      const isValidIndex = Provable.if(
+        index.equals(Field(1)),
+        trueB,
+        Provable.if(
+          index.equals(Field(2)),
+          trueB,
+          Provable.if(index.equals(Field(3)), trueB, falseB)
+        )
+      );
       let isOk = Provable.if(
         useSig,
-        Provable.if(isGreaterThanZero, trueB, falseB),
+        Provable.if(isValidIndex, trueB, falseB),
         trueB
       );
       isOk.assertTrue('Public key not found in validators');
     };
+    // Execute validateIndex for each validator
+    await validateIndex(validator1, useSig1);
+    await validateIndex(validator2, useSig2);
+    await validateIndex(validator3, useSig3);
     const notDupValidator12 = Provable.if(
       useSig1.and(useSig2),
       Provable.if(validator1.equals(validator2), falseB, trueB),

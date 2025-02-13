@@ -64,17 +64,7 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
     //   amount
     // );
     if (!assetWallet || !asset) return;
-    // const newProvider = new Web3(window.ethereum);
-    // const contract = new newProvider.eth.Contract(
-    //   ABICommonTokenErc20,
-    //   assetWallet.tokenAddr
-    // );
-    // const approve = await contract.methods
-    //   .approve(
-    //     '0xf901687c39100fccb45a31d4807441808d193d1c',
-    //     BigNumber(amount).multipliedBy(1e18).toString()
-    //   )
-    //   .send({ from: address });
+
     const contract = new Contract({
       address: assetWallet.tokenAddr,
       contractABI: ABICommonTokenErc20,
@@ -84,23 +74,19 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
       },
     });
 
-    const allowance = await contract.contractInstance.methods
-      .allowance(address, '0xf901687c39100fccb45a31d4807441808d193d1c')
-      .call();
-
     const approve = await contract.contractInstance.methods
       .approve(
-        '0xf901687c39100fccb45a31d4807441808d193d1c',
+        assetWallet.bridgeCtrAddr,
         BigNumber(amount).multipliedBy(`1e${asset.decimals}`).toString()
       )
       .send({ from: address });
 
-    // console.log({
-    //   approve: BigNumber(amount).multipliedBy(`1e${asset.decimals}`).toString(),
-    //   amount,
-    //   assetDecimal: asset.decimals,
-    //   allowance: BigNumber(allowance).dividedBy(`1e${asset.decimals}`).toString(),
-    // });
+    // if allowance < amount => request approve
+    const allowance = await contract.contractInstance.methods
+      .allowance(address, assetWallet.bridgeCtrAddr)
+      .call();
+
+    console.log('Address: ', { assetWallet, address, allowance, approve });
 
     // return new Promise((resolve, reject) => {
     //   setTimeout(() => {

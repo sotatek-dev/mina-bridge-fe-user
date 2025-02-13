@@ -185,7 +185,6 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
         );
       }
 
-      console.log('BALANCE WETH: ', availableBalance);
       updateBalance(availableBalance || '0');
       setIsFetchingBalance(false);
     } catch (error) {

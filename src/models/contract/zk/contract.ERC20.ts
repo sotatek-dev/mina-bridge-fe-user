@@ -51,12 +51,12 @@ export default class ERC20Contract {
 
       console.log('-----compile contracts Bridge');
       await Bridge.compile({
-        // cache: fileSystem(cacheBridgeFiles),
+        cache: fileSystem(cacheBridgeFiles),
       });
       console.log('-----compile contracts FungibleToken');
 
       await FungibleToken.compile({
-        // cache: fileSystem(cacheTokenFiles),
+        cache: fileSystem(cacheTokenFiles),
       });
       console.log('-----compile contracts done');
       console.timeEnd('compile contracts');

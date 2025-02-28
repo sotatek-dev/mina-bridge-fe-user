@@ -35,6 +35,7 @@ export enum FORM_BRIDGE_STATUS {
 
 export type DailyQuota = {
   max: string;
+  systemMax: string;
   current: string;
   asset: string;
 };
@@ -99,6 +100,7 @@ export const initModalCWState: FormBridgeState = {
   },
   dailyQuota: {
     max: '0',
+    systemMax: '0',
     current: '0',
     asset: '',
   },

@@ -69,15 +69,17 @@ export type ParamHistory = {
   page?: number;
 };
 
+export type DailyQuotaParam = {
+  address: string;
+  network: string;
+  token: string;
+};
+
 export type GetDailyQuotaResponse = {
-  dailyQuota: {
-    id: number;
-    dailyQuotaPerAddress: string;
-    dailyQuotaSystem: string;
-    tip: string;
-    asset: string;
-  };
-  totalAmountOfToDay: number;
+  dailyQuotaPerAddress: string;
+  dailyQuotaSystem: string;
+  curUserQuota: string;
+  curSystemQuota: string;
 };
 
 export type GetPriceUsdResponse = {
@@ -117,9 +119,9 @@ class UsersService {
     );
   }
 
-  getDailyQuota(query: { address: string }) {
+  getDailyQuota(query: DailyQuotaParam) {
     return this.service.get<GetDailyQuotaResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.address}`,
+      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.address}/${query.network}/${query.token}`,
     );
   }
 

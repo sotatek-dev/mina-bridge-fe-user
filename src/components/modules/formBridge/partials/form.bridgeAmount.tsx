@@ -105,7 +105,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       reach_max: `You can only bridge maximum ${assetRange[1]} ${asset?.symbol || ''}`,
       insufficient_fund_fee:
         'Transaction can’t be made because of insufficient balance for transfer fee',
-      insufficient_daily_quota: `You can only bridge ${dailyQuota.max} ${asset?.symbol || ''} per address daily`,
+      insufficient_daily_quota: `You can only bridge ${dailyQuota.max} ${asset?.symbol || ''} per address per day, with a total system-wide daily limit of ${dailyQuota.systemMax} ${asset?.symbol || ''}`,
     }),
     [asset, assetRange, dailyQuota],
   );

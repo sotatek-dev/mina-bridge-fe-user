@@ -37,6 +37,7 @@ export type DailyQuota = {
   max: string;
   systemMax: string;
   current: string;
+  systemCurrent: string;
   asset: string;
 };
 
@@ -102,6 +103,7 @@ export const initModalCWState: FormBridgeState = {
     max: '0',
     systemMax: '0',
     current: '0',
+    systemCurrent: '0',
     asset: '',
   },
   srcNetwork: null,

@@ -1,5 +1,5 @@
 'use client';
-import { Heading } from '@chakra-ui/react';
+import { Heading, VStack } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
 import web3 from 'web3';
 
@@ -17,6 +17,7 @@ const initialData: DailyQuota = {
   max: '0',
   systemMax: '0',
   current: '0',
+  systemCurrent: '0',
   asset: '',
 };
 
@@ -43,17 +44,25 @@ export default function FormDailyQuota() {
     }
 
     const [res, error] = await handleRequest(
-      usersService.getDailyQuota({ address }),
+      usersService.getDailyQuota({
+        address,
+        network: asset?.network || '',
+        token: asset?.tokenAddr || '',
+      }),
     );
     if (error || !res) return updateQuota({ ...initialData });
     return updateQuota({
-      max: formatNumber(res.dailyQuota.dailyQuotaPerAddress, 4),
-      systemMax: formatNumber(res.dailyQuota.dailyQuotaSystem, 4),
+      max: formatNumber(res?.dailyQuotaPerAddress, 4),
+      systemMax: formatNumber(res?.dailyQuotaSystem, 4),
       current: formatNumber(
-        fromWei(`${res.totalAmountOfToDay}`, decimal),
+        fromWei(`${res?.curUserQuota}`, decimal),
         asset!!.decimals,
       ),
-      asset: res.dailyQuota.asset,
+      systemCurrent: formatNumber(
+        fromWei(`${res?.curSystemQuota}`, decimal),
+        asset!!.decimals,
+      ),
+      asset: asset?.symbol || '',
     });
   }
 
@@ -72,7 +81,7 @@ export default function FormDailyQuota() {
 
   return (
     address && (
-      <>
+      <VStack gap={0}>
         <Heading
           as={'h4'}
           variant={'h4'}
@@ -80,7 +89,7 @@ export default function FormDailyQuota() {
           mt={{ base: '15px', md: '20px' }}
           textAlign={'center'}
         >
-          Daily quota system: {dailyQuota.systemMax} {dailyQuota.asset}
+          Daily quota
         </Heading>
         <Heading
           as={'h4'}
@@ -88,11 +97,20 @@ export default function FormDailyQuota() {
           color={'text.900'}
           textAlign={'center'}
         >
-          Daily quota: {dailyQuota.max} {dailyQuota.asset} per address (
-          {dailyQuota.current} {dailyQuota.asset} / {dailyQuota.max}{' '}
+          {dailyQuota.max} {dailyQuota.asset} per address ({dailyQuota.current}{' '}
+          {dailyQuota.asset} / {dailyQuota.max} {dailyQuota.asset})
+        </Heading>
+        <Heading
+          as={'h4'}
+          variant={'h4'}
+          color={'text.900'}
+          textAlign={'center'}
+        >
+          {dailyQuota.systemMax} {dailyQuota.asset} system-wide (
+          {dailyQuota.systemCurrent} {dailyQuota.asset} / {dailyQuota.systemMax}{' '}
           {dailyQuota.asset})
         </Heading>
-      </>
+      </VStack>
     )
   );
 }

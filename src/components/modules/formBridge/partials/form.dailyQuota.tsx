@@ -9,6 +9,7 @@ import { DailyQuota, useFormBridgeState } from '../context';
 import ITV from '@/configs/time';
 import { handleRequest } from '@/helpers/asyncHandlers';
 import { formatNumber, fromWei } from '@/helpers/common';
+import { NETWORK_NAME } from '@/models/network';
 import NetworkMina from '@/models/network/network.mina';
 import usersService from '@/services/usersService';
 import { getWalletSlice, useAppSelector } from '@/store';
@@ -46,22 +47,17 @@ export default function FormDailyQuota() {
     const [res, error] = await handleRequest(
       usersService.getDailyQuota({
         address,
-        network: asset?.network || '',
+        network: asset?.network === NETWORK_NAME.ETHEREUM ? 'eth' : 'mina',
         token: asset?.tokenAddr || '',
       }),
     );
     if (error || !res) return updateQuota({ ...initialData });
+
     return updateQuota({
       max: formatNumber(res?.dailyQuotaPerAddress, 4),
       systemMax: formatNumber(res?.dailyQuotaSystem, 4),
-      current: formatNumber(
-        fromWei(`${res?.curUserQuota}`, decimal),
-        asset!!.decimals,
-      ),
-      systemCurrent: formatNumber(
-        fromWei(`${res?.curSystemQuota}`, decimal),
-        asset!!.decimals,
-      ),
+      current: formatNumber(res?.curUserQuota, 4),
+      systemCurrent: formatNumber(res?.curSystemQuota, 4),
       asset: asset?.symbol || '',
     });
   }

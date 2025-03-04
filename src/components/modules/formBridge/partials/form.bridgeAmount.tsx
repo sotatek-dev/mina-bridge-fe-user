@@ -198,12 +198,16 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       const availQuota = new BigNumber(dailyQuota.max).minus(
         new BigNumber(dailyQuota.current),
       );
+      const availSystemQuota = new BigNumber(dailyQuota.systemMax).minus(
+        new BigNumber(dailyQuota.systemCurrent),
+      );
+
       // return error
       if (bn.isNaN()) return dpError('required');
       if (bn.isLessThan(min)) return dpError('reach_min');
       if (bn.isGreaterThan(max)) return dpError('reach_max');
       if (bn.isGreaterThan(balanceBN)) return dpError('insufficient_fund');
-      if (bn.isGreaterThan(availQuota))
+      if (bn.isGreaterThan(availQuota) || bn.isGreaterThan(availSystemQuota))
         return dpError('insufficient_daily_quota');
 
       setError(null);

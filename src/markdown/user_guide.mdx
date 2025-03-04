@@ -1,67 +1,66 @@
-﻿### **Ethereum to Mina Transfer Example**
+﻿### **Ethereum (ETH) to Mina (wETH) Transfer Example**
 
-**Please note:**
-
-- It can take up to 30 minutes for WETH to be available on Auro once the bridging transaction is confirmed on Metamask
-- There are two distinct stages in the process
-  - Locking Ethereum on the Eth side
-  - Minting WETH on the MIna side
-- For a breakdown of [fees](/user-guide#bridging-fee) please see here
+- It can take up to 2 hours for wETH to be available on Auro Wallet once the bridging transaction is confirmed on Metamask. This is to ensure full confidence in transaction finality (See [here](https://docs.minaprotocol.com/mina-protocol/lifecycle-of-a-payment) for further detail).
+- There are two distinct stages in the process.
+  - Locking ETH on the Ethereum side.
+  - Minting wETH on the Mina side.
+- For a breakdown of [fees](/user-guide#bridging-fee) please see here.
 
 ---
 
-### 1. Wallet extension
+### 1. Wallet Support
 
-Ensure you have Metamask installed
+To support an Ethereum (ETH) to Mina (wETH) bridging, Ensure you have Metamask(Download [here](https://metamask.io/download)) & Auro (Download [here](https://www.aurowallet.com/)) installed.
 
-### 2. Connect wallet
+### 2. Connect Wallet
 
-After installing the wallet successfully, visit the bridge site [here.](/)
+After installing the wallet successfully,you can manage the bridging process via [MinaBridge](/).
 
 ![Home page](/user-guide/home-full.png)
 
-Click on **Connect to Wallet**.
+- **Step 1**: To kick off the Ethereum to Mina bridging process, you will need to connect your Metamask wallet and ensure you have ETH you wish to bridge. Click on “Connect Wallet” to start the connection process.
 
-- Step 1: Click on *Connect Wallet*.
-- Step 2: *Choose Network* Ethereum in this case.
-- Step 3: *Choose Wallet* Metamask for Ethereum > Mina bridging
-- Step 4: *Accept Terms of Service and privacy Policy* Ensure you are happy to proceed and have read through these
+- **Step 2**: Accept Terms of Service and Privacy Policy - Ensure you are happy to proceed and have read through these, tick the box if so.
+
+- **Step 3**: Choose Network - This is the source network, ensure the correct network is selected , Ethereum in this case.
+
+- **Step 4**: Choose Wallet - Click on the Metamask icon. Metamask wallet is supported as the source wallet for Ethereum (ETH) to > Mina (wETH) bridging.
+
+**Success** - your wallet is ready to bridge ETH! You will see a success pop-up button once you have connected your wallet.
 
 ![Connect wallet modal](/user-guide/connect-wallet-390px.png)
 
-- You will see a success button once you have connected your wallet.
-
 ![Connect wallet success](/user-guide/header-full.png)
 
-- To disconnect from the bridge application, Click on Disconnect Button.
-- You can change the source account on Metamask.
+- To disconnect your wallet from the bridge application, Click on the Disconnect icon.
+- If required, you can change the source account within the Metamask wallet application.
 
 ### 3. Bridge Assets
 
-- _**Step 1**: Choose Assets_
+- **Step 1**: Choose Assets - this is the asset you wish to bridge to Mina, in this case ETH.
+
+  (Note: MinaBridge supports Ethereum (ETH) > Mina (wETH) at present though other tokens are planned to be added in the near future; the select asset feature will be more relevant at this stage.You can select by clicking on the token from the list or search by typing the name of the cryptocurrency.)
 
 ![Choose Assets](/user-guide/select-token-390px.png)
 
-The Mina Bridge supports only Ethereum at present though other tokens are planned to be added in the near future; the select asset feature will be more relevant at this stage.
-
-You can select by clicking on the token from the list or search by typing the name of the cryptocurrency.
-
-- _**Step 2**:  Input Destination Address: This is where the receiving address will be input, in this case your Mina Address._
+- **Step 2**: Input _Destination_ Address: This is where the receiving address will be input, in this case, your Mina Address (you get this from Auro).
 
 ![Form Bridge](/user-guide/form-bridge-390px.png)
 
-- _**Step 3**: Enter the amount of Ethereum you wish to bridge and click Next._
+- **Step 3**: Enter amount - This is the amount of ETH you wish to bridge to Mina that will be swapped for wETH.
 
-- _**Step 4**: Review the order details including the bridging and minting fees (More detail [here](/user-guide#bridging-fee)) and ensure you have read the terms and conditions of the Bridge. If you are happy to proceed, Click ‘Confirm’._
+- **Step 4**: If you are happy to proceed, hit “Next”.
+
+- **Step 5**: Review the order details including the bridging and minting fees (More detail on fees [here](/user-guide#bridging-fee)) and estimated bridging time - If you are happy to proceed, click “‘Confirm”’.
 
   ![Confirm popup](/user-guide/confirm-bridge-390px.png)
 
-- _**Step 5**: Metamask will pop up to allow you to sign the locking transaction on Ethereum and review the Ethereum Network fees. If you are happy to proceed, hit “confirm” on Metamask - the transaction will appear on Metamask as processing and then confirmed._
+- **Step 6**: Metamask will pop up to allow you to sign the locking transaction on Ethereum and review the Ethereum Network fees. If you are happy to proceed, hit “confirm” on Metamask - the transaction will appear on Metamask as processing and then confirmed.
 
-- _**Step 6**: After the transaction has been confirmed, you will be able to track its progress via the Bridge’s [History Page](/history). This allows you to drill into the source and destination transactions via EtherScan and MinaScan._
+- **Step 7**: After the transaction has been confirmed on Metamask, you will be able to track its progress via the Bridge’s [History Page](/history). This allows you to drill into the source and destination transactions via EtherScan and MinaScan.
 
 ![Order History](/user-guide/history-full.png)
 
 ### 4. Bridging complete
 
-Success! Once the transaction is completed, you will see your WETH available on your Auro wallet
+**Success!** Once the transaction is completed, you will see your wETH available on your Auro wallet.

@@ -3,6 +3,7 @@ import type { fetchAccount, Field, Mina, PublicKey, UInt64 } from 'o1js';
 
 import { Bridge } from '@/configs/ABIs/zk/Bridge';
 import { handleAsync } from '@/helpers/asyncHandlers';
+import { getMinaNetworkId } from '@/helpers/common';
 import { Network } from '@/models/network';
 
 export default class BridgeContract {
@@ -24,7 +25,8 @@ export default class BridgeContract {
           archive:
             network.metadata.archiveUrl ||
             'https://api.minascan.io/archive/berkeley/v1/graphql/',
-        })
+          networkId: getMinaNetworkId(),
+        }),
       );
     }
 
@@ -54,7 +56,7 @@ export default class BridgeContract {
     this.tokenInstance = new FungibleToken(this.tokenAddress);
     this.bridgeInstance = new Bridge(
       this.bridgeAddress,
-      this.tokenInstance.tokenId
+      this.tokenInstance.tokenId,
     );
   }
 
@@ -93,7 +95,7 @@ export default class BridgeContract {
     return this.bridgeInstance.lock(
       UInt64.from(amount),
       Field.from(receipt),
-      this.tokenAddress
+      this.tokenAddress,
     );
   }
 }

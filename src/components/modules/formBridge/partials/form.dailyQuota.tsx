@@ -65,7 +65,12 @@ export default function FormDailyQuota() {
   useEffect(() => {
     if (!address || !asset) return;
     if (interval.current) clearInterval(interval.current);
-    getDailyQuota(address);
+
+    const isEthereumNetwork =
+      web3.utils.isAddress(address) && asset?.network === NETWORK_NAME.ETHEREUM;
+    const isMinaNetwork =
+      !web3.utils.isAddress(address) && asset?.network === NETWORK_NAME.MINA;
+    if (isEthereumNetwork || isMinaNetwork) getDailyQuota(address);
 
     interval.current = setInterval(() => {
       getDailyQuota(address);

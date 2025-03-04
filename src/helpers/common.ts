@@ -6,6 +6,10 @@ import { ListFileName, ZkContractType } from '@/configs/constants';
 // remove rounding config
 // BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
 
+export const getMinaNetworkId = () => {
+  return process.env.NEXT_PUBLIC_ENV === 'production' ? 'mainnet' : 'testnet';
+};
+
 export const isDevelopment = () =>
   process.env.NEXT_PUBLIC_ENV === 'development';
 export const isFnc = <F>(maybeFnc: F | unknown): maybeFnc is F =>

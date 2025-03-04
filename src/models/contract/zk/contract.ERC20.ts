@@ -7,7 +7,7 @@ import { ZkContractType } from '@/configs/constants';
 import { gql } from '@/grapql';
 import { getAccountInfoTokenQuery } from '@/grapql/queries';
 import { handleRequest } from '@/helpers/asyncHandlers';
-import { fetchFiles, fileSystem } from '@/helpers/common';
+import { fetchFiles, fileSystem, getMinaNetworkId } from '@/helpers/common';
 import { Network } from '@/models/network';
 
 export default class ERC20Contract {
@@ -29,6 +29,7 @@ export default class ERC20Contract {
           archive:
             network.metadata.archiveUrl ||
             'https://api.minascan.io/archive/berkeley/v1/graphql/',
+          networkId: getMinaNetworkId(),
         }),
       );
     }

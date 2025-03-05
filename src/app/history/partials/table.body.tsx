@@ -59,8 +59,8 @@ function BodyTable({ data }: PropsBodyTable) {
             </Td>
             <Td borderBottom={'solid 1px'} borderColor={'text.200'}>
               <Text variant={'lg'} color={'text.900'} whiteSpace={'nowrap'}>
-                {`${truncatedNumber(
-                  item.tip ? item.tip : '0.00'
+                {`${Number(
+                  truncatedNumber(item.tip ? item.tip : '0.00')
                 )} ${!item.tip || _.isEmpty(item.tokenFromName) ? '' : item.tokenFromName}`}
               </Text>
             </Td>

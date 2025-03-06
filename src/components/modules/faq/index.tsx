@@ -25,13 +25,13 @@ const FAQ_DATA = [
       <>
         <Link
           color={'blue.500'}
-          href={'https://x.com/raidenx_io'}
+          href={'https://www.sotatek.com/'}
           variant={'_blank'}
           isExternal
         >
-          RaidenX Corp
+          Sotatek
         </Link>{' '}
-        operates the bridge.
+        has developed the bridge and will operate it in production.
       </>
     ),
   },
@@ -54,8 +54,26 @@ const FAQ_DATA = [
     content: (
       <>
         Yes. You can find the audit reports from Zellic
-        <Link color={'blue.500'} href={'/'} variant={'_blank'} isExternal>
+        <Link
+          color={'blue.500'}
+          href={
+            'https://github.com/Zellic/publications/blob/master/Mina%20Token%20Bridge%20EVM%20-%20Zellic%20Audit%20Report.pdf'
+          }
+          variant={'_blank'}
+          isExternal
+        >
           {' '}
+          here
+        </Link>
+        {' & '}
+        <Link
+          color={'blue.500'}
+          href={
+            'https://github.com/Zellic/publications/blob/master/Mina%20Token%20Bridge%20-%20Zellic%20Audit%20Report.pdf'
+          }
+          variant={'_blank'}
+          isExternal
+        >
           here
         </Link>
       </>

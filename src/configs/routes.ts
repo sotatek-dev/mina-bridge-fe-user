@@ -11,5 +11,6 @@ enum ROUTES {
 export const PROTECTED_ROUTES = [ROUTES.HISTORY];
 
 export const MDX_REDIRECT = 'bridging-fee';
+export const MINA_SERCURITY_DIAGRAM = 'diagram';
 
 export default ROUTES;

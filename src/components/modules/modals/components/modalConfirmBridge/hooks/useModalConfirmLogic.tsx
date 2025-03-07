@@ -565,7 +565,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         toastType: 'warning',
         options: {
           title:
-            'Locking WETH transactions can take up to 10 minutes to appear on Bridge History screen',
+            'Locking WETH transactions can take up to 90 minutes to appear on Bridge History screen',
         },
       });
       return onSuccess();

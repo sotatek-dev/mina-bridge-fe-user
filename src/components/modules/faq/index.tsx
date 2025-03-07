@@ -11,6 +11,7 @@ import {
   UnorderedList,
 } from '@chakra-ui/react';
 
+import { MINA_SERCURITY_DIAGRAM } from '@/configs/routes';
 import AddIcon from '@public/assets/icons/icon.add.circle.purple.svg';
 
 const FAQ_DATA = [
@@ -45,7 +46,18 @@ const FAQ_DATA = [
           vulnerabilities
         </ListItem>
         <ListItem>Daily Limits & Circuit Breakers</ListItem>
-        <ListItem>Facilisis in pretium nisl aliquet</ListItem>
+        <ListItem>Secure Enclave-Based Key Management</ListItem>
+        <ListItem>
+          Mina security diagram{' '}
+          <Link
+            color={'blue.500'}
+            href={`/user-guide#${MINA_SERCURITY_DIAGRAM}`}
+            variant={'_blank'}
+            isExternal
+          >
+            here
+          </Link>
+        </ListItem>
       </UnorderedList>
     ),
   },

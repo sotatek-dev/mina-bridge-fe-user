@@ -34,7 +34,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       </Heading>
     ),
     p: ({ children }) => (
-      <Text py={'10px'} variant={'xl'} color={'text.700'}>
+      <Text py={'10px'} variant={'xl'} fontSize={'16px'} color={'text.700'}>
         {children}
       </Text>
     ),
@@ -48,8 +48,12 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         />
       </Flex>
     ),
-    ul: ({ children }) => <ul style={{ marginBottom: '8px' }}>{children}</ul>,
-    li: ({ children }) => <li style={{ marginLeft: '30px' }}>{children}</li>,
+    ul: ({ children }) => (
+      <ul style={{ marginBottom: '8px', fontSize: '16px' }}>{children}</ul>
+    ),
+    li: ({ children }) => (
+      <li style={{ marginLeft: '30px', fontSize: '16px' }}>{children}</li>
+    ),
     a: ({ href, children, ...props }) => (
       <Link href={href || '/'} color={'blue.500'} {...props}>
         {children}

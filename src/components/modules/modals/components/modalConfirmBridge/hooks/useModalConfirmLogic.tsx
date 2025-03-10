@@ -73,6 +73,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
   const [supportedPairs, setSupportedPairs] =
     useState<GetListSpPairsResponse | null>(null);
   const [expectedTimes, setExpectedTimes] = useState<string>('');
+  const [waitCrawlMinaTimes, setWaitCrawlMinaTimes] = useState<number>(0);
 
   const priceUsdInterval = useRef<null | NodeJS.Timeout>(null);
 
@@ -564,8 +565,7 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       sendNotification({
         toastType: 'warning',
         options: {
-          title:
-            'Locking WETH transactions can take up to 90 minutes to appear on Bridge History screen',
+          title: `Locking WETH transactions can take up to ${waitCrawlMinaTimes || 90} minutes to appear on Bridge History screen`,
         },
       });
       return onSuccess();
@@ -696,6 +696,10 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       setExpectedTimes(
         countExpectedTimes(expectedTimesRes?.completeTimeEstimated),
       );
+      if (expectedTimesRes?.waitCrawlMinaTime)
+        setWaitCrawlMinaTimes(
+          Math.floor(expectedTimesRes.waitCrawlMinaTime / 60),
+        );
     })();
   }, [curModal.isOpen, modalPayload, supportedPairs, asset]);
 

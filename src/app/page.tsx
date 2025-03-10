@@ -86,10 +86,6 @@ export default function Home() {
           Fee information
         </Text>
       </VStack>
-      <Text variant={'md'} color={'text.500'} m={'0'} mt={'16px'}>
-        The safest, fastest and most secure way to bring cross-chain assets to
-        Mina
-      </Text>
       <Faq />
     </VStack>
   );

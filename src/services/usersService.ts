@@ -93,6 +93,8 @@ export type GetPoAResponse = {
 export type GetExpectedTimesResponse = {
   receivedNetwork: string;
   completeTimeEstimated: number;
+  waitCrawlEthTime: number;
+  waitCrawlMinaTime: number;
 };
 
 class UsersService {

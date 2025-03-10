@@ -135,7 +135,7 @@ const FAQ_DATA = [
         team on{' '}
         <Link
           color={'blue.500'}
-          href={'https://discord.gg/cyNRSkZd'}
+          href={'https://discord.gg/SJgHK6X9dD'}
           variant={'_blank'}
           isExternal
         >
@@ -168,11 +168,11 @@ const FAQ_DATA = [
         Please submit all support requests on our Discord channel{' '}
         <Link
           color={'blue.500'}
-          href={'https://discord.gg/cyNRSkZd'}
+          href={'https://discord.gg/SJgHK6X9dD'}
           variant={'_blank'}
           isExternal
         >
-          https://discord.gg/cyNRSkZd
+          https://discord.gg/SJgHK6X9dD
         </Link>
         .
       </>

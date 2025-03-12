@@ -28,8 +28,7 @@ export default function NetworkCard({ label, networkKey }: Props) {
         modalName: MODAL_NAME.SELECT_NETWORK,
         payload: {
           networkKey,
-          isValidate: networkKey === NETWORK_KEY.SRC ? true : false,
-          isDisable: networkKey === NETWORK_KEY.TAR,
+          isValidate: networkKey === NETWORK_KEY.SRC,
         },
       }),
     );

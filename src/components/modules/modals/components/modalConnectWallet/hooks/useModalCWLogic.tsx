@@ -1,3 +1,4 @@
+import { ButtonProps } from '@chakra-ui/react';
 import { useCallback, useMemo } from 'react';
 
 import { useModalCWState } from '../context';
@@ -10,7 +11,7 @@ import WALLETS, {
   WALLET_NAME,
   Wallet,
 } from '@/models/wallet';
-import { getPersistSlice, useAppSelector } from '@/store';
+import { getPersistSlice, getWalletSlice, useAppSelector } from '@/store';
 
 const networkOrder = [NETWORK_NAME.MINA, NETWORK_NAME.ETHEREUM];
 const walletOrder = [WALLET_NAME.METAMASK, WALLET_NAME.AURO];
@@ -18,6 +19,7 @@ const walletOrder = [WALLET_NAME.METAMASK, WALLET_NAME.AURO];
 export default function useModalCWLogic() {
   const { state, methods } = useModalCWState();
   const { userDevice } = useAppSelector(getPersistSlice);
+  const { isConnected, networkName } = useAppSelector(getWalletSlice);
 
   const getNetworkCardStatus = useCallback(
     (key: NETWORK_NAME) => {
@@ -38,7 +40,7 @@ export default function useModalCWLogic() {
           return CARD_STATUS.SUPPORTED;
       }
     },
-    [state.selectedNetwork, state.isAcceptTerm]
+    [state.selectedNetwork, state.isAcceptTerm],
   );
 
   const networkOptionsRendered = useMemo(() => {
@@ -83,7 +85,7 @@ export default function useModalCWLogic() {
       const isSupported =
         (data.metadata.supportedNetwork.includes(state.selectedNetwork) &&
           data.metadata.supportedDevices[nwInstance.type].includes(
-            userDevice.device?.type || ''
+            userDevice.device?.type || '',
           )) ||
         (MOBILE_SUPPORTS.includes(userDevice.os?.name as OS) &&
           !isSnap &&
@@ -105,7 +107,7 @@ export default function useModalCWLogic() {
       state.selectedNetwork,
       state.isAcceptTerm,
       userDevice,
-    ]
+    ],
   );
 
   const walletOptionsRendered = useMemo(() => {
@@ -143,5 +145,57 @@ export default function useModalCWLogic() {
     state.isAcceptTerm,
   ]);
 
-  return { state, methods, networkOptionsRendered, walletOptionsRendered };
+  const connectBtnProps = useMemo<ButtonProps>(() => {
+    const { isAcceptTerm, selectedNetwork } = state;
+    const isDisable = !isAcceptTerm || !userDevice;
+    const isCurActiveNw = isConnected && selectedNetwork === networkName.src;
+
+    let content = 'Connect Wallet';
+    if (!isDisable) {
+      if (isCurActiveNw) {
+        content =
+          selectedNetwork === NETWORK_NAME.ETHEREUM
+            ? 'Metamask Connected'
+            : 'Auro Connected';
+      } else {
+        content =
+          selectedNetwork === NETWORK_NAME.ETHEREUM
+            ? 'Connect Metamask'
+            : 'Connect Auro';
+      }
+    }
+
+    const wallet =
+      selectedNetwork === NETWORK_NAME.ETHEREUM
+        ? WALLET_NAME.METAMASK
+        : WALLET_NAME.AURO;
+
+    return {
+      w: 'full',
+      disabled: isDisable || isCurActiveNw,
+      variant:
+        isDisable || isCurActiveNw
+          ? isConnected
+            ? 'connected'
+            : 'ghost'
+          : 'primary.orange.solid',
+      children: content,
+      onClick: () =>
+        (!isConnected || !isCurActiveNw) && methods.onSelectWallet(wallet),
+    };
+  }, [
+    state.isAcceptTerm,
+    state.selectedNetwork,
+    userDevice,
+    networkName.src,
+    isConnected,
+  ]);
+
+  return {
+    state,
+    methods,
+    networkOptionsRendered,
+    walletOptionsRendered,
+    connectBtnProps,
+  };
 }

@@ -2,20 +2,24 @@
 import { HStack, Image, StackProps, Text, VStack } from '@chakra-ui/react';
 import { capitalize } from 'lodash';
 import moment from 'moment';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import web3 from 'web3';
 
-import { useFormBridgeState } from '../context';
+import { DailyQuota, useFormBridgeState } from '../context';
 
 import ITV from '@/configs/time';
 import { handleAsync, handleRequest } from '@/helpers/asyncHandlers';
 import { formatNumber, fromWei } from '@/helpers/common';
 import { Network, NETWORK_NAME } from '@/models/network';
 import { NETWORK_TYPE } from '@/models/network/network';
+import NetworkEthereum from '@/models/network/network.ethereum';
+import NetworkMina from '@/models/network/network.mina';
 import { useZKContractState } from '@/providers/zkBridgeInitalize';
 import usersService, { GetListSpPairsResponse } from '@/services/usersService';
 import {
   getPersistSlice,
   getWalletInstanceSlice,
+  getWalletSlice,
   useAppDispatch,
   useAppSelector,
 } from '@/store';
@@ -23,18 +27,32 @@ import { persistSliceActions, TokenType } from '@/store/slices/persistSlice';
 
 type Props = { isDisplayed: boolean } & Pick<StackProps, ChakraBoxSizeProps>;
 
+const initialData: DailyQuota = {
+  max: '0',
+  systemMax: '0',
+  current: '0',
+  systemCurrent: '0',
+  asset: '',
+};
+
+const recheckInterval = ITV.M5;
+
 function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
   const dispatch = useAppDispatch();
-  const { asset, assetRange } = useFormBridgeState().state;
   const { bridgeCtr } = useFormBridgeState().constants;
-  const { updateAssetRage, updateStatus } = useFormBridgeState().methods;
+  const { dailyQuota, asset, assetRange } = useFormBridgeState().state;
+  const { updateAssetRage, updateStatus, updateQuota } =
+    useFormBridgeState().methods;
   const zkCtr = useZKContractState().state;
+  const { address } = useAppSelector(getWalletSlice);
   const { networkInstance } = useAppSelector(getWalletInstanceSlice);
   const [supportedPairs, setSupportedPairs] =
     useState<GetListSpPairsResponse | null>(null);
 
   const { lastAsset } = useAppSelector(getPersistSlice);
   const [runCount, setRunCount] = useState<number>(0);
+
+  const interval = useRef<any>(null);
 
   const tarAsset = useMemo<TokenType | null>(() => {
     if (!supportedPairs || !networkInstance.src) {
@@ -179,6 +197,37 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
     }
   }
 
+  async function getDailyQuota(address: string) {
+    let decimal = asset!!.decimals;
+
+    if (web3.utils.isAddress(address)) {
+      decimal = NetworkEthereum.nativeCurrency.decimals;
+    } else {
+      try {
+        const { PublicKey } = await import('o1js');
+        PublicKey.fromBase58(address).toBase58();
+        decimal = NetworkMina.nativeCurrency.decimals;
+      } catch (e) {}
+    }
+
+    const [res, error] = await handleRequest(
+      usersService.getDailyQuota({
+        address,
+        network: asset?.network === NETWORK_NAME.ETHEREUM ? 'eth' : 'mina',
+        token: asset?.tokenAddr || '',
+      }),
+    );
+    if (error || !res) return updateQuota({ ...initialData });
+
+    return updateQuota({
+      max: formatNumber(res?.dailyQuotaPerAddress, 4),
+      systemMax: formatNumber(res?.dailyQuotaSystem, 4),
+      current: formatNumber(res?.curUserQuota, 4),
+      systemCurrent: formatNumber(res?.curSystemQuota, 4),
+      asset: asset?.symbol || '',
+    });
+  }
+
   useEffect(() => {
     if (runCount > 0) getAssetMaxMin(networkInstance.src!!, asset!!);
   }, [runCount]);
@@ -200,33 +249,69 @@ function Content({ ...props }: Omit<Props, 'isDisplayed'>) {
     })();
   }, []);
 
+  useEffect(() => {
+    if (!address || !asset) return;
+    if (interval.current) clearInterval(interval.current);
+
+    const isEthereumNetwork =
+      web3.utils.isAddress(address) && asset?.network === NETWORK_NAME.ETHEREUM;
+    const isMinaNetwork =
+      !web3.utils.isAddress(address) && asset?.network === NETWORK_NAME.MINA;
+    if (isEthereumNetwork || isMinaNetwork) getDailyQuota(address);
+
+    interval.current = setInterval(() => {
+      getDailyQuota(address);
+    }, recheckInterval);
+    return () => {
+      clearInterval(interval.current);
+    };
+  }, [address, asset]);
+
   return (
-    <HStack
-      alignItems={'flex-start'}
+    <VStack
       bg={'primary.purple.06'}
-      gap={'10px'}
       p={'15px 20px'}
       borderRadius={'8px'}
+      alignItems={'flex-start'}
       {...props}
     >
-      <Image src={'/assets/icons/icon.buzz.circle.purple.svg'} />
-      <VStack alignItems={'flex-start'} gap={'5px'}>
-        <Text variant={'md_semiBold'} color={'text.700'} pb={'5px'}>
-          I want to bridge {asset?.symbol || ''} from{' '}
-          {capitalize(networkInstance.src?.name)} to{' '}
-          {capitalize(networkInstance?.tar?.name)} and receive{' '}
-          {tarAsset?.symbol}
-        </Text>
-        <Text variant={'md'} color={'text.500'}>
-          1. Minimum amount is {assetRange[0] || 'unknown'}{' '}
-          {asset?.symbol || ''}
-        </Text>
-        <Text variant={'md'} color={'text.500'}>
-          2. Maximum amount is {assetRange[1] || 'unknown'}{' '}
-          {asset?.symbol || ''}
-        </Text>
-      </VStack>
-    </HStack>
+      <HStack alignItems={'flex-start'} gap={'10px'}>
+        <Image src={'/assets/icons/icon.buzz.circle.purple.svg'} />
+        <VStack alignItems={'flex-start'} gap={'5px'}>
+          <Text variant={'md_semiBold'} color={'text.700'} pb={'5px'}>
+            I want to bridge {asset?.symbol || ''} from{' '}
+            {capitalize(networkInstance.src?.name)} to{' '}
+            {capitalize(networkInstance?.tar?.name)} and receive{' '}
+            {tarAsset?.symbol}
+          </Text>
+          <Text variant={'md'} color={'text.500'}>
+            1. Minimum amount is {assetRange[0] || 'unknown'}{' '}
+            {asset?.symbol || ''}
+          </Text>
+          <Text variant={'md'} color={'text.500'}>
+            2. Maximum amount is {assetRange[1] || 'unknown'}{' '}
+            {asset?.symbol || ''}
+          </Text>
+        </VStack>
+      </HStack>
+
+      <HStack alignItems={'flex-start'} gap={'10px'}>
+        <Image src={'/assets/icons/icon.buzz.circle.purple.svg'} />
+        <VStack alignItems={'flex-start'} gap={'5px'}>
+          <Text variant={'md_semiBold'} color={'text.700'} pb={'5px'}>
+            Daily limit
+          </Text>
+          <Text variant={'md'} color={'text.500'}>
+            Bridge used {dailyQuota.systemCurrent} {dailyQuota.asset} /{' '}
+            {dailyQuota.systemMax} {dailyQuota.asset}
+          </Text>
+          <Text variant={'md'} color={'text.500'}>
+            Your account used {dailyQuota.current} {dailyQuota.asset} /{' '}
+            {dailyQuota.max} {dailyQuota.asset}
+          </Text>
+        </VStack>
+      </HStack>
+    </VStack>
   );
 }
 

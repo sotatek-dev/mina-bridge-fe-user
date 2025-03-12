@@ -134,10 +134,6 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       getWeb3Instance(nwProvider).eth.getGasPrice(),
     );
     if (error || !gasPrice) return '0';
-    console.log(
-      '🚀 ~ form.bridgeAmount ~ estimate ratio:',
-      process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO,
-    );
     const priceBN = new BigNumber(gasPrice?.toString() || '0').multipliedBy(
       process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10,
     );

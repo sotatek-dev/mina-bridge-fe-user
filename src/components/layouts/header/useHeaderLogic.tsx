@@ -2,6 +2,7 @@
 import {
   AspectRatio,
   ButtonProps,
+  HStack,
   Image,
   Text,
   useToken,
@@ -9,6 +10,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { MODAL_NAME } from '@/configs/modal';
+import { getEnvNetwork } from '@/constants';
 import { truncateMid } from '@/helpers/common';
 import useWindowSize from '@/hooks/useWindowSize';
 import NETWORKS from '@/models/network';
@@ -23,6 +25,7 @@ import { uiSliceActions } from '@/store/slices/uiSlice';
 import { NETWORK_KEY, walletSliceActions } from '@/store/slices/walletSlice';
 import ArrowDownIcon from '@public/assets/icons/icon.arrow.down.svg';
 import MenuIcon from '@public/assets/icons/icon.burger-menu.right.svg';
+import EnvIcon from '@public/assets/icons/icon.env.network.svg';
 
 export default function useHeaderLogic(extractFnc: boolean = false) {
   const dispatch = useAppDispatch();
@@ -142,37 +145,40 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
     // if extract function only, this jsx is redundant
     if (extractFnc) return <></>;
 
-    // when no wallet connected
-    if (!isConnected)
-      return {
-        variant: 'primary.orange.solid',
-        onClick: openConnectWalletModal,
-        children: 'Connect Wallet',
-      };
+    return {
+      variant: 'primary.orange.solid',
+      onClick: openConnectWalletModal,
+      children: 'Connect Wallet',
+    };
+  }, [openConnectWalletModal]);
 
-    // when have a wallet connect
+  const btnWalletInforProps = useMemo<ButtonProps>(() => {
+    // if extract function only, this jsx is redundant
+    if (extractFnc) return <></>;
+
     const [fSlice, sSlice] = truncateMid(address!!, 4, 4); // truncate adddress
 
     return {
-      variant: 'primary.orange',
+      bg: 'background.0',
+      color: 'primary.orange',
+      onClick: openConnectWalletModal,
+      iconSpacing: 0,
+      children: fSlice + '...' + sSlice,
       leftIcon: (
         <AspectRatio w={'24px'} h={'24px'} ratio={1}>
           <Image src={walletInstance?.metadata.logo.base} />
         </AspectRatio>
       ),
-      bg: 'background.0',
-      onClick: toggleMenu,
-      iconSpacing: 0,
-      children: fSlice + '...' + sSlice,
+      rightIcon: isMdSize ? (
+        <HStack gap={1} ml={2}>
+          <EnvIcon />
+          <Text color={'text.700'} fontWeight={'400'}>
+            {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
+          </Text>
+        </HStack>
+      ) : undefined,
     };
-  }, [
-    openConnectWalletModal,
-    toggleMenu,
-    walletInstance,
-    address,
-    isConnected,
-    extractFnc,
-  ]);
+  }, [walletInstance, address, extractFnc, isMdSize]);
 
   // close everything when drawer closed
   useEffect(() => {
@@ -193,6 +199,7 @@ export default function useHeaderLogic(extractFnc: boolean = false) {
     btnConnectWalletProps,
     openConnectWalletModal,
     btnSelectNetworkProps,
+    btnWalletInforProps,
     openSelectNetworkModal,
     btnBurgerMenuProps,
   };

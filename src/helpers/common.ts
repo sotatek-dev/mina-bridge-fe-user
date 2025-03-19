@@ -6,6 +6,10 @@ import { ListFileName, ZkContractType } from '@/configs/constants';
 // remove rounding config
 // BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_DOWN });
 
+export const getMinaNetworkId = () => {
+  return process.env.NEXT_PUBLIC_ENV === 'production' ? 'mainnet' : 'testnet';
+};
+
 export const isDevelopment = () =>
   process.env.NEXT_PUBLIC_ENV === 'development';
 export const isFnc = <F>(maybeFnc: F | unknown): maybeFnc is F =>
@@ -18,7 +22,7 @@ export const truncateMid = (src: string, start: number, end: number) => [
 
 export const toWei = (
   amount: string | number,
-  decimal: string | number
+  decimal: string | number,
 ): string => {
   decimal = typeof decimal === 'number' ? decimal : parseInt(decimal);
   return new BigNumber(amount)
@@ -110,7 +114,7 @@ export const getDecimal = (network: string) => {
 
 export function calculateAmountReceived(
   amountFrom: number,
-  percentTip: number
+  percentTip: number,
 ) {
   // Ensure percentTip is within a valid range (0-100)
   if (percentTip < 0 || percentTip > 100) {
@@ -129,7 +133,7 @@ export function calculateAmountReceived(
 export function formatNumber(
   balance: string,
   decimals: string | number,
-  roundMode: BigNumber.RoundingMode = BigNumber.ROUND_HALF_UP
+  roundMode: BigNumber.RoundingMode = BigNumber.ROUND_HALF_UP,
 ) {
   const balBN = new BigNumber(balance);
   const decNum = Number(decimals);
@@ -142,7 +146,7 @@ export function formatNumber(
 export function formatNumber2(
   balance: string,
   decimals: string | number,
-  prefixCharacter?: string
+  prefixCharacter?: string,
 ) {
   const balBN = new BigNumber(balance);
   const decNum = Number(decimals);
@@ -209,16 +213,16 @@ export function fetchFiles(type: ZkContractType) {
       listFiles.map((file) => {
         return Promise.all([
           fetch(`${publicStaticUri}/o1js/${file}.header`).then((res) =>
-            res.text()
+            res.text(),
           ),
           fetch(`${publicStaticUri}/o1js/${file}`).then((res) => res.text()),
         ]).then(([header, data]) => ({ file, header, data }));
-      })
+      }),
     ).then((cacheList) =>
       cacheList.reduce((acc: any, { file, header, data }) => {
         acc[file] = { file, header, data };
         return acc;
-      }, {})
+      }, {}),
     );
   }
 
@@ -228,12 +232,12 @@ export function fetchFiles(type: ZkContractType) {
         fetch(`/caches/o1js/${file}.header`).then((res) => res.text()),
         fetch(`/caches/o1js/${file}`).then((res) => res.text()),
       ]).then(([header, data]) => ({ file, header, data }));
-    })
+    }),
   ).then((cacheList) =>
     cacheList.reduce((acc: any, { file, header, data }) => {
       acc[file] = { file, header, data };
       return acc;
-    }, {})
+    }, {}),
   );
 }
 
@@ -272,23 +276,16 @@ export function getScanUrl(networkName: string) {
 export const countExpectedTimes = (seconds: any): string => {
   const diffMinute = seconds / 60;
   const diffHour = seconds / 3600;
-  const diffDay = seconds / 86400;
 
-  const diffMonth = seconds / (30.44 * 86400);
-  if (Math.floor(diffMonth) > 12) {
-    return '> 12 months';
-  }
-  if (Math.floor(diffMonth) > 0) {
-    return `${Math.floor(diffMonth)} months`;
-  }
-  if (Math.floor(diffDay) > 0) {
-    return `${Math.floor(diffDay)} days`;
-  }
   if (Math.floor(diffHour) > 0) {
-    return `${Math.floor(diffHour)} hours`;
+    const hours = Math.floor(diffHour);
+    const minutes = Math.floor(diffMinute) % 60;
+    return `${hours} hour${hours > 1 ? 's' : ''} ${minutes > 0 ? `${minutes} minutes` : ''}`.trim();
   }
+
   if (Math.floor(diffMinute) < 1) {
-    return '< 1 minutes';
+    return '< 1 minute';
   }
+
   return `${Math.floor(diffMinute) || 1} minutes`;
 };

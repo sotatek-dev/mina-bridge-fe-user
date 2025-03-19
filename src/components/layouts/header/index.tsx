@@ -12,7 +12,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 
 import Logo from '../../elements/logo';
 
@@ -37,13 +37,94 @@ export default function Header({}: Props) {
     isDrawerOpened,
     disconnectWallet,
     btnConnectWalletProps,
-    btnSelectNetworkProps,
+    btnWalletInforProps,
     btnBurgerMenuProps,
     toggleDrawerMenu,
     closeDrawer,
   } = useHeaderLogic();
 
   const { colorMode, toggleTheme } = useChakraTheme();
+
+  const headerAction = useMemo(() => {
+    if (isMdSize) {
+      return (
+        <>
+          {isConnected ? (
+            <>
+              <HStack>
+                <Link href={ROUTES.HISTORY}>
+                  <Text variant={'lg_semiBold'} color={'text.700'}>
+                    History
+                  </Text>
+                </Link>
+                {/* <HStack
+              w={'20px'}
+              h={'20px'}
+              bg={'var(--red-500)'}
+              borderRadius={'50%'}
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'center'}
+            >
+              <Text color={'white'} fontSize={'12px'}>
+                0
+              </Text>
+            </HStack> */}
+              </HStack>
+              <HStack>
+                <Button {...btnWalletInforProps} />
+                <Button
+                  w={10}
+                  p={'10px'}
+                  bg={'background.1'}
+                  onClick={disconnectWallet}
+                  title={'Disconnect'}
+                >
+                  <LogoutIcon color={'var(--logo-color)'} />
+                </Button>
+              </HStack>
+            </>
+          ) : (
+            <>
+              <HStack gap={1}>
+                <EnvIcon />
+                <Text color={'text.700'}>
+                  {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
+                </Text>
+              </HStack>
+              <Button {...btnConnectWalletProps} />
+            </>
+          )}
+
+          <Button
+            w={10}
+            p={'10px'}
+            bg={'background.1'}
+            onClick={toggleTheme}
+            title={colorMode === Theme.DARK ? 'Dark Mode' : 'Light Mode'}
+          >
+            {colorMode === Theme.DARK ? <MoonIcon /> : <SunIcon />}
+          </Button>
+        </>
+      );
+    } else {
+      if (isConnected)
+        return (
+          <>
+            <Button {...btnBurgerMenuProps} />
+            <Button {...btnWalletInforProps} {...{ children: null }} />
+          </>
+        );
+      else return <Button {...btnConnectWalletProps} />;
+    }
+  }, [
+    isMdSize,
+    isConnected,
+    toggleTheme,
+    btnBurgerMenuProps,
+    btnWalletInforProps,
+    btnConnectWalletProps,
+  ]);
 
   return (
     <Flex
@@ -58,79 +139,20 @@ export default function Header({}: Props) {
       bg={'background.0'}
     >
       <HStack justifyContent={'center'} gap={1} mr={2}>
-        <Link href={ROUTES.HOME}>
+        <Link href={ROUTES.HOME} _hover={{ textDecor: 'none' }}>
           <Logo />
+          {process.env.NEXT_PUBLIC_ENV === 'production' && (
+            <Text fontSize={'10px'} color={'var(--logo-color)'}>
+              Public Beta
+            </Text>
+          )}
         </Link>
       </HStack>
 
       <HStack ml={'auto'} gap={{ base: '10px', md: '16px' }}>
-        {isConnected && isMdSize && (
-          <HStack mr={'32px'}>
-            <Link href={ROUTES.HISTORY}>
-              <Text variant={'lg_semiBold'} color={'text.700'}>
-                History
-              </Text>
-            </Link>
-            <HStack
-              w={'20px'}
-              h={'20px'}
-              bg={'var(--red-500)'}
-              borderRadius={'50%'}
-              display={'flex'}
-              alignItems={'center'}
-              justifyContent={'center'}
-            >
-              <Text color={'white'} fontSize={'12px'}>
-                0
-              </Text>
-            </HStack>
-          </HStack>
-        )}
-        {!isMdSize && isConnected && <Button {...btnBurgerMenuProps} />}
-        <Button
-          {...btnSelectNetworkProps}
-          {...(isMdSize ? {} : { children: null })}
-        />
-
-        <Button
-          {...btnConnectWalletProps}
-          {...(isMdSize || (!isMdSize && !isConnected)
-            ? {}
-            : { children: null })}
-        />
-
-        {isMdSize && (
-          <>
-            <Button
-              w={10}
-              p={'10px'}
-              bg={'background.1'}
-              onClick={toggleTheme}
-              title={colorMode === Theme.DARK ? 'Dark Mode' : 'Light Mode'}
-            >
-              {colorMode === Theme.DARK ? <MoonIcon /> : <SunIcon />}
-            </Button>
-
-            {isConnected && (
-              <Button
-                w={10}
-                p={'10px'}
-                bg={'background.1'}
-                onClick={disconnectWallet}
-                title={'Disconnect'}
-              >
-                <LogoutIcon color={'var(--logo-color)'} />
-              </Button>
-            )}
-            <HStack gap={1}>
-              <EnvIcon />
-              <Text color={'text.700'}>
-                {getEnvNetwork(process.env.NEXT_PUBLIC_ENV!)}
-              </Text>
-            </HStack>
-          </>
-        )}
+        {headerAction}
       </HStack>
+
       <Drawer placement={'right'} onClose={closeDrawer} isOpen={isDrawerOpened}>
         <DrawerOverlay bg={'text.900'} opacity={'0.5 !important'} />
         <DrawerContent w={'65% !important'} bg={'background.0'}>
@@ -155,16 +177,9 @@ export default function Header({}: Props) {
               </Link>
               <VStack w={'full'} position={'relative'}>
                 <Button
-                  {...btnSelectNetworkProps}
-                  w={'full'}
-                  sx={{
-                    '.chakra-text': {
-                      mr: 'auto',
-                    },
-                  }}
-                />
-                <Button
-                  {...btnConnectWalletProps}
+                  {...(isConnected
+                    ? btnWalletInforProps
+                    : btnConnectWalletProps)}
                   w={'full'}
                   onClick={toggleDrawerMenu}
                 />

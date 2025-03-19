@@ -53,7 +53,7 @@ export default function Card({ nwKey }: CardProps) {
       default:
         return false;
     }
-  }, [nwKey]);
+  }, [nwKey, networkName]);
 
   async function handleSelectNetwork() {
     if ((payload as ModalSNPayload)?.isDisable && !isSelected) return;
@@ -67,36 +67,65 @@ export default function Card({ nwKey }: CardProps) {
 
     handleCloseCurModal();
 
-    // walletInstance!!.removeListener(WALLET_EVENT_NAME.ACCOUNTS_CHANGED);
-    // walletInstance!!.removeListener(WALLET_EVENT_NAME.CHAIN_CHANGED);
-    // walletInstance!!.removeListener(WALLET_EVENT_NAME.DISCONNECT);
-    // walletInstance!!.removeListener(WALLET_EVENT_NAME.MESSAGE);
+    // Choose Switch Network in "To" Modal
+    if ((payload as ModalSNPayload).networkKey === NETWORK_KEY.TAR) {
+      const switchNwKey =
+        network?.name === NETWORK_NAME.MINA
+          ? NETWORK_NAME.ETHEREUM
+          : NETWORK_NAME.MINA;
+      const switchNetwork = NETWORKS[switchNwKey];
+      const res = await dispatch(
+        walletSliceActions.connectWallet({
+          wallet:
+            WALLETS[
+              switchNetwork.name === NETWORK_NAME.ETHEREUM
+                ? WALLET_NAME.METAMASK
+                : WALLET_NAME.AURO
+            ]!,
+          network: switchNetwork,
+        }),
+      );
+      if (walletSliceActions.connectWallet.rejected.match(res)) {
+        sendNotification({
+          toastType: 'error',
+          options: {
+            title: res.error.message || null,
+          },
+        });
+        handleCloseLoadingModal();
+        return;
+      }
 
-    // retry get wallet account
-    const res = await dispatch(
-      walletSliceActions.connectWallet({
-        wallet:
-          WALLETS[
-            network.name === NETWORK_NAME.ETHEREUM
-              ? WALLET_NAME.METAMASK
-              : WALLET_NAME.AURO
-          ]!,
-        network: network,
-      }),
-    );
-    //  when fail to connect
-    if (walletSliceActions.connectWallet.rejected.match(res)) {
-      sendNotification({
-        toastType: 'error',
-        options: {
-          title: res.error.message || null,
-        },
-      });
-      handleCloseLoadingModal();
-      return;
+      // when connect success
+      dispatch(persistSliceActions.setLastNetworkName(switchNetwork.name));
+    } else {
+      // Choose Switch Network in "From" Modal
+      const res = await dispatch(
+        walletSliceActions.connectWallet({
+          wallet:
+            WALLETS[
+              network.name === NETWORK_NAME.ETHEREUM
+                ? WALLET_NAME.METAMASK
+                : WALLET_NAME.AURO
+            ]!,
+          network: network,
+        }),
+      );
+      if (walletSliceActions.connectWallet.rejected.match(res)) {
+        sendNotification({
+          toastType: 'error',
+          options: {
+            title: res.error.message || null,
+          },
+        });
+        handleCloseLoadingModal();
+        return;
+      }
+
+      // when connect success
+      dispatch(persistSliceActions.setLastNetworkName(network.name));
     }
-    // when connect success
-    dispatch(persistSliceActions.setLastNetworkName(network.name));
+
     return;
   }
 
@@ -139,7 +168,16 @@ export default function Card({ nwKey }: CardProps) {
   return (
     <Button variant={'_blank'} key={nwKey} {...containerProps}>
       <Flex {...contentProps}>
-        <Image w={'36px'} h={'36px'} src={network.metadata.logo.base} />
+        <Image
+          w={'36px'}
+          h={'36px'}
+          src={network.metadata.logo.base}
+          filter={
+            !isSelected && (payload as ModalSNPayload)?.isDisable
+              ? 'grayscale(100%)'
+              : undefined
+          }
+        />
         <Text textTransform={'capitalize'} variant={'xl_semiBold'}>
           {network.name} Network
         </Text>

@@ -10,8 +10,6 @@ export type FormBridgeProps = {};
 export default function FormBridge({}: FormBridgeProps) {
   return (
     <FormBridgeProvider>
-      <FormDailyQuota />
-
       <Box
         maxW={'500px'}
         w={'full'}

@@ -51,7 +51,7 @@ export class Manager extends SmartContract {
     const isMinter2 = sender.equals(minter2);
     const isMinter3 = sender.equals(minter3);
     // Require that sender is one of the minters
-    isMinter1.or(isMinter2).or(isMinter3).assertTrue();
+    isMinter1.or(isMinter2).or(isMinter3).assertTrue('Sender is not a minter');
   }
   async changeAdmin(_admin) {
     this.isAdmin(this.sender.getAndRequireSignature());
@@ -74,25 +74,25 @@ __decorate(
   [state(PublicKey), __metadata('design:type', Object)],
   Manager.prototype,
   'admin',
-  void 0
+  void 0,
 );
 __decorate(
   [state(PublicKey), __metadata('design:type', Object)],
   Manager.prototype,
   'minter_1',
-  void 0
+  void 0,
 );
 __decorate(
   [state(PublicKey), __metadata('design:type', Object)],
   Manager.prototype,
   'minter_2',
-  void 0
+  void 0,
 );
 __decorate(
   [state(PublicKey), __metadata('design:type', Object)],
   Manager.prototype,
   'minter_3',
-  void 0
+  void 0,
 );
 __decorate(
   [
@@ -103,7 +103,7 @@ __decorate(
   ],
   Manager.prototype,
   'changeAdmin',
-  null
+  null,
 );
 __decorate(
   [
@@ -114,7 +114,7 @@ __decorate(
   ],
   Manager.prototype,
   'changeMinter_1',
-  null
+  null,
 );
 __decorate(
   [
@@ -125,7 +125,7 @@ __decorate(
   ],
   Manager.prototype,
   'changeMinter_2',
-  null
+  null,
 );
 __decorate(
   [
@@ -136,6 +136,6 @@ __decorate(
   ],
   Manager.prototype,
   'changeMinter_3',
-  null
+  null,
 );
 //# sourceMappingURL=Manager.js.map

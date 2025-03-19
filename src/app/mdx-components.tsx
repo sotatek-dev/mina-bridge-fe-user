@@ -7,9 +7,21 @@ import { getPxFromUrl } from '@/helpers/common';
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     strong: ({ children }) => (
-      <Text display={'inline-block'} color={'text.700'}>
+      <Text display={'inline-block'} color={'text.700'} fontWeight={'bold'}>
         {children}
       </Text>
+    ),
+    h5: ({ children }) => (
+      <Heading
+        as={'h5'}
+        variant={'h5'}
+        color={'text.700'}
+        fontSize={'18px'}
+        fontWeight={'bold'}
+        mt={'8px'}
+      >
+        {children}
+      </Heading>
     ),
     h4: ({ children }) => (
       <Heading as={'h4'} variant={'h4'} color={'text.700'}>
@@ -22,7 +34,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       </Heading>
     ),
     p: ({ children }) => (
-      <Text py={'10px'} variant={'xl'} color={'text.700'}>
+      <Text py={'10px'} variant={'xl'} fontSize={'16px'} color={'text.700'}>
         {children}
       </Text>
     ),
@@ -36,7 +48,12 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         />
       </Flex>
     ),
-    li: ({ children }) => <li style={{ marginLeft: '30px' }}>{children}</li>,
+    ul: ({ children }) => (
+      <ul style={{ marginBottom: '8px', fontSize: '16px' }}>{children}</ul>
+    ),
+    li: ({ children }) => (
+      <li style={{ marginLeft: '30px', fontSize: '16px' }}>{children}</li>
+    ),
     a: ({ href, children, ...props }) => (
       <Link href={href || '/'} color={'blue.500'} {...props}>
         {children}

@@ -27,7 +27,7 @@ function FormAssetSelector({ buttonProps, ...sizingProps }: Props) {
   const dispatch = useAppDispatch();
   const { walletKey, isConnected, address } = useAppSelector(getWalletSlice);
   const { networkInstance, walletInstance } = useAppSelector(
-    getWalletInstanceSlice
+    getWalletInstanceSlice,
   );
   const { listIcon } = useAppSelector(getPersistSlice);
   const { sendNotification } = useNotifier();
@@ -41,12 +41,12 @@ function FormAssetSelector({ buttonProps, ...sizingProps }: Props) {
       networkInstance.src?.type === NETWORK_TYPE.EVM &&
       !isNativeCurrency &&
       asset,
-    [walletKey, networkInstance, isNativeCurrency, asset]
+    [walletKey, networkInstance, isNativeCurrency, asset],
   );
 
   const assetIcon = useMemo(
     () => listIcon.find((item) => item.symbol === asset?.symbol),
-    [listIcon, asset]
+    [listIcon, asset],
   );
 
   function openSelectAssetsModal() {

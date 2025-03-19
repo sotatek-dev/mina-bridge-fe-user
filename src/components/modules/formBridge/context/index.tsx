@@ -35,7 +35,9 @@ export enum FORM_BRIDGE_STATUS {
 
 export type DailyQuota = {
   max: string;
+  systemMax: string;
   current: string;
+  systemCurrent: string;
   asset: string;
 };
 
@@ -75,7 +77,7 @@ export type FormBridgeCtxValueType = {
     updateAmount: (val: string) => void;
     updateStatus: (
       key: keyof FormBridgeState['status'],
-      value: boolean
+      value: boolean,
     ) => void;
     updateAsset: (asset: TokenType) => void;
     updateAssetRage: (assetRange: string[]) => void;
@@ -99,7 +101,9 @@ export const initModalCWState: FormBridgeState = {
   },
   dailyQuota: {
     max: '0',
+    systemMax: '0',
     current: '0',
+    systemCurrent: '0',
     asset: '',
   },
   srcNetwork: null,
@@ -127,7 +131,7 @@ export default function FormBridgeProvider({
   const { address, isConnected, asset } = useAppSelector(getWalletSlice);
   const { isLoading } = useAppSelector(getUISlice);
   const { walletInstance, networkInstance } = useAppSelector(
-    getWalletInstanceSlice
+    getWalletInstanceSlice,
   );
   const { listAsset } = useAppSelector(getPersistSlice);
 
@@ -141,12 +145,12 @@ export default function FormBridgeProvider({
       'provider' in networkInstance.src?.metadata
         ? networkInstance.src.metadata.provider
         : undefined,
-    [networkInstance.src]
+    [networkInstance.src],
   );
   const bridgeCtrAsset = useMemo(
     () =>
       asset ? { addr: asset.bridgeCtrAddr, network: asset.network } : null,
-    [asset]
+    [asset],
   );
   const bridgeCtr = useETHBridgeContract({
     network: networkInstance.src,
@@ -158,7 +162,7 @@ export default function FormBridgeProvider({
     () =>
       networkInstance.src?.nativeCurrency.symbol.toLowerCase() ===
       state.asset?.symbol.toLowerCase(),
-    [state.asset, networkInstance.src]
+    [state.asset, networkInstance.src],
   );
 
   // update partial state
@@ -170,7 +174,7 @@ export default function FormBridgeProvider({
         tarNetwork,
       }));
     },
-    [setState]
+    [setState],
   );
 
   // update partial state
@@ -185,10 +189,10 @@ export default function FormBridgeProvider({
                 [key]: value,
               },
             }
-          : prev
+          : prev,
       );
     },
-    [setState]
+    [setState],
   );
 
   // const refetchBalance = useCallback(() => {
@@ -213,10 +217,10 @@ export default function FormBridgeProvider({
               ...prev,
               desAddr: address,
             }
-          : prev
+          : prev,
       );
     },
-    [setState]
+    [setState],
   );
 
   // update partial state
@@ -228,10 +232,10 @@ export default function FormBridgeProvider({
               ...prev,
               amount,
             }
-          : prev
+          : prev,
       );
     },
-    [setState]
+    [setState],
   );
 
   // update partial state
@@ -243,10 +247,10 @@ export default function FormBridgeProvider({
               ...prev,
               asset,
             }
-          : prev
+          : prev,
       );
     },
-    [setState]
+    [setState],
   );
 
   // update min max
@@ -258,10 +262,10 @@ export default function FormBridgeProvider({
               ...prev,
               assetRange,
             }
-          : prev
+          : prev,
       );
     },
-    [setState]
+    [setState],
   );
 
   // update balance
@@ -272,7 +276,7 @@ export default function FormBridgeProvider({
             ...prev,
             balance,
           }
-        : prev
+        : prev,
     );
   }, []);
 
@@ -284,11 +288,11 @@ export default function FormBridgeProvider({
             ...prev,
             dailyQuota,
           }
-        : prev
+        : prev,
     );
   }, []);
 
-  // update gas fee is inf
+  // update gas fee is insuficient
   const updateIsInsufficient = useCallback(
     (isInsufficient: boolean) => {
       setState((prev) => ({
@@ -296,7 +300,7 @@ export default function FormBridgeProvider({
         isInsufficient: isInsufficient,
       }));
     },
-    [setState]
+    [setState],
   );
 
   // execute when click confirm btn
@@ -313,7 +317,7 @@ export default function FormBridgeProvider({
       isConnected: boolean,
       isGlobalLoading: boolean,
       desAddr: string,
-      amount: string
+      amount: string,
     ) => {
       // check connected
       updateStatus('isConnected', isConnected);
@@ -324,7 +328,7 @@ export default function FormBridgeProvider({
       // sync loading with global loadin
       updateStatus('isLoading', isGlobalLoading);
     },
-    [updateStatus]
+    [updateStatus],
   );
 
   // init assets
@@ -334,13 +338,13 @@ export default function FormBridgeProvider({
     const des =
       networkInstance.src.name === NETWORK_NAME.ETHEREUM ? 'src' : 'tar';
     const assets = listAsset[networkInstance.src.name].filter(
-      (asset) => asset.des === des
+      (asset) => asset.des === des,
     );
     if (!asset || asset.network !== networkInstance.src.name) {
       dispatch(
         walletSliceActions.changeAsset(
-          assets.length > 0 ? assets[0] : undefined
-        )
+          assets.length > 0 ? assets[0] : undefined,
+        ),
       );
       return;
     }
@@ -376,13 +380,12 @@ export default function FormBridgeProvider({
       const balance = await (walletInstance as WalletAuro)?.getNativeBalance(
         networkInstance?.src as Network,
         address as string,
-        asset as TokenType
+        asset as TokenType,
       );
       updateIsInsufficient(
-        new BigNumber(balance).lt(process.env.NEXT_PUBLIC_MINA_GAS_FEE || 0.1)
+        new BigNumber(balance).lt(process.env.NEXT_PUBLIC_MINA_GAS_FEE || 0.1),
       );
     };
-
     if (
       isConnected &&
       asset?.network === NETWORK_NAME.MINA &&
@@ -391,7 +394,6 @@ export default function FormBridgeProvider({
     ) {
       getNativeBalance();
     }
-
     if (asset?.network === NETWORK_NAME.ETHEREUM) {
       updateIsInsufficient(false);
     }
@@ -440,7 +442,7 @@ export default function FormBridgeProvider({
       updateIsInsufficient,
       resetFormValues,
       bridgeCtr,
-    ]
+    ],
   );
 
   // return statement

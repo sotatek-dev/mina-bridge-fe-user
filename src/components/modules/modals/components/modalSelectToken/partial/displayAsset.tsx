@@ -11,28 +11,33 @@ import { Network } from '@/models/network';
 import { Wallet, WalletMetamask } from '@/models/wallet';
 import {
   getPersistSlice,
+  getUISlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppSelector,
 } from '@/store';
 import { TokenType } from '@/store/slices/persistSlice';
+import { BANNER_NAME } from '@/store/slices/uiSlice';
 
 type Props = { data: TokenType };
 
 export default function DisplayAsset({ data }: Props) {
   const { listIcon } = useAppSelector(getPersistSlice);
+  const { banners } = useAppSelector(getUISlice);
+
   const { asset, address } = useAppSelector(getWalletSlice);
   const { walletInstance, networkInstance } = useAppSelector(
-    getWalletInstanceSlice
+    getWalletInstanceSlice,
   );
 
   const { handleCloseCurModal, updateAsset } = useModalSTState().methods;
+  const curBanner = banners[BANNER_NAME.UNMATCHED_CHAIN_ID];
 
   const [balance, setBalance] = useState<string>('0');
 
   const curAssetIcon = useMemo(
     () => listIcon.find((item) => item.symbol === data.symbol),
-    [listIcon, data]
+    [listIcon, data],
   );
 
   const isSelected = useMemo(
@@ -40,7 +45,7 @@ export default function DisplayAsset({ data }: Props) {
       data.symbol === asset?.symbol &&
       data.tokenAddr === asset.tokenAddr &&
       data.decimals === asset.decimals,
-    [data.symbol, asset]
+    [data.symbol, asset],
   );
 
   async function handleSelectAsset() {
@@ -55,7 +60,7 @@ export default function DisplayAsset({ data }: Props) {
     userAddr: string,
     asset: TokenType,
     wallet: Wallet,
-    network: Network
+    network: Network,
   ) {
     let avaiBalance;
     if (wallet instanceof WalletMetamask) {
@@ -67,7 +72,7 @@ export default function DisplayAsset({ data }: Props) {
           network,
           userAddr,
           asset,
-          (networkInstance.src?.metadata as any)?.provider
+          (networkInstance.src?.metadata as any)?.provider,
         );
     } else {
       avaiBalance = await wallet.getBalance(network, userAddr, asset);
@@ -77,9 +82,15 @@ export default function DisplayAsset({ data }: Props) {
   }
 
   useEffect(() => {
-    if (!walletInstance || !networkInstance.src || !address) return;
+    if (
+      !walletInstance ||
+      !networkInstance.src ||
+      !address ||
+      (curBanner.isDisplay && curBanner.payload)
+    )
+      return;
     checkBalance(address, data, walletInstance, networkInstance.src);
-  }, [data, walletInstance, networkInstance, address]);
+  }, [data, walletInstance, networkInstance, address, banners]);
 
   return (
     <Button

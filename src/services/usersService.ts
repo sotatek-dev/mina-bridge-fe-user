@@ -79,15 +79,29 @@ export type ParamHistory = {
   page?: number;
 };
 
-export type GetDailyQuotaResponse = {
-  dailyQuota: {
-    id: number;
-    dailyQuota: string;
-    tip: string;
-    asset: string;
-  };
-  totalAmountOfToDay: number;
+export type DailyQuotaParam = {
+  address: string;
+  network: string;
+  token: string;
 };
+
+export type GetDailyQuotaResponse = {
+  dailyQuotaPerAddress: string;
+  dailyQuotaSystem: string;
+  curUserQuota: string;
+  curSystemQuota: string;
+};
+
+// TODO: develop
+// export type GetDailyQuotaResponse = {
+//   dailyQuota: {
+//     id: number;
+//     dailyQuota: string;
+//     tip: string;
+//     asset: string;
+//   };
+//   totalAmountOfToDay: number;
+// };
 
 export type GetPriceUsdResponse = {
   ethPriceInUsd: string;
@@ -100,6 +114,8 @@ export type GetPoAResponse = {
 export type GetExpectedTimesResponse = {
   receivedNetwork: string;
   completeTimeEstimated: number;
+  waitCrawlEthTime: number;
+  waitCrawlMinaTime: number;
 };
 
 class UsersService {
@@ -112,7 +128,7 @@ class UsersService {
 
   async getListSupportedPairs() {
     const res = await this.service.get<GetListSpPairsResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.SP_PAIRS}`
+      `${this.baseURL}/${USERS_ENDPOINT.SP_PAIRS}`,
     );
     return res;
   }
@@ -122,15 +138,22 @@ class UsersService {
       `${this.baseURL}/${USERS_ENDPOINT.HISTORY}/${query.address}`,
       {
         params: { limit: query.limit, page: query.page },
-      }
+      },
     );
   }
 
   getDailyQuota(query: { userAddress: string; tokenAddress: string }) {
     return this.service.get<GetDailyQuotaResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.userAddress}/${query.tokenAddress}`
+      `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.userAddress}/${query.tokenAddress}`,
     );
   }
+
+  // TODO: config develop
+  // getDailyQuota(query: DailyQuotaParam) {
+  //   return this.service.get<GetDailyQuotaResponse>(
+  //     `${this.baseURL}/${USERS_ENDPOINT.DAILY_QUOTA}/${query.address}/${query.network}/${query.token}`,
+  //   );
+  // }
 
   // getProtocolFee(payload: { pairId: string | number }) {
   //   return this.service.post<{
@@ -147,13 +170,13 @@ class UsersService {
 
   getPriceUsd() {
     return this.service.get<GetPriceUsdResponse>(
-      `${this.baseURL}/token/${USERS_ENDPOINT.PRICE_USD}`
+      `${this.baseURL}/token/${USERS_ENDPOINT.PRICE_USD}`,
     );
   }
 
   getProofOfAsset() {
     return this.service.get<GetPoAResponse>(
-      `${this.baseURL}/${USERS_ENDPOINT.PROOF_OF_ASSETS}`
+      `${this.baseURL}/${USERS_ENDPOINT.PROOF_OF_ASSETS}`,
     );
   }
 
@@ -162,7 +185,7 @@ class UsersService {
       `${this.baseURL}/${USERS_ENDPOINT.EXPECTED_TIMES}`,
       {
         params: { receivedNetwork: query.network },
-      }
+      },
     );
   }
 }

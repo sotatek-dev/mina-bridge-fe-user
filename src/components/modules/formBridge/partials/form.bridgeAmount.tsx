@@ -28,19 +28,26 @@ import { handleRequest } from '@/helpers/asyncHandlers';
 import { formatNumber, fromWei, zeroCutterStart } from '@/helpers/common';
 import { getWeb3Instance } from '@/helpers/evmHandlers';
 import useNotifier from '@/hooks/useNotifier';
-import Network, { NETWORK_TYPE } from '@/models/network/network';
-import { Wallet, WALLET_NAME, WalletMetamask } from '@/models/wallet';
+import Network, { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
+import {
+  Wallet,
+  WALLET_NAME,
+  WalletAuro,
+  WalletMetamask,
+} from '@/models/wallet';
 import {
   getPersistSlice,
+  getUISlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
   useAppSelector,
 } from '@/store';
 import { persistSliceActions, TokenType } from '@/store/slices/persistSlice';
+import { BANNER_NAME } from '@/store/slices/uiSlice';
 
 const numberRegex = new RegExp(
-  /^([0-9]{1,100}\.[0-9]{1,100})$|^([0-9]{1,100})\.?$|^\.([0-9]{1,100})?$/
+  /^([0-9]{1,100}\.[0-9]{1,100})$|^([0-9]{1,100})\.?$|^\.([0-9]{1,100})?$/,
 );
 
 export type FormBridgeAmountRef = null | { resetValue: () => void };
@@ -57,7 +64,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     asset: assetWallet,
   } = useAppSelector(getWalletSlice);
   const { walletInstance, networkInstance } = useAppSelector(
-    getWalletInstanceSlice
+    getWalletInstanceSlice,
   );
 
   const {
@@ -75,6 +82,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     useFormBridgeState().methods;
 
   const { lastNetworkFee } = useAppSelector(getPersistSlice);
+  const { banners } = useAppSelector(getUISlice);
 
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState<ErrorType>(null);
@@ -88,6 +96,8 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
   const { sendNotification } = useNotifier();
 
   const isFetchingBalance = status.isFetchingBalance;
+
+  const curBanner = banners[BANNER_NAME.UNMATCHED_CHAIN_ID];
   const setIsFetchingBalance = (isFetching: boolean) => {
     updateStatus('isFetchingBalance', isFetching);
   };
@@ -100,9 +110,9 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       reach_max: `You can only bridge maximum ${assetRange[1]} ${asset?.symbol || ''}`,
       insufficient_fund_fee:
         'Transaction can’t be made because of insufficient balance for transfer fee',
-      insufficient_daily_quota: `You can only bridge ${dailyQuota.max} ${asset?.symbol || ''} per address daily`,
+      insufficient_daily_quota: `You can only bridge ${dailyQuota.max} ${asset?.symbol || ''} per address per day, with a total system-wide daily limit of ${dailyQuota.systemMax} ${asset?.symbol || ''}`,
     }),
-    [asset, assetRange, dailyQuota]
+    [asset, assetRange, dailyQuota],
   );
 
   async function estimateFee(isRefresh = false) {
@@ -126,11 +136,11 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     updateStatus('isLoading', true);
 
     const [gasPrice, error] = await handleRequest(
-      getWeb3Instance(nwProvider).eth.getGasPrice()
+      getWeb3Instance(nwProvider).eth.getGasPrice(),
     );
     if (error || !gasPrice) return '0';
     const priceBN = new BigNumber(gasPrice?.toString() || '0').multipliedBy(
-      process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10
+      process.env.NEXT_PUBLIC_ESTIMATE_PRICE_RATIO || 10,
     );
     const amountBN = new BigNumber(gasAmount.toString());
     // console.log('🚀 ~ checkCurrentDecimals:', asset.decimals);
@@ -141,11 +151,11 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
         data: {
           value: fromWei(
             amountBN.multipliedBy(priceBN).toString(),
-            asset.decimals
+            asset.decimals,
           ),
           timestamp: moment.now(),
         },
-      })
+      }),
     );
     return;
   }
@@ -154,7 +164,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     address: string,
     asset: TokenType,
     srcNetwork: Network,
-    walletInstance: Wallet
+    walletInstance: Wallet,
   ) {
     try {
       if (isFetchingBalance) return;
@@ -168,20 +178,20 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
           availableBalance = await walletInstance.getBalance(
             srcNetwork,
             address,
-            asset
+            asset,
           );
         else
           availableBalance = await walletInstance.getBalanceERC20(
             srcNetwork,
             address,
             asset,
-            (networkInstance.src?.metadata as any)?.provider
+            (networkInstance.src?.metadata as any)?.provider,
           );
       } else {
         availableBalance = await walletInstance.getBalance(
           srcNetwork,
           address,
-          asset
+          asset,
         );
       }
 
@@ -213,14 +223,18 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       console.log('🚀 ~ throttleInput.current=setTimeout ~ value:', value);
       const balanceBN = new BigNumber(balance);
       const availQuota = new BigNumber(dailyQuota.max).minus(
-        new BigNumber(dailyQuota.current)
+        new BigNumber(dailyQuota.current),
       );
+      const availSystemQuota = new BigNumber(dailyQuota.systemMax).minus(
+        new BigNumber(dailyQuota.systemCurrent),
+      );
+
       // return error
       if (bn.isNaN()) return dpError('required');
       if (bn.isLessThan(min)) return dpError('reach_min');
       if (bn.isGreaterThan(max)) return dpError('reach_max');
       if (bn.isGreaterThan(balanceBN)) return dpError('insufficient_fund');
-      if (bn.isGreaterThan(availQuota))
+      if (bn.isGreaterThan(availQuota) || bn.isGreaterThan(availSystemQuota))
         return dpError('insufficient_daily_quota');
 
       setError(null);
@@ -331,21 +345,21 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
           formatNumber(
             maxAmount.toString(10),
             asset.decimals,
-            BigNumber.ROUND_DOWN
-          )
+            BigNumber.ROUND_DOWN,
+          ),
         );
         throttleActions(
           formatNumber(
             maxAmount.toString(10),
             asset.decimals,
-            BigNumber.ROUND_DOWN
-          )
+            BigNumber.ROUND_DOWN,
+          ),
         );
       }
     } else {
       setValue(formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN));
       throttleActions(
-        formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN)
+        formatNumber(balance, asset.decimals, BigNumber.ROUND_DOWN),
       );
     }
   }
@@ -358,7 +372,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
         setError(null);
       },
     }),
-    [setValue, setError]
+    [setValue, setError],
   );
 
   useEffect(() => {
@@ -368,7 +382,8 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       !walletInstance ||
       !srcNetwork ||
       !networkInstance.src ||
-      srcNetwork.name !== networkInstance.src.name
+      srcNetwork.name !== networkInstance.src.name ||
+      (curBanner.isDisplay && curBanner.payload)
     ) {
       updateBalance('0');
       return;
@@ -383,13 +398,13 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       () => {
         checkBalance(address, asset, srcNetwork, walletInstance);
       },
-      ITV.M5 // 5min
+      ITV.M5, // 5min
     );
     return () => {
       clearInterval(itvCheckBalance.current);
       itvCheckBalance.current = null;
     };
-  }, [address, asset, walletInstance, srcNetwork, txEmitCount]);
+  }, [address, asset, walletInstance, srcNetwork, txEmitCount, banners]);
 
   // frequently get gas price
   useEffect(() => {
@@ -462,7 +477,7 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
                 formatNumber(
                   balance,
                   asset.decimals,
-                  BigNumber.ROUND_DOWN
+                  BigNumber.ROUND_DOWN,
                 )}{' '}
               {(asset?.symbol.toUpperCase() || '') + ' '}
               Tokens

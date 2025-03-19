@@ -7,7 +7,7 @@ import { ZkContractType } from '@/configs/constants';
 import { gql } from '@/grapql';
 import { getAccountInfoTokenQuery } from '@/grapql/queries';
 import { handleRequest } from '@/helpers/asyncHandlers';
-import { fetchFiles, fileSystem } from '@/helpers/common';
+import { fetchFiles, fileSystem, getMinaNetworkId } from '@/helpers/common';
 import { Network } from '@/models/network';
 
 export default class ERC20Contract {
@@ -29,7 +29,8 @@ export default class ERC20Contract {
           archive:
             network.metadata.archiveUrl ||
             'https://api.minascan.io/archive/berkeley/v1/graphql/',
-        })
+          networkId: getMinaNetworkId(),
+        }),
       );
     }
     this.provider = Mina;
@@ -106,7 +107,7 @@ export default class ERC20Contract {
 
     if ('proxyUrl' in this.network.metadata && this.network.metadata.proxyUrl) {
       const [data, error] = await handleRequest(
-        gql(this.network.metadata.proxyUrl, query, params)
+        gql(this.network.metadata.proxyUrl, query, params),
       );
       if (error || !data || !data.account) return '0';
       return data.account.balance.total;
@@ -165,7 +166,7 @@ export default class ERC20Contract {
 
     if ('proxyUrl' in this.network.metadata && this.network.metadata.proxyUrl) {
       const [data, error] = await handleRequest(
-        gql(this.network.metadata.proxyUrl, query, params)
+        gql(this.network.metadata.proxyUrl, query, params),
       );
       if (error || !data || !data.account) return '0';
       return data.account.balance.total;

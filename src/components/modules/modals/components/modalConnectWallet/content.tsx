@@ -1,18 +1,21 @@
 'use client';
-import { Checkbox, Flex, HStack, Link } from '@chakra-ui/react';
+import { Box, Button, Checkbox, Flex, HStack, Link } from '@chakra-ui/react';
 import React from 'react';
 
 import useModalCWLogic from './hooks/useModalCWLogic';
 import Section from './partials/section';
 
 import LoadingWithText from '@/components/elements/loading/spinner.text';
+import ROUTES from '@/configs/routes';
+import { getWalletSlice, useAppSelector } from '@/store';
 
 type Props = {};
 
 export default function ModalCWContent({}: Props) {
-  const { networkOptionsRendered, walletOptionsRendered, methods } =
+  const { networkOptionsRendered, connectBtnProps, methods } =
     useModalCWLogic();
   const { status, isAcceptTerm } = useModalCWLogic().state;
+  const { isConnected } = useAppSelector(getWalletSlice);
 
   return status.isScreenLoading || status.isSnapInstalling ? (
     <LoadingWithText
@@ -28,18 +31,28 @@ export default function ModalCWContent({}: Props) {
     <>
       <Section title={'1. Accept'}>
         <Checkbox
+          disabled={isConnected}
           className={'checkbox'}
           fontSize={'14px'}
           isChecked={isAcceptTerm}
           onChange={methods.onToggleAcceptTerm}
           alignItems={'flex-start'}
+          sx={{ span: { opacity: '1 !important', cursor: 'default' } }}
         >
           I read and accept{' '}
-          <Link href={'#'} target={'_blank'} color={'primary.purple'}>
+          <Link
+            href={ROUTES.TERMS_OF_SERVICE}
+            target={'_blank'}
+            color={'primary.purple'}
+          >
             Terms of Service
           </Link>{' '}
           and{' '}
-          <Link href={'#'} target={'_blank'} color={'primary.purple'}>
+          <Link
+            href={ROUTES.PRIVACY_POLICY}
+            target={'_blank'}
+            color={'primary.purple'}
+          >
             Privacy Policy
           </Link>
         </Checkbox>
@@ -50,11 +63,9 @@ export default function ModalCWContent({}: Props) {
         </Flex>
       </Section>
 
-      <Section title={'3. Choose wallet'} mb={'5px'} mt={'20px'}>
-        <Flex h={'120px'} w={'100%'} overflowX={'auto'}>
-          <HStack>{walletOptionsRendered}</HStack>
-        </Flex>
-      </Section>
+      <Box mt={'20px'}>
+        <Button {...connectBtnProps} />
+      </Box>
     </>
   );
 }

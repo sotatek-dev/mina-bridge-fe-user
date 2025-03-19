@@ -16,12 +16,14 @@ import Contract, { PROVIDER_TYPE } from '@/models/contract/evm/contract';
 import { NETWORK_TYPE } from '@/models/network/network';
 import { WALLET_INJECT_OBJ } from '@/models/wallet/wallet.abstract';
 import {
+  getUISlice,
   getWalletInstanceSlice,
   getWalletSlice,
   useAppDispatch,
   useAppSelector,
 } from '@/store';
 import {
+  BANNER_NAME,
   ModalConfirmBridgePayload,
   uiSliceActions,
 } from '@/store/slices/uiSlice';
@@ -41,8 +43,15 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
   const { networkInstance } = useAppSelector(getWalletInstanceSlice);
   const { address, asset: assetWallet } = useAppSelector(getWalletSlice);
 
+  const { banners } = useAppSelector(getUISlice);
+
+  const curBanner = banners[BANNER_NAME.UNMATCHED_CHAIN_ID];
+
   const isClickable =
-    status.isValidData && status.isMatchedNetwork && !isInsufficient;
+    status.isValidData &&
+    status.isMatchedNetwork &&
+    !isInsufficient &&
+    !(curBanner.isDisplay && curBanner.payload);
 
   // only token in evm chains need to get allowance
   const isNeedApprove =
@@ -77,7 +86,7 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
     const approve = await contract.contractInstance.methods
       .approve(
         assetWallet.bridgeCtrAddr,
-        BigNumber(amount).multipliedBy(`1e${asset.decimals}`).toString()
+        BigNumber(amount).multipliedBy(`1e${asset.decimals}`).toString(),
       )
       .send({ from: address });
 
@@ -178,7 +187,7 @@ function Content(props: Omit<Props, 'isDisplayed'>) {
       uiSliceActions.openModal({
         modalName: MODAL_NAME.CONFIRM_BRIDGE,
         payload,
-      })
+      }),
     );
   }
 

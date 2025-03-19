@@ -106,7 +106,7 @@ export class Bridge extends SmartContract {
     const maxAmount = this.maxAmount.getAndRequireEquals();
     amount.assertGreaterThanOrEqual(
       minAmount,
-      'Amount is less than minimum allowed'
+      'Amount is less than minimum allowed',
     );
     amount.assertLessThanOrEqual(maxAmount, 'Amount exceeds maximum allowed');
     const token = new FungibleToken(tokenAddr);
@@ -117,10 +117,47 @@ export class Bridge extends SmartContract {
         this.sender.getAndRequireSignature(),
         address,
         amount,
-        tokenAddr
-      )
+        tokenAddr,
+      ),
     );
   }
+  // @method async unlock(
+  //   amount: UInt64,
+  //   receiver: PublicKey,
+  //   id: UInt64,
+  //   tokenAddr: PublicKey,
+  //   useSig1: Bool,
+  //   validator1: PublicKey,
+  //   sig1: Signature,
+  //   useSig2: Bool,
+  //   validator2: PublicKey,
+  //   sig2: Signature,
+  //   useSig3: Bool,
+  //   validator3: PublicKey,
+  //   sig3: Signature,
+  // ) {
+  //   const managerZkapp = new Manager(this.manager.getAndRequireEquals());
+  //   managerZkapp.isMinter(this.sender.getAndRequireSignature());
+  //   const msg = [
+  //     ...receiver.toFields(),
+  //     ...amount.toFields(),
+  //     ...tokenAddr.toFields(),
+  //   ]
+  //   this.validateValidator(
+  //     useSig1,
+  //     validator1,
+  //     useSig2,
+  //     validator2,
+  //     useSig3,
+  //     validator3,
+  //   );
+  //   this.validateSig(msg, sig1, validator1, useSig1);
+  //   this.validateSig(msg, sig2, validator2, useSig2);
+  //   this.validateSig(msg, sig3, validator3, useSig3);
+  //   const token = new FungibleToken(tokenAddr)
+  //   await token.mint(receiver, amount)
+  //   this.emitEvent("Unlock", new UnlockEvent(receiver, tokenAddr, amount, id));
+  // }
   async unlock(
     amount,
     receiver,
@@ -134,7 +171,7 @@ export class Bridge extends SmartContract {
     sig2,
     useSig3,
     validator3,
-    sig3
+    sig3,
   ) {
     const managerZkapp = new Manager(this.manager.getAndRequireEquals());
     managerZkapp.isMinter(this.sender.getAndRequireSignature());
@@ -143,17 +180,17 @@ export class Bridge extends SmartContract {
       ...amount.toFields(),
       ...tokenAddr.toFields(),
     ];
-    // this.validateValidator(
-    //   useSig1,
-    //   validator1,
-    //   useSig2,
-    //   validator2,
-    //   useSig3,
-    //   validator3,
-    // );
-    this.validateSig(msg, sig1, validator1, useSig1);
-    this.validateSig(msg, sig2, validator2, useSig2);
-    this.validateSig(msg, sig3, validator3, useSig3);
+    await this.validateValidator(
+      useSig1,
+      validator1,
+      useSig2,
+      validator2,
+      useSig3,
+      validator3,
+    );
+    await this.validateSig(msg, sig1, validator1, useSig1);
+    await this.validateSig(msg, sig2, validator2, useSig2);
+    await this.validateSig(msg, sig3, validator3, useSig3);
     const token = new FungibleToken(tokenAddr);
     await token.mint(receiver, amount);
     this.emitEvent('Unlock', new UnlockEvent(receiver, tokenAddr, amount, id));
@@ -164,64 +201,28 @@ export class Bridge extends SmartContract {
     useSig2,
     validator2,
     useSig3,
-    validator3
+    validator3,
   ) {
     let count = UInt64.from(0);
-    const falseB = Bool(false);
-    const trueB = Bool(true);
     const validatorManager = new ValidatorManager(
-      this.validatorManager.getAndRequireEquals()
+      this.validatorManager.getAndRequireEquals(),
     );
-    const validateIndex = async (validator, useSig) => {
-      const index = await validatorManager.getValidatorIndex(validator);
-      const isValidIndex = Provable.if(
-        index.equals(Field(1)),
-        trueB,
-        Provable.if(
-          index.equals(Field(2)),
-          trueB,
-          Provable.if(index.equals(Field(3)), trueB, falseB)
-        )
-      );
-      let isOk = Provable.if(
-        useSig,
-        Provable.if(isValidIndex, trueB, falseB),
-        trueB
-      );
-      isOk.assertTrue('Public key not found in validators');
-    };
-    // Execute validateIndex for each validator
-    await validateIndex(validator1, useSig1);
-    await validateIndex(validator2, useSig2);
-    await validateIndex(validator3, useSig3);
-    const notDupValidator12 = Provable.if(
-      useSig1.and(useSig2),
-      Provable.if(validator1.equals(validator2), falseB, trueB),
-      trueB
-    );
-    const notDupValidator13 = Provable.if(
-      useSig1.and(useSig3),
-      Provable.if(validator1.equals(validator3), falseB, trueB),
-      trueB
-    );
-    const notDupValidator23 = Provable.if(
-      useSig2.and(useSig3),
-      Provable.if(validator2.equals(validator3), falseB, trueB),
-      trueB
-    );
-    const isDuplicate = Provable.if(
-      notDupValidator12.and(notDupValidator13).and(notDupValidator23),
-      falseB,
-      trueB
-    );
-    isDuplicate.assertFalse('Duplicate validator keys');
     count = Provable.if(useSig1, count.add(1), count);
     count = Provable.if(useSig2, count.add(1), count);
     count = Provable.if(useSig3, count.add(1), count);
     count.assertGreaterThanOrEqual(
       this.threshold.getAndRequireEquals(),
-      'Not reached threshold'
+      'Not reached threshold',
     );
+    const index1 = await validatorManager.getValidatorIndex(validator1);
+    const index2 = await validatorManager.getValidatorIndex(validator2);
+    const index3 = await validatorManager.getValidatorIndex(validator3);
+    const isValid1 = Provable.if(useSig1, index1.equals(Field(1)), Bool(true));
+    const isValid2 = Provable.if(useSig2, index2.equals(Field(2)), Bool(true));
+    const isValid3 = Provable.if(useSig3, index3.equals(Field(3)), Bool(true));
+    isValid1.assertTrue('Validator1 has incorrect index');
+    isValid2.assertTrue('Validator2 has incorrect index');
+    isValid3.assertTrue('Validator3 has incorrect index');
   }
   async validateSig(msg, signature, validator, useSig) {
     let isValidSig = signature.verify(validator, msg);
@@ -237,31 +238,31 @@ __decorate(
   [state(UInt64), __metadata('design:type', Object)],
   Bridge.prototype,
   'minAmount',
-  void 0
+  void 0,
 );
 __decorate(
   [state(UInt64), __metadata('design:type', Object)],
   Bridge.prototype,
   'maxAmount',
-  void 0
+  void 0,
 );
 __decorate(
   [state(UInt64), __metadata('design:type', Object)],
   Bridge.prototype,
   'threshold',
-  void 0
+  void 0,
 );
 __decorate(
   [state(PublicKey), __metadata('design:type', Object)],
   Bridge.prototype,
   'validatorManager',
-  void 0
+  void 0,
 );
 __decorate(
   [state(PublicKey), __metadata('design:type', Object)],
   Bridge.prototype,
   'manager',
-  void 0
+  void 0,
 );
 __decorate(
   [
@@ -272,7 +273,7 @@ __decorate(
   ],
   Bridge.prototype,
   'setAmountLimits',
-  null
+  null,
 );
 __decorate(
   [
@@ -283,7 +284,7 @@ __decorate(
   ],
   Bridge.prototype,
   'changeManager',
-  null
+  null,
 );
 __decorate(
   [
@@ -294,7 +295,7 @@ __decorate(
   ],
   Bridge.prototype,
   'changeValidatorManager',
-  null
+  null,
 );
 __decorate(
   [
@@ -305,7 +306,7 @@ __decorate(
   ],
   Bridge.prototype,
   'lock',
-  null
+  null,
 );
 __decorate(
   [
@@ -330,6 +331,6 @@ __decorate(
   ],
   Bridge.prototype,
   'unlock',
-  null
+  null,
 );
 //# sourceMappingURL=Bridge.js.map

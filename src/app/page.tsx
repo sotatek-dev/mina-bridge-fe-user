@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
 // import FormBridge from '@/components/modules/formBridge';
+import Faq from '@/components/modules/faq';
 import ROUTES, { MDX_REDIRECT } from '@/configs/routes';
 
 const FormBridge = dynamic(() => import('@/components/modules/formBridge'), {
@@ -85,10 +86,7 @@ export default function Home() {
           Fee information
         </Text>
       </VStack>
-      <Text variant={'md'} color={'text.500'} m={'0'} mt={'16px'}>
-        The safest, fastest and most secure way to bring cross-chain assets to
-        Mina
-      </Text>
+      <Faq />
     </VStack>
   );
 }

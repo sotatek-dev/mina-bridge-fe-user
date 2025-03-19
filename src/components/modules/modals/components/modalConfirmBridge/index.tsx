@@ -56,7 +56,7 @@ export default function ModalConfirmBridge() {
   const isDefault = useMemo(() => status === MODAL_CF_STATUS.IDLE, [status]);
   const isInitializing = useMemo(
     () => status === MODAL_CF_STATUS.INITIALIZE,
-    [status]
+    [status],
   );
   const isLoading = useMemo(() => status === MODAL_CF_STATUS.LOADING, [status]);
   const hasError = useMemo(() => status === MODAL_CF_STATUS.ERROR, [status]);
@@ -126,19 +126,6 @@ export default function ModalConfirmBridge() {
             <Heading as={'h3'} variant={'h3'} color={'text.900'} mt={'20px'}>
               Transaction Submitted
             </Heading>
-            <Text
-              variant={'md'}
-              color={'text.500'}
-              mt={'5px'}
-              onClick={() => {
-                onDismiss();
-                handleCloseModal();
-                router.push(ROUTES.HISTORY);
-              }}
-              cursor={'pointer'}
-            >
-              View on History
-            </Text>
           </VStack>
         );
 
@@ -307,14 +294,32 @@ export default function ModalConfirmBridge() {
               justifyContent={'space-between'}
               display={'flex'}
             >
-              <Text variant={'lg'} color={'primary.orange'}>Expected times</Text>
-              
-              <Text variant={'lg_medium'} color={'primary.orange'}>
+              <Text variant={'md'} color={'primary.orange'}>
+                Expected times
+              </Text>
+
+              <Text variant={'md_medium'} color={'primary.orange'}>
                 ~{expectedTimes}{' '}
-                {networkInstance.src?.name === NETWORK_NAME.MINA &&
-                  'Please ensure you have enough Mina in your account to covers Mina Network fee.'}
               </Text>
             </Box>
+            {networkInstance.src?.name === NETWORK_NAME.MINA && (
+              <Box
+                w={'full'}
+                mt={'8px'}
+                p={'10px 15px'}
+                gap={'10px'}
+                borderRadius={'8px'}
+                bg={'rgba(222, 98, 46, 0.10)'}
+                justifyContent={'space-between'}
+                display={'flex'}
+              >
+                <Text variant={'md'} color={'primary.orange'}>
+                  Please ensure you have enough Mina in your account to covers
+                  Mina Network fee.
+                </Text>
+              </Box>
+            )}
+
             {/*<HStack w={'full'} mt={'15px'} gap={'12px'}>*/}
             {/*  <QuestionIcon visibility={'hidden'} color={'var(--text-300)'} />*/}
             {/*  <Text display={'flex'} gap={1}>*/}
@@ -397,7 +402,26 @@ export default function ModalConfirmBridge() {
         }
         if (isLoading) return null;
 
-        if (isSuccess || hasError)
+        if (isSuccess)
+          return (
+            <Button
+              variant={'primary.orange.solid'}
+              w={'full'}
+              h={'46px'}
+              mt={'25px'}
+              mx={'40px'}
+              mb={'40px'}
+              onClick={() => {
+                onDismiss();
+                handleCloseModal();
+                router.push(ROUTES.HISTORY);
+              }}
+            >
+              View on History
+            </Button>
+          );
+
+        if (hasError)
           return (
             <Button
               variant={'primary.orange.solid'}
@@ -416,7 +440,11 @@ export default function ModalConfirmBridge() {
           );
         return (
           <Button
-            variant={Boolean(StorageUtils.getAcceptTermsOfUse()) ? 'primary.orange.solid' : 'ghost'}
+            variant={
+              Boolean(StorageUtils.getAcceptTermsOfUse())
+                ? 'primary.orange.solid'
+                : 'ghost'
+            }
             w={'full'}
             h={'46px'}
             mt={'30px'}

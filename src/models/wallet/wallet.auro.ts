@@ -1,4 +1,5 @@
 import MinaProvider, { ChainInfoArgs } from '@aurowallet/mina-provider';
+import { capitalize } from 'lodash';
 
 import Network, { NETWORK_NAME, NETWORK_TYPE } from '../network/network';
 
@@ -41,11 +42,11 @@ export type WalletAuroEvents =
 
 export default class WalletAuro extends Wallet {
   errorList = {
-    WALLET_NOT_INSTALLED: `Please install ${this.name} wallet`,
+    WALLET_NOT_INSTALLED: `Please install ${capitalize(this.name)} wallet`,
     WALLET_WRONG_CHAIN: 'You have connected to unsupported chain',
     WALLET_CONNECT_FAILED: 'Fail to connect wallet',
     WALLET_CONNECT_REJECTED: 'User rejected the request.',
-    WALLET_GET_BALANCE_FAIL: 'Can\'t get the current balance',
+    WALLET_GET_BALANCE_FAIL: "Can't get the current balance",
   };
 
   constructor() {

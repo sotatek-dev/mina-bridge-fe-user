@@ -1,4 +1,5 @@
 import { MetaMaskInpageProvider, RequestArguments } from '@metamask/providers';
+import { capitalize } from 'lodash';
 import Web3, { ProviderMessage, ProviderRpcError } from 'web3';
 
 import { PROVIDER_TYPE, ProviderType } from '../contract/evm/contract';
@@ -44,7 +45,7 @@ export type WalletMetamaskEvents =
     };
 export default class WalletMetamask extends Wallet {
   errorList = {
-    WALLET_NOT_INSTALLED: `Please install ${this.name} wallet`,
+    WALLET_NOT_INSTALLED: `Please install ${capitalize(this.name)} wallet`,
     WALLET_WRONG_CHAIN: 'You have connected to unsupported chain',
     WALLET_CONNECT_FAILED: 'Fail to connect wallet',
     WALLET_CONNECT_REJECTED: 'User rejected the request.',
@@ -128,7 +129,7 @@ export default class WalletMetamask extends Wallet {
     onStart?: () => void,
     onFinish?: () => void,
     onError?: () => void,
-    whileHandle?: () => void
+    whileHandle?: () => void,
   ) {
     let account: string = '';
     switch (network.type) {
@@ -167,7 +168,7 @@ export default class WalletMetamask extends Wallet {
                   version: `^${version}`,
                 },
               },
-            })
+            }),
           );
           whileHandle && whileHandle();
           if (reqError) throw reqError;
@@ -225,7 +226,7 @@ export default class WalletMetamask extends Wallet {
   async getBalance(
     network: Network,
     userAddr: string,
-    asset: TokenType
+    asset: TokenType,
   ): Promise<string> {
     const isNativeToken = network.nativeCurrency.symbol === asset.symbol;
 
@@ -239,7 +240,7 @@ export default class WalletMetamask extends Wallet {
           };
           const web3 = getWeb3Instance(provider);
           const [blnWei, error] = await handleRequest(
-            web3.eth.getBalance(userAddr)
+            web3.eth.getBalance(userAddr),
           );
           if (error) throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
           return fromWei(blnWei!!.toString(), asset.decimals);
@@ -311,7 +312,7 @@ export default class WalletMetamask extends Wallet {
         await ctr.setInfo(asset.tokenAddr, network);
 
         const [blnWei, reqError] = await handleRequest(
-          ctr.getBalance(userAddr)
+          ctr.getBalance(userAddr),
         );
         if (reqError || !blnWei)
           throw new Error(this.errorList.WALLET_GET_BALANCE_FAIL);
@@ -336,7 +337,7 @@ export default class WalletMetamask extends Wallet {
                   chainId: network.metadata.chainId,
                 },
               ],
-            })
+            }),
           );
           if (error) return false;
         }
@@ -351,7 +352,7 @@ export default class WalletMetamask extends Wallet {
                 method: 'mina_networkConfig',
               },
             },
-          }
+          },
         );
         if (name !== network.metadata.chainId) {
           await this.sendRequest({

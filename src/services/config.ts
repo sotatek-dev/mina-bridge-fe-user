@@ -32,4 +32,9 @@ enum USERS_ENDPOINT {
   EXPECTED_TIMES = 'estimate',
 }
 
-export { CoinGeckoSV, PairDetailSV, PairSV, USERS_ENDPOINT };
+enum PROOF_ENDPOINT {
+  USER_LOCK = 'user-lock',
+  USER_LOCK_CHECK_JOB = 'user-lock/check',
+}
+
+export { CoinGeckoSV, PairDetailSV, PairSV, USERS_ENDPOINT, PROOF_ENDPOINT };

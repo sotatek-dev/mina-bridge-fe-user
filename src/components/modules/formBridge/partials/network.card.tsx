@@ -22,7 +22,11 @@ export default function NetworkCard({ label, networkKey }: Props) {
     networkKey === NETWORK_KEY.SRC ? srcNetwork : tarNetwork;
   const isEnable = !!curNetworkInstance && status.isConnected;
   function handleClick() {
-    if (status.isLoading || !status.isConnected) return;
+    if (status.isLoading || !status.isConnected) {
+      return dispatch(
+        uiSliceActions.openModal({ modalName: MODAL_NAME.CONNECT_WALLET }),
+      );
+    }
     dispatch(
       uiSliceActions.openModal({
         modalName: MODAL_NAME.SELECT_NETWORK,
@@ -52,9 +56,7 @@ export default function NetworkCard({ label, networkKey }: Props) {
         position: 'absolute',
         w: '500px',
         h: '500px',
-        bgImage: isEnable
-          ? 'linear-gradient(270deg, #DE622E 0%, #8271F0 100%)'
-          : '',
+        bgImage: 'linear-gradient(270deg, #DE622E 0%, #8271F0 100%)',
         bgColor: 'text.200',
       }}
       _hover={{

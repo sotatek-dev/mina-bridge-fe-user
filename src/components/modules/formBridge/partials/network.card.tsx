@@ -106,7 +106,7 @@ export default function NetworkCard({ label, networkKey }: Props) {
           )}
           <Box ml={'auto'}>
             <ArrowDownIcon
-              color={isConnected ? 'var(--primary-purple)' : 'var(--text-200)'}
+              color={'var(--primary-purple)'}
               height={'22'}
               width={'22'}
             />

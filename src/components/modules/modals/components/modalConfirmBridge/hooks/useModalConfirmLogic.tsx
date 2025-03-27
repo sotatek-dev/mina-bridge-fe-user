@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { MODAL_NAME } from '@/configs/modal';
 import ROUTES from '@/configs/routes';
-import ITV from '@/configs/time';
 import { IsServer } from '@/constants';
 import { handleRequest } from '@/helpers/asyncHandlers';
 import {
@@ -21,7 +20,6 @@ import { EVMBridgeTXLock } from '@/models/contract/evm/contract.bridge';
 import { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
 import { WALLET_NAME, WalletAuro } from '@/models/wallet';
 import { useZKContractState } from '@/providers/zkBridgeInitalize';
-import proofService, { EJobStatus } from '@/services/proofService';
 import usersService, { GetListSpPairsResponse } from '@/services/usersService';
 import {
   getPersistSlice,
@@ -442,7 +440,6 @@ export default function useModalConfirmLogic({ modalName }: Params) {
       return onError();
     if (!walletInstance || !networkInstance.src) return onError();
 
-    console.time('prove lock');
     try {
       const { PublicKey, AccountUpdate, UInt64 } = await import('o1js');
 
@@ -527,91 +524,51 @@ export default function useModalConfirmLogic({ modalName }: Params) {
         }
       }
 
-      const [res, error] = await handleRequest(
-        proofService.proveTx({
-          address,
-          amount: toWei(modalPayload.amount, modalPayload.asset.decimals),
-          tokenAddress: asset?.tokenAddr!,
-        }),
-      );
-      if (error || !res?.success) return onError();
-
-      const interval = setInterval(async () => {
-        const [jobRes, jobError] = await handleRequest(
-          proofService.checkProve({ jobId: res.jobId }),
-        );
-
-        if (jobError || jobRes?.jobStatus === EJobStatus.FAILED) {
-          clearInterval(interval);
-          return onError();
-        }
-
-        if (jobRes?.jobStatus === EJobStatus.FINISHED) {
-          clearInterval(interval);
-          setStatus(MODAL_CF_STATUS.LOADING);
-          console.timeEnd('prove lock');
-          const [res, error] = await handleRequest(
-            walletInstance.sendTx(jobRes.result),
+      // end register account
+      // build tx
+      const tx = await zkCtr.bridgeContract.provider.transaction(
+        // const tx = await ctr.provider.transaction(
+        {
+          sender: PublicKey.fromBase58(address),
+          fee: UInt64.from(Number(0.1) * 1e9),
+        },
+        async () => {
+          await zkCtr.bridgeContract!!.lock(
+            modalPayload.destAddr,
+            toWei(modalPayload.amount, modalPayload.asset.decimals),
           );
+        },
+      );
 
-          if (error) return onError();
-
-          // tx confirmed
-          sendNotification({
-            toastType: 'warning',
-            options: {
-              title: `Locking WETH transactions can take up to ${waitCrawlMinaTimes || 90} minutes to appear on Bridge History screen`,
-            },
-          });
-          return onSuccess();
-        }
-      }, ITV.S10);
-
-      // // end register account
-      // // build tx
-      // const tx = await zkCtr.bridgeContract.provider.transaction(
-      //   // const tx = await ctr.provider.transaction(
-      //   {
-      //     sender: PublicKey.fromBase58(address),
-      //     fee: UInt64.from(Number(0.1) * 1e9),
-      //   },
-      //   async () => {
-      //     await zkCtr.bridgeContract!!.lock(
-      //       modalPayload.destAddr,
-      //       toWei(modalPayload.amount, modalPayload.asset.decimals),
-      //     );
-      //   },
-      // );
-
-      // // prove tx
-      // await tx.prove();
+      // prove tx
+      await tx.prove();
 
       // only when a tx is proved then system will start send payment request
-      // setStatus(MODAL_CF_STATUS.LOADING);
+      setStatus(MODAL_CF_STATUS.LOADING);
 
       // send tx via wallet instances
-      // switch (walletInstance.name) {
-      //   case WALLET_NAME.AURO:
-      //     await walletInstance.sendTx(tx.toJSON());
-      //     break;
-      //   case WALLET_NAME.METAMASK:
-      //     await walletInstance.sendTx({
-      //       transaction: tx.toJSON(),
-      //       fee: Number(0.1),
-      //     });
-      //     break;
-      //   default:
-      //     break;
-      // }
+      switch (walletInstance.name) {
+        case WALLET_NAME.AURO:
+          await walletInstance.sendTx(tx.toJSON());
+          break;
+        case WALLET_NAME.METAMASK:
+          await walletInstance.sendTx({
+            transaction: tx.toJSON(),
+            fee: Number(0.1),
+          });
+          break;
+        default:
+          break;
+      }
 
       // tx confirmed
-      // sendNotification({
-      //   toastType: 'warning',
-      //   options: {
-      //     title: `Locking WETH transactions can take up to ${waitCrawlMinaTimes || 90} minutes to appear on Bridge History screen`,
-      //   },
-      // });
-      // return onSuccess();
+      sendNotification({
+        toastType: 'warning',
+        options: {
+          title: `Locking WETH transactions can take up to ${waitCrawlMinaTimes || 90} minutes to appear on Bridge History screen`,
+        },
+      });
+      return onSuccess();
     } catch (error) {
       // console.log('🚀 ~ useModalConfirmLogic ~ error:', error);
       return onError();

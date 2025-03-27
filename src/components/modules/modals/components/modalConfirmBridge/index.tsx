@@ -56,7 +56,7 @@ export default function ModalConfirmBridge() {
   const isDefault = useMemo(() => status === MODAL_CF_STATUS.IDLE, [status]);
   const isInitializing = useMemo(
     () => status === MODAL_CF_STATUS.INITIALIZE,
-    [status]
+    [status],
   );
   const isLoading = useMemo(() => status === MODAL_CF_STATUS.LOADING, [status]);
   const hasError = useMemo(() => status === MODAL_CF_STATUS.ERROR, [status]);
@@ -295,7 +295,7 @@ export default function ModalConfirmBridge() {
               display={'flex'}
             >
               <Text variant={'md'} color={'primary.orange'}>
-                Expected times
+                Expected time
               </Text>
 
               <Text variant={'md_medium'} color={'primary.orange'}>
@@ -314,8 +314,8 @@ export default function ModalConfirmBridge() {
                 display={'flex'}
               >
                 <Text variant={'md'} color={'primary.orange'}>
-                  Please ensure you have enough Mina in your account to covers
-                  Mina Network fee.
+                  Please ensure you have enough MINA in your account to cover
+                  the MINA network fee.
                 </Text>
               </Box>
             )}
@@ -404,21 +404,35 @@ export default function ModalConfirmBridge() {
 
         if (isSuccess)
           return (
-            <Button
-              variant={'primary.orange.solid'}
-              w={'full'}
-              h={'46px'}
-              mt={'25px'}
-              mx={'40px'}
-              mb={'40px'}
-              onClick={() => {
-                onDismiss();
-                handleCloseModal();
-                router.push(ROUTES.HISTORY);
-              }}
-            >
-              View on History
-            </Button>
+            <VStack mx={'40px'}>
+              <Button
+                variant={'primary.orange.solid'}
+                w={'full'}
+                h={'46px'}
+                mt={'25px'}
+                mb={'8px'}
+                onClick={() => {
+                  onDismiss();
+                  handleCloseModal();
+                  router.push(ROUTES.HISTORY);
+                }}
+              >
+                View on History
+              </Button>
+              <HStack
+                bg={'primary.orange.01'}
+                gap={'10px'}
+                p={'14px 12px'}
+                mb={'20px'}
+                borderRadius={'8px'}
+              >
+                <Text variant={'md'} color={'primary.orange'}>
+                  Your destination address will be your receiving address,
+                  please switch the network to check your balance after
+                  completion.
+                </Text>
+              </HStack>
+            </VStack>
           );
 
         if (hasError)

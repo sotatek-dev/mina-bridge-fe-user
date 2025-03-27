@@ -4,8 +4,10 @@ import React from 'react';
 
 const header = [
   'Status',
-  'Amount/From (Network)',
-  'Amount Received/To (Network)',
+  'Tx From',
+  'Tx To',
+  'Address From',
+  'Address To',
   'Bridging Fee',
   'Gas Fee',
   'Create Time',
@@ -24,6 +26,7 @@ function HeaderTable() {
                 textTransform={'capitalize'}
                 variant={'md_bold'}
                 color={'text.900'}
+                whiteSpace={'nowrap'}
               >
                 {item}
               </Text>

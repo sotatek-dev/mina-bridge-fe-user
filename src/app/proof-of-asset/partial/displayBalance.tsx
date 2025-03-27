@@ -43,11 +43,15 @@ export default function DisplayBalance({
 
   const isNativeCurrency = useMemo(
     () => network.nativeCurrency.symbol === asset.symbol,
-    [network, asset]
+    [network, asset],
   );
 
   const dpAddress = useMemo(() => {
-    const [f, l] = truncateMid(asset.bridgeCtrAddr, 7, 7);
+    const address =
+      network.name === NETWORK_NAME.MINA
+        ? asset.tokenAddr
+        : asset.bridgeCtrAddr;
+    const [f, l] = truncateMid(address, 7, 7);
     return f + '...' + l;
   }, [asset]);
 
@@ -55,11 +59,11 @@ export default function DisplayBalance({
     switch (network.type) {
       case NETWORK_TYPE.EVM:
         const web3Instance = new Web3(
-          new Web3.providers.HttpProvider(network.metadata.provider.uri)
+          new Web3.providers.HttpProvider(network.metadata.provider.uri),
         );
 
         const [res, error] = await handleRequest(
-          web3Instance.eth.getBalance(addr)
+          web3Instance.eth.getBalance(addr),
         );
         if (error || !res) {
           return setBalance('0');
@@ -109,7 +113,11 @@ export default function DisplayBalance({
   }
 
   function handleCopy() {
-    navigator.clipboard.writeText(asset.bridgeCtrAddr);
+    const address =
+      network.name === NETWORK_NAME.MINA
+        ? asset.tokenAddr
+        : asset.bridgeCtrAddr;
+    navigator.clipboard.writeText(address);
     if (
       copyNotifyRef.current !== null &&
       checkNotifyActive(copyNotifyRef.current)
@@ -119,7 +127,7 @@ export default function DisplayBalance({
     copyNotifyRef.current = sendNotification({
       toastType: 'success',
       options: {
-        title: 'Bridge contract address copied',
+        title: `${network.name === NETWORK_NAME.MINA ? 'Token' : 'Bridge'} contract address copied`,
       },
     });
   }
@@ -131,7 +139,7 @@ export default function DisplayBalance({
         url = getEtherAccountScan(asset.bridgeCtrAddr);
         break;
       case NETWORK_NAME.MINA:
-        url = getMinaAccountScan(asset.bridgeCtrAddr);
+        url = getMinaAccountScan(asset.tokenAddr);
         break;
       default:
         break;

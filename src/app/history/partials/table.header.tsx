@@ -9,7 +9,7 @@ const header = [
   'Bridging Fee',
   'Gas Fee',
   'Create Time',
-  'Comfirmed time',
+  'Confirmed time',
   'Order ID',
 ];
 

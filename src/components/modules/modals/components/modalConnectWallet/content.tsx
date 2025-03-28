@@ -57,7 +57,7 @@ export default function ModalCWContent({}: Props) {
           </Link>
         </Checkbox>
       </Section>
-      <Section title={'2. Choose network'} mt={'20px'}>
+      <Section title={'2. Choose "from" network'} mt={'20px'}>
         <Flex h={'120px'} w={'100%'} overflowX={'auto'}>
           <HStack>{networkOptionsRendered}</HStack>
         </Flex>

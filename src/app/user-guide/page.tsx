@@ -113,7 +113,7 @@ export default function UserGuide() {
             mt={'40px'}
             color={'text.900'}
           >
-            Mina Sercurity Diagram
+            Mina Security Diagram
           </Heading>
           <Box bg={'background.modal'} p={{ base: '20px', md: '24px 40px' }}>
             <SercurityDiagram />

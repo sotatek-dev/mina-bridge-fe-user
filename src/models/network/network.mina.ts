@@ -15,7 +15,7 @@ const NetworkMina: Network = {
   },
   metadata: {
     ...getZKNetworkMetadata(
-      process.env.NEXT_PUBLIC_REQUIRED_MINA_NETWORK as ZK_CHAIN
+      process.env.NEXT_PUBLIC_REQUIRED_MINA_NETWORK as ZK_CHAIN,
     ),
     logo: {
       base: '/assets/logos/logo.mina.circle.svg',
@@ -25,7 +25,7 @@ const NetworkMina: Network = {
 };
 
 export function getMinaAccountScan(addr: string) {
-  return `${NetworkMina.metadata.scanUrl}/account/${addr}?type=zk-acc`;
+  return `${NetworkMina.metadata.scanUrl}/account/${addr}/portfolio`;
 }
 
 export default NetworkMina;

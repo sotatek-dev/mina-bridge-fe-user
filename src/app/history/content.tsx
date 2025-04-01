@@ -42,11 +42,7 @@ function HistoryContent() {
         Order History
       </Text>
       <VStack w={'full'} bg={'background.modal'} pb={'33px'} mt={'12px'}>
-        <Box
-          width={'full'}
-          overflowY={'hidden'}
-          overflowX={state.data.length > 0 ? 'auto' : 'hidden'}
-        >
+        <Box width={'full'} overflowY={'hidden'} overflowX={'auto'}>
           <Table minW={'1140px'}>
             <HeaderTable />
             {state.data.length > 0 && <BodyTable data={state.data} />}

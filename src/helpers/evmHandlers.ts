@@ -16,7 +16,16 @@ const getWalletInstanceState = () => {
 
 export function getWeb3Instance(provider: ProviderType) {
   if (IsServer) {
-    return new Web3(new Web3.providers.HttpProvider((provider as { type: PROVIDER_TYPE.HTTPS | PROVIDER_TYPE.HTTP; uri: string }).uri));
+    return new Web3(
+      new Web3.providers.HttpProvider(
+        (
+          provider as {
+            type: PROVIDER_TYPE.HTTPS | PROVIDER_TYPE.HTTP;
+            uri: string;
+          }
+        ).uri,
+      ),
+    );
   }
 
   switch (provider.type) {
@@ -41,5 +50,18 @@ export function getWeb3Instance(provider: ProviderType) {
 
     default:
       return new Web3(new Web3.providers.HttpProvider(provider.uri));
+  }
+}
+
+export function getNwFeeBuffer(): number {
+  const environment = process.env.NEXT_PUBLIC_ENV ?? 'development';
+
+  switch (environment) {
+    case 'production':
+      return 1.2;
+    case 'development':
+      return 1.25;
+    default:
+      return 1.25;
   }
 }

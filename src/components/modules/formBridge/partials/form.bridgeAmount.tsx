@@ -9,6 +9,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import React, {
@@ -26,10 +27,10 @@ import Loading from '@/components/elements/loading/spinner';
 import ITV from '@/configs/time';
 import { handleRequest } from '@/helpers/asyncHandlers';
 import { formatNumber, fromWei, zeroCutterStart } from '@/helpers/common';
-import { getWeb3Instance } from '@/helpers/evmHandlers';
+import { getNwFeeBuffer, getWeb3Instance } from '@/helpers/evmHandlers';
 import useNotifier from '@/hooks/useNotifier';
-import Network, { NETWORK_NAME, NETWORK_TYPE } from '@/models/network/network';
-import { Wallet, WALLET_NAME, WalletAuro } from '@/models/wallet';
+import Network, { NETWORK_TYPE } from '@/models/network/network';
+import { Wallet, WALLET_NAME } from '@/models/wallet';
 import {
   getPersistSlice,
   getUISlice,
@@ -110,26 +111,10 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
     [asset, assetRange, dailyQuota],
   );
 
-  async function estimateFee(isRefresh = false) {
+  async function estimateNwFeeFromGasPrice() {
     if (!nwProvider || !address || !asset || !srcNetwork) return '0';
 
-    if (
-      !isRefresh &&
-      lastNetworkFee &&
-      lastNetworkFee[srcNetwork.name].timestamp > 0
-    ) {
-      const nwFee = lastNetworkFee[srcNetwork.name];
-      if (
-        nwFee.timestamp &&
-        moment(moment.now()).diff(moment(nwFee.timestamp), 'seconds') <= 10
-      ) {
-        return;
-      }
-    }
-
     const gasAmount = process.env.NEXT_PUBLIC_ESTIMATE_GAS_AMOUNT || '50000';
-    updateStatus('isLoading', true);
-
     const [gasPrice, error] = await handleRequest(
       getWeb3Instance(nwProvider).eth.getGasPrice(),
     );
@@ -152,6 +137,73 @@ const Content = forwardRef<FormBridgeAmountRef, Props>((props, ref) => {
       }),
     );
     return;
+  }
+
+  async function estimateFee(isRefresh = false) {
+    if (!nwProvider || !address || !asset || !srcNetwork) return '0';
+
+    if (
+      !isRefresh &&
+      lastNetworkFee &&
+      lastNetworkFee[srcNetwork.name].timestamp > 0
+    ) {
+      const nwFee = lastNetworkFee[srcNetwork.name];
+      if (
+        nwFee.timestamp &&
+        moment(moment.now()).diff(moment(nwFee.timestamp), 'seconds') <= 10
+      ) {
+        return;
+      }
+    }
+
+    updateStatus('isLoading', true);
+
+    const INFURA_KEY = process.env.NEXT_PUBLIC_INFURA_KEY || '';
+    const chainId = parseInt(networkInstance.src?.metadata.chainId || '', 16);
+
+    if (!INFURA_KEY || !chainId) {
+      await estimateNwFeeFromGasPrice();
+      return;
+    }
+
+    try {
+      const res = await axios.get(
+        `https://gas.api.infura.io/v3/${INFURA_KEY}/networks/${chainId}/suggestedGasFees`,
+      );
+      const data = res.data;
+
+      const gasLimitBN = new BigNumber(
+        process.env.NEXT_PUBLIC_ESTIMATE_GAS_LIMIT || '300000',
+      );
+      const processFee = (fee: string) =>
+        gasLimitBN.times(new BigNumber(fee)).dividedBy(1e9);
+
+      const nwFeeLow = processFee(data.low.suggestedMaxFeePerGas);
+      const nwFeeMedium = processFee(data.medium.suggestedMaxFeePerGas);
+      const nwFeeHigh = processFee(data.high.suggestedMaxFeePerGas);
+
+      console.log('🚀 ~ estimateMetamaskFee ~ res:', {
+        low: nwFeeLow.toString(),
+        medium: nwFeeMedium.toString(),
+        high: nwFeeHigh.toString(),
+        site: nwFeeHigh.times(getNwFeeBuffer()).toString(),
+      });
+
+      updateStatus('isLoading', false);
+      dispatch(
+        persistSliceActions.setLastNwFee({
+          nw: srcNetwork.name,
+          data: {
+            value: nwFeeHigh.times(getNwFeeBuffer()).toString(),
+            timestamp: moment.now(),
+          },
+        }),
+      );
+      return;
+    } catch (error) {
+      console.log('Server responded with:', error);
+      await estimateNwFeeFromGasPrice();
+    }
   }
 
   async function checkBalance(
